@@ -20,7 +20,7 @@ hot_wallet = test_wallet.classic_address
 
 issuer_account = issuer_wallet.classic_address
 
-# set minter account to connect to rippling
+# set minter account flags to connect to rippling
 set_rippling_account = AccountSet(account=issuer_account,
                                   fee="12", flags=["8"])
 
@@ -29,7 +29,7 @@ currency_amount = {
     # TODO:HEX name convertor
     "currency": "64656E6163687477616368740000000000000000",
     "issuer": issuer_account,
-    # values smaller than 70 zeros are considered NFTs, XLS14
+    # values smaller than 70 zeros are considered NFTs (XLS14)
     "value": "1000000000000000e-96"
 }
 # set up trust line between hot wallet and minter
@@ -92,7 +92,6 @@ my_tx_payment = Payment(
     memos=meta_data_memos)
 
 # sign the transaction
-
 my_tx_payment_signed = safe_sign_and_autofill_transaction(
     my_tx_payment, issuer_wallet, client)
 
