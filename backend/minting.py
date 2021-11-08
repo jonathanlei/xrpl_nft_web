@@ -5,13 +5,41 @@ from xrpl.transaction import safe_sign_and_autofill_transaction
 from xrpl.models.transactions import Payment, TrustSet, AccountSet, Memo
 from xrpl.wallet import generate_faucet_wallet
 from xrpl.clients import JsonRpcClient
+import binascii
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient(JSON_RPC_URL)
 
 
+""" 
+flow: 
+receiving info from FE: receiving wallet address, nft meta info,
+question: do we mint for them on IPFS? 
+    if we do: media storage, seperate minting py
+1. generate issuer account, sign
+2. convert nft meta to hex, generate payment dict 
+3. make payment obj and sign 
+ """
+def minting(receiving_wallet, amount, nft_meta, ):
+    issuer_account = generate_issuer_wallet()
+
+
+
+# generate an one-off issuer wallet for minting, configure issuer account as well
+# output issuer_account (address )
+def generate_issuer_wallet():
+    issuer_wallet = generate_faucet_wallet(client, debug=True)
+    set_rippling_account = AccountSet(account=issuer_account,
+                                  fee="12", flags=["8"])
+    issuer_account = issuer_wallet.classic_address
+    return issuer_account
+
+
+def hex_convertor(string):
+    return binascii.hexlify(string)
+
 # generate test wallets from testnet
 test_wallet = generate_faucet_wallet(client, debug=True)
-print(test_wallet)
+
 # issuer wallet
 issuer_wallet = generate_faucet_wallet(client, debug=True)
 
@@ -23,6 +51,7 @@ issuer_account = issuer_wallet.classic_address
 # set minter account flags to connect to rippling
 set_rippling_account = AccountSet(account=issuer_account,
                                   fee="12", flags=["8"])
+
 
 currency_amount = {
     # HEX ecoding of nft name
