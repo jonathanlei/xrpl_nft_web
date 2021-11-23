@@ -5,6 +5,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
+## db design
+
+
 
 def connect_db(app):
     """Connect to database."""
@@ -52,3 +55,5 @@ class User(db.Model, UserMixin):
             "profilePhoto": self.profile_photo,
             "accountStatus": self.account_status if self.account_status else "",
         }
+
+
