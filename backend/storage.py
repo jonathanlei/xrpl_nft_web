@@ -1,11 +1,9 @@
 import requests
-
-
 """ 
 this file serves as storage for NFT media files on IPFS
 questions on workflow: 
 1. user upload image 
-2. get the image in the backend, store in database? 
+2. get the image in the backend, store in database?
 3. upload to ipfs (done)
 4. store the URI in database, along with minting
 """
@@ -16,9 +14,10 @@ api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDVjMjlF
 
 image_file = './static/nft_1.png'
 image_file2 = "./static/nft_2.jpeg"
-data = open(image_file, 'rb').read()
+image_file3 = "./static/nft_3.png"
+data = open(image_file3, 'rb').read()
 
-
+# cid + ".ipfs.dweb.link" is the URI 
 Headers = {"Authorization": f"Bearer {api_key}"}
 response = requests.post(url=nft_storage_url, data=data, headers=Headers)
-print(response.json())
+print(response.json()['value']['cid']+".ipfs.dweb.link")

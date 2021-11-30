@@ -8,10 +8,10 @@ import binascii
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient(JSON_RPC_URL)
 
-""" 
+"""
 sending and receiving NFTs via XRPL 
 """
-
+#TODO: sending payment from receiver_wallet
 
 def send_nft(sender_wallet, receiver_wallet, amount, nft_name):
     currency_amount = {
