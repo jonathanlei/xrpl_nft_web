@@ -9,7 +9,7 @@ import binascii
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient(JSON_RPC_URL)
 
-
+cd
 """ 
 minting flow: 
 receiving info from FE: receiving wallet address, nft meta info,
@@ -71,13 +71,13 @@ meta_data = [{
 
 
 def mint_nfts(receiving_wallet, amount, nft_name, nft_meta, ):
-    #TODO: convert amount of nft to be minted  to nft units
-    #decide which type of data to be accepted, hexlified or no? 
+    # TODO: convert amount of nft to be minted  to nft units
+    # decide which type of data to be accepted, hexlified or no?
     issuer_account = generate_issuer_wallet()
     currency_amount = {
         "currency": binascii.hexlify(nft_name),
         "issuer": issuer_account,
-        # values smaller than 70 zeros are considered NFTs (XLS14), "1000000000000000e-95" is 10 
+        # values smaller than 70 zeros are considered NFTs (XLS14), "1000000000000000e-95" is 10
         "value": "1000000000000000e-96"
     }
 
@@ -112,46 +112,47 @@ def generate_issuer_wallet():
     issuer_account = issuer_wallet.classic_address
     return issuer_account
 
-currency_amount = {
-    "currency": nft_meta[0]["MemoData"],
-    "issuer": issuer_account,
-    # values smaller than 70 zeros are considered NFTs (XLS14)
-    "value": "1000000000000000e-96"
-}
-# set up trust line between hot wallet and minter
-trust_set = TrustSet(
-    account=hot_wallet,
-    fee="12",
-    flags=131072,
-    limit_amount=currency_amount)
 
-# memos data containing nft meta data (description, URI to IPFS...)
+# currency_amount = {
+#     "currency": nft_meta[0]["MemoData"],
+#     "issuer": issuer_account,
+#     # values smaller than 70 zeros are considered NFTs (XLS14)
+#     "value": "1000000000000000e-96"
+# }
+# # set up trust line between hot wallet and minter
+# trust_set = TrustSet(
+#     account=hot_wallet,
+#     fee="12",
+#     flags=131072,
+#     limit_amount=currency_amount)
 
-# convert dict to Memo objs
-meta_data_memos = [Memo(memo_data=m["Memo"]["MemoData"], memo_format=m["Memo"]["MemoFormat"],
-                        memo_type=m["Memo"]["MemoType"]) for m in meta_data]
-# make payment objs with memo data
-my_tx_payment = Payment(
-    account=issuer_account,
-    amount="1",
-    destination=hot_wallet,
-    memos=meta_data_memos)
+# # memos data containing nft meta data (description, URI to IPFS...)
 
-# sign the transaction
-my_tx_payment_signed = safe_sign_and_autofill_transaction(
-    my_tx_payment, issuer_wallet, client)
+# # convert dict to Memo objs
+# meta_data_memos = [Memo(memo_data=m["Memo"]["MemoData"], memo_format=m["Memo"]["MemoFormat"],
+#                         memo_type=m["Memo"]["MemoType"]) for m in meta_data]
+# # make payment objs with memo data
+# my_tx_payment = Payment(
+#     account=issuer_account,
+#     amount="1",
+#     destination=hot_wallet,
+#     memos=meta_data_memos)
 
-
-tx_response = send_reliable_submission(my_tx_payment_signed, client)
+# # sign the transaction
+# my_tx_payment_signed = safe_sign_and_autofill_transaction(
+#     my_tx_payment, issuer_wallet, client)
 
 
-# query the ledger
-acct_info = AccountInfo(
-    account=hot_wallet,
-    ledger_index="validated",
-    strict=True,
-)
-response = client.request(acct_info)
-result = response.result
-print("response.status: ", response.status)
-print(json.dumps(response.result, indent=4, sort_keys=True))
+# tx_response = send_reliable_submission(my_tx_payment_signed, client)
+
+
+# # query the ledger
+# acct_info = AccountInfo(
+#     account=hot_wallet,
+#     ledger_index="validated",
+#     strict=True,
+# )
+# response = client.request(acct_info)
+# result = response.result
+# print("response.status: ", response.status)
+# print(json.dumps(response.result, indent=4, sort_keys=True))

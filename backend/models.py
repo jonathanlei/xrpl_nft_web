@@ -82,7 +82,7 @@ class Auction(db.Model):
     end_at = db.Column(db.DateTime(timezone=True),
                        server_default=func.now() + datetime.timedelta(days=1),
                        nullable=False)
-    ## duration = db.column(db.Interval())
+    ## TODO: duration = db.column(db.Interval())
     nft_id = db.relationship(
         db.Integer, db.ForeignKey("nfts.id"), nullable=False)
     starting_price = db.Column(db.Float, nullable=False)
@@ -90,7 +90,7 @@ class Auction(db.Model):
     current_highest_bidder = db.relationship(
         db.Integer, db.ForeignKey("users.id"))
     winner = db.relationship(db.Integer, db.ForeignKey("users.id"))
-
+    # TODO: db relationships necessary?
 
 class AuctionUser(db.model):
     __tablename__ = "auctions_users"
