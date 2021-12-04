@@ -1,0 +1,120 @@
+{
+  "kind": "collectionType",
+  "collectionName": "nfts",
+  "info": {
+    "name": "nft",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "unique_id": {
+      "type": "string",
+      "required": false
+    },
+    "category": {
+      "type": "enumeration",
+      "enum": [
+        "art",
+        "music",
+        "domain_names",
+        "virtual_world",
+        "trading_cards",
+        "collectibles",
+        "sports",
+        "utility"
+      ]
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "buy_now",
+        "on_auction",
+        "has_offers"
+      ]
+    },
+    "item_type": {
+      "type": "enumeration",
+      "enum": [
+        "single_items",
+        "bundles"
+      ]
+    },
+    "collections": {
+      "type": "enumeration",
+      "enum": [
+        "abstraction",
+        "patternlicious",
+        "skecthify",
+        "cartoonism",
+        "virtuland",
+        "papercut"
+      ]
+    },
+    "deadline": {
+      "type": "date"
+    },
+    "author_link": {
+      "type": "string"
+    },
+    "nft_link": {
+      "type": "string"
+    },
+    "bid_link": {
+      "type": "string"
+    },
+    "preview_image": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false,
+      "pluginOptions": {}
+    },
+    "title": {
+      "type": "string"
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "bid": {
+      "type": "integer"
+    },
+    "max_bid": {
+      "type": "integer"
+    },
+    "likes": {
+      "type": "integer"
+    },
+    "description": {
+      "type": "text"
+    },
+    "views": {
+      "type": "integer",
+      "default": 0
+    },
+    "bids": {
+      "via": "nft",
+      "collection": "bid"
+    },
+    "priceover": {
+      "type": "float"
+    },
+    "author": {
+      "via": "nfts",
+      "model": "author"
+    },
+    "showcase": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}

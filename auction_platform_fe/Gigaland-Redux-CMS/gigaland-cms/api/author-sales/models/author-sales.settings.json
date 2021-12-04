@@ -1,0 +1,43 @@
+{
+  "kind": "collectionType",
+  "collectionName": "author_sales",
+  "info": {
+    "name": "author_sales"
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "sales": {
+      "type": "float",
+      "required": true
+    },
+    "volume": {
+      "type": "decimal",
+      "required": true
+    },
+    "daily_sales": {
+      "type": "float",
+      "required": true
+    },
+    "weekly_sales": {
+      "type": "float",
+      "required": true
+    },
+    "floor_price": {
+      "type": "float",
+      "required": true
+    },
+    "owners": {
+      "type": "float",
+      "required": true
+    },
+    "assets": {
+      "type": "float",
+      "required": true
+    }
+  }
+}

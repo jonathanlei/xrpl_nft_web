@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "hot_collections",
+  "info": {
+    "name": "hot_collection",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "unique_id": {
+      "type": "string"
+    },
+    "banner": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false,
+      "pluginOptions": {}
+    },
+    "author": {
+      "via": "hot_collections",
+      "model": "author"
+    },
+    "name": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,649 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Gigaland React Documentation</title>
+
+<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen">
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="bg-color">
+        	<div class="row">
+            	<div class="col-md-3">
+            	  <h1 class="title">Gigaland</h1>
+           	  </div>
+                <div class="col-md-7">Thank you for purchasing our Template. If you have any questions that are beyond the scope of this help file, please feel free to ask via item's comments. Also please don't forget to give item ratings! Thanks so much! :)
+</div>
+                <div class="col-md-2 text-right"><a class="btn btn-primary mt15" href="https://themeforest.net/user/on3stepthemes">View All Our Items</a></div>
+            </div>
+    </section>
+
+    <section>
+		<h2>Getting Started</h2>
+		<div class="expand">
+			<div class="title">How to Install</div>
+			<div class="content">
+			<ol class="alpha">
+			  <li><strong>Node.js and NPM :</strong> You can download Node.js from <a href="https://nodejs.org" target="_blank">https://nodejs.org.</a> NPM comes bundled with Node.js.</li>
+			  <li><strong>NPM :</strong> You must have to npm install packages. You can do this by running <strong>npm install</strong> from the root of your project to install all the necessary dependencies.</li>
+			  <li><strong>Run <i>npm start</i></strong> for a dev server. Navigate to http://localhost:3000/ . The app will automatically reload if you change any of the source files.</li>
+			  <li><strong>Run <i>npm run build</i></strong> to build the project. The build artifacts will be stored in the build/ directory. Use the npm run build --prod flag for a production build.</li>
+			</ol>
+			</div>
+		</div>
+
+		<div class="expand">
+			<div class="title">Structure Template</div>
+
+			<div class="content">
+				<pre>
+
+				Gigaland 
+				// root folder
+				+
+				template
+				├───public
+				│       ├───images			-- all images files
+				└───src
+				│  ├───index.js
+				│  │   ├───componets			-- all component js
+				│  │   │        ├─── app.js		-- set path router here
+				│  │   │        ├─── components	      	-- all components slider,  carousel, gallery, footer, pricing etc
+				│  │   │        ├─── menu		-- set navigatin link, change logo, and totop button here
+				│  │   │        ├─── pages		-- custom all pages here
+				│  │   ├───assets       
+				│  │   │   └───style.scss		-- css style here
+				   
+				+
+				</pre>
+			</div>
+
+		</div>
+
+		<div class="expand">
+			<div class="title">Header Structure How to change Logo </div>
+			<div class="content">
+			<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">import React, { useEffect, useState } from &quot;react&quot;;
+import Breakpoint, { BreakpointProvider, setDefaultBreakpoints } from &quot;react-socks&quot;;
+import { header } from &#39;react-bootstrap&#39;;
+import { Link } from &#39;@reach/router&#39;;
+import useOnclickOutside from &quot;react-cool-onclickoutside&quot;;
+
+
+setDefaultBreakpoints([
+  { xs: 0 },
+  { l: 1199 },
+  { xl: 1200 }
+]);
+
+const NavLink = props =&gt; (
+  <span style="color: #007700">&lt;Link</span> 
+    <span style="color: #FF0000; background-color: #FFAAAA">{...</span><span style="color: #0000CC">props</span><span style="color: #FF0000; background-color: #FFAAAA">}</span>
+    <span style="color: #0000CC">getProps=</span><span style="background-color: #fff0f0">{({</span> <span style="color: #0000CC">isCurrent</span> <span style="color: #FF0000; background-color: #FFAAAA">})</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> {
+      // the object returned here is passed to the
+      // anchor element&#39;s props
+      return {
+        className: isCurrent ? &#39;active&#39; : &#39;non-active&#39;,
+      };
+    }}
+  /&gt;
+);
+
+
+
+const Header= function() {
+
+    const [openMenu, setOpenMenu] = React.useState(false);
+    const [openMenu1, setOpenMenu1] = React.useState(false);
+    const [openMenu2, setOpenMenu2] = React.useState(false);
+    const [openMenu3, setOpenMenu3] = React.useState(false);
+    const handleBtnClick = (): void =&gt; {
+      setOpenMenu(!openMenu);
+    };
+    const handleBtnClick1 = (): void =&gt; {
+      setOpenMenu1(!openMenu1);
+    };
+    const handleBtnClick2 = (): void =&gt; {
+      setOpenMenu2(!openMenu2);
+    };
+    const handleBtnClick3 = (): void =&gt; {
+      setOpenMenu3(!openMenu3);
+    };
+    const closeMenu = (): void =&gt; {
+      setOpenMenu(false);
+    };
+    const closeMenu1 = (): void =&gt; {
+      setOpenMenu1(false);
+    };
+    const closeMenu2 = (): void =&gt; {
+      setOpenMenu2(false);
+    };
+    const closeMenu3 = (): void =&gt; {
+      setOpenMenu3(false);
+    };
+    const ref = useOnclickOutside(() =&gt; {
+      closeMenu();
+    });
+    const ref1 = useOnclickOutside(() =&gt; {
+      closeMenu1();
+    });
+    const ref2 = useOnclickOutside(() =&gt; {
+      closeMenu2();
+    });
+    const ref3 = useOnclickOutside(() =&gt; {
+      closeMenu3();
+    });
+
+    const [showmenu, btn_icon] = useState(false);
+    useEffect(() =&gt; {
+    const header = document.getElementById(&quot;myHeader&quot;);
+    const totop = document.getElementById(&quot;scroll-to-top&quot;);
+    const sticky = header.offsetTop;
+    const scrollCallBack = window.addEventListener(&quot;scroll&quot;, () =&gt; {
+        btn_icon(false);
+        if (window.pageYOffset &gt; sticky) {
+          header.classList.add(&quot;sticky&quot;);
+          totop.classList.add(&quot;show&quot;);
+          
+        } else {
+          header.classList.remove(&quot;sticky&quot;);
+          totop.classList.remove(&quot;show&quot;);
+        } if (window.pageYOffset &gt; sticky) {
+          closeMenu();
+        }
+      });
+      return () =&gt; {
+        window.removeEventListener(&quot;scroll&quot;, scrollCallBack);
+      };
+    }, []);
+    return (
+    <span style="color: #007700">&lt;header</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&quot;myHeader&quot;</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar white&#39;</span><span style="color: #007700">&gt;</span>
+     <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;container&#39;</span><span style="color: #007700">&gt;</span>
+       <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;row w-100-nav&#39;</span><span style="color: #007700">&gt;</span>
+          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;logo px-0&#39;</span><span style="color: #007700">&gt;</span>
+              <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-title navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/&quot;</span><span style="color: #007700">&gt;</span>
+                <span style="color: #007700">&lt;img</span>
+                    <span style="color: #0000CC">src=</span><span style="background-color: red">&quot;./img/logo-3.png&quot;</span>
+                    <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;img-fluid d-block&quot;</span>
+                    <span style="color: #0000CC">alt=</span><span style="background-color: #fff0f0">&quot;#&quot;</span>
+                  <span style="color: #007700">/&gt;</span>
+                  <span style="color: #007700">&lt;img</span>
+                    <span style="color: #0000CC">src=</span><span style="background-color: red">&quot;./img/logo-3.png&quot;</span>
+                    <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;img-fluid d-3&quot;</span>
+                    <span style="color: #0000CC">alt=</span><span style="background-color: #fff0f0">&quot;#&quot;</span>
+                  <span style="color: #007700">/&gt;</span>
+                  <span style="color: #007700">&lt;img</span>
+                    <span style="color: #0000CC">src=</span><span style="background-color: red">&quot;./img/logo-light.png&quot;</span>
+                    <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;img-fluid d-none&quot;</span>
+                    <span style="color: #0000CC">alt=</span><span style="background-color: #fff0f0">&quot;#&quot;</span>
+                  <span style="color: #007700">/&gt;</span>
+                <span style="color: #007700">&lt;/NavLink&gt;</span>
+              <span style="color: #007700">&lt;/div&gt;</span>
+          <span style="color: #007700">&lt;/div&gt;</span>
+
+          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;search&#39;</span><span style="color: #007700">&gt;</span>
+            <span style="color: #007700">&lt;input</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&quot;quick_search&quot;</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;xs-hide&quot;</span> <span style="color: #0000CC">name=</span><span style="background-color: #fff0f0">&quot;quick_search&quot;</span> <span style="color: #0000CC">placeholder=</span><span style="background-color: #fff0f0">&quot;search item here...&quot;</span> <span style="color: #0000CC">type=</span><span style="background-color: #fff0f0">&quot;text&quot;</span> <span style="color: #007700">/&gt;</span>
+          <span style="color: #007700">&lt;/div&gt;</span>
+                    
+              <span style="color: #007700">&lt;BreakpointProvider&gt;</span>
+                <span style="color: #007700">&lt;Breakpoint</span> <span style="color: #0000CC">l</span> <span style="color: #0000CC">down</span><span style="color: #007700">&gt;</span>
+                  {showmenu <span style="color: #FF0000; background-color: #FFAAAA">&amp;&amp;</span> 
+                  <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;menu&#39;</span><span style="color: #007700">&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                      <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">ref=</span><span style="background-color: #fff0f0">{ref}</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown-custom dropdown-toggle btn&quot;</span> 
+                          <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{handleBtnClick}</span>
+                          <span style="color: #007700">&gt;</span>
+                          Home
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                        {openMenu <span style="color: #FF0000; background-color: #FFAAAA">&amp;&amp;</span> (
+                          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;item-dropdown&#39;</span><span style="color: #007700">&gt;</span>
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{closeMenu}</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Homepage<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/home1&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Homepage 1<span style="color: #007700">&lt;/NavLink&gt;</span>
+                            <span style="color: #007700">&lt;/div&gt;</span>
+                          <span style="color: #007700">&lt;/div&gt;</span>
+                        )}
+                      <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                      <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">ref=</span><span style="background-color: #fff0f0">{ref1}</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown-custom dropdown-toggle btn&quot;</span> 
+                          <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{handleBtnClick1}</span>
+                          <span style="color: #007700">&gt;</span>
+                          Explore
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                        {openMenu1 <span style="color: #FF0000; background-color: #FFAAAA">&amp;&amp;</span> (
+                          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;item-dropdown&#39;</span><span style="color: #007700">&gt;</span>
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{closeMenu1}</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/explore&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Explore<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/colection&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Collection<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/ItemDetail&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Items Details<span style="color: #007700">&lt;/NavLink&gt;</span>
+                            <span style="color: #007700">&lt;/div&gt;</span>
+                          <span style="color: #007700">&lt;/div&gt;</span>
+                        )}
+                      <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                      <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">ref=</span><span style="background-color: #fff0f0">{ref2}</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown-custom dropdown-toggle btn&quot;</span> 
+                          <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{handleBtnClick2}</span>
+                          <span style="color: #007700">&gt;</span>
+                          Pages
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                        {openMenu2 <span style="color: #FF0000; background-color: #FFAAAA">&amp;&amp;</span> (
+                          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;item-dropdown&#39;</span><span style="color: #007700">&gt;</span>
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{closeMenu2}</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/Author&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Author<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/wallet&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Wallet<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/create&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Create<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/news&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;News<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/works&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Gallery<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/login&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;login<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/loginTwo&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;login 2<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/register&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Register<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/contact&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Contact Us<span style="color: #007700">&lt;/NavLink&gt;</span>
+                            <span style="color: #007700">&lt;/div&gt;</span>
+                          <span style="color: #007700">&lt;/div&gt;</span>
+                        )}
+                      <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                      <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/activity&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;
+                        Activity
+                      <span style="color: #007700">&lt;/NavLink&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                      <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">ref=</span><span style="background-color: #fff0f0">{ref3}</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown-custom dropdown-toggle btn&quot;</span> 
+                          <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{handleBtnClick3}</span>
+                          <span style="color: #007700">&gt;</span>
+                          Element
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                        {openMenu3 <span style="color: #FF0000; background-color: #FFAAAA">&amp;&amp;</span> (
+                          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;item-dropdown&#39;</span><span style="color: #007700">&gt;</span>
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{closeMenu3}</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/elegantIcons&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Elegant Icon<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/etlineIcons&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Etline Icon<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/fontAwesomeIcons&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Font Awesome Icon<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/accordion&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Accordion<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/alerts&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Alerts<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/price&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Pricing Table<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/progressbar&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Progress bar<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/tabs&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;Tabs<span style="color: #007700">&lt;/NavLink&gt;</span>
+                            <span style="color: #007700">&lt;/div&gt;</span>
+                          <span style="color: #007700">&lt;/div&gt;</span>
+                        )}
+                      <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                  <span style="color: #007700">&lt;/div&gt;</span>
+                  }
+                <span style="color: #007700">&lt;/Breakpoint&gt;</span>
+
+                <span style="color: #007700">&lt;Breakpoint</span> <span style="color: #0000CC">xl</span><span style="color: #007700">&gt;</span>
+                  <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;menu&#39;</span><span style="color: #007700">&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">ref=</span><span style="background-color: #fff0f0">{ref}</span><span style="color: #007700">&gt;</span>
+                          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown-custom dropdown-toggle btn&quot;</span> 
+                             <span style="color: #0000CC">onMouseEnter=</span><span style="background-color: #fff0f0">{handleBtnClick}</span> <span style="color: #0000CC">onMouseLeave=</span><span style="background-color: #fff0f0">{closeMenu}</span><span style="color: #007700">&gt;</span>
+                            Home
+                            <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;lines&#39;</span><span style="color: #007700">&gt;&lt;/span&gt;</span>
+                            {openMenu <span style="color: #FF0000; background-color: #FFAAAA">&amp;&amp;</span> (
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;item-dropdown&#39;</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{closeMenu}</span><span style="color: #007700">&gt;</span>
+                                <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/&quot;</span><span style="color: #007700">&gt;</span>Homepage<span style="color: #007700">&lt;/NavLink&gt;</span>
+                                <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/home1&quot;</span><span style="color: #007700">&gt;</span>Homepage 1<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;/div&gt;</span>
+                            <span style="color: #007700">&lt;/div&gt;</span>
+                          )}
+                          <span style="color: #007700">&lt;/div&gt;</span>
+                          
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                      <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">ref=</span><span style="background-color: #fff0f0">{ref1}</span><span style="color: #007700">&gt;</span>
+                          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown-custom dropdown-toggle btn&quot;</span> 
+                             <span style="color: #0000CC">onMouseEnter=</span><span style="background-color: #fff0f0">{handleBtnClick1}</span> <span style="color: #0000CC">onMouseLeave=</span><span style="background-color: #fff0f0">{closeMenu1}</span><span style="color: #007700">&gt;</span>
+                            Explore
+                            <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;lines&#39;</span><span style="color: #007700">&gt;&lt;/span&gt;</span>
+                            {openMenu1 <span style="color: #FF0000; background-color: #FFAAAA">&amp;&amp;</span> (
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;item-dropdown&#39;</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{closeMenu1}</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/explore&quot;</span><span style="color: #007700">&gt;</span>Explore<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/colection&quot;</span><span style="color: #007700">&gt;</span>Collection<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/ItemDetail&quot;</span><span style="color: #007700">&gt;</span>Items Details<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;/div&gt;</span>
+                            <span style="color: #007700">&lt;/div&gt;</span>
+                          )}
+                          <span style="color: #007700">&lt;/div&gt;</span>
+                          
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                      <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">ref=</span><span style="background-color: #fff0f0">{ref2}</span><span style="color: #007700">&gt;</span>
+                          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown-custom dropdown-toggle btn&quot;</span> 
+                             <span style="color: #0000CC">onMouseEnter=</span><span style="background-color: #fff0f0">{handleBtnClick2}</span> <span style="color: #0000CC">onMouseLeave=</span><span style="background-color: #fff0f0">{closeMenu2}</span><span style="color: #007700">&gt;</span>
+                            Pages
+                            <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;lines&#39;</span><span style="color: #007700">&gt;&lt;/span&gt;</span>
+                            {openMenu2 <span style="color: #FF0000; background-color: #FFAAAA">&amp;&amp;</span> (
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;item-dropdown&#39;</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{closeMenu2}</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/Author&quot;</span><span style="color: #007700">&gt;</span>Author<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/wallet&quot;</span><span style="color: #007700">&gt;</span>Wallet<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/create&quot;</span><span style="color: #007700">&gt;</span>Create<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/news&quot;</span><span style="color: #007700">&gt;</span>News<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/works&quot;</span><span style="color: #007700">&gt;</span>Gallery<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/login&quot;</span><span style="color: #007700">&gt;</span>login<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/loginTwo&quot;</span><span style="color: #007700">&gt;</span>login 2<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/register&quot;</span><span style="color: #007700">&gt;</span>Register<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/contact&quot;</span><span style="color: #007700">&gt;</span>Contact Us<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;/div&gt;</span>
+                            <span style="color: #007700">&lt;/div&gt;</span>
+                          )}
+                          <span style="color: #007700">&lt;/div&gt;</span>
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                      <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/activity&quot;</span><span style="color: #007700">&gt;</span>
+                      Activity
+                      <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;lines&#39;</span><span style="color: #007700">&gt;&lt;/span&gt;</span>
+                      <span style="color: #007700">&lt;/NavLink&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;navbar-item&#39;</span><span style="color: #007700">&gt;</span>
+                      <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">ref=</span><span style="background-color: #fff0f0">{ref3}</span><span style="color: #007700">&gt;</span>
+                          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown-custom dropdown-toggle btn&quot;</span> 
+                             <span style="color: #0000CC">onMouseEnter=</span><span style="background-color: #fff0f0">{handleBtnClick3}</span> <span style="color: #0000CC">onMouseLeave=</span><span style="background-color: #fff0f0">{closeMenu3}</span><span style="color: #007700">&gt;</span>
+                            Elements
+                            <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;lines&#39;</span><span style="color: #007700">&gt;&lt;/span&gt;</span>
+                            {openMenu3 <span style="color: #FF0000; background-color: #FFAAAA">&amp;&amp;</span> (
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;item-dropdown&#39;</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;dropdown&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{closeMenu3}</span><span style="color: #007700">&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/elegantIcons&quot;</span><span style="color: #007700">&gt;</span>Elegant Icon<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/etlineIcons&quot;</span><span style="color: #007700">&gt;</span>Etline Icon<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/fontAwesomeIcons&quot;</span><span style="color: #007700">&gt;</span>Font Awesome Icon<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/accordion&quot;</span><span style="color: #007700">&gt;</span>Accordion<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/alerts&quot;</span><span style="color: #007700">&gt;</span>Alerts<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/price&quot;</span><span style="color: #007700">&gt;</span>Pricing Table<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/progressbar&quot;</span><span style="color: #007700">&gt;</span>Progess Bar<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/tabs&quot;</span><span style="color: #007700">&gt;</span>Tabs<span style="color: #007700">&lt;/NavLink&gt;</span>
+                              <span style="color: #007700">&lt;/div&gt;</span>
+                            <span style="color: #007700">&lt;/div&gt;</span>
+                          )}
+                          <span style="color: #007700">&lt;/div&gt;</span>
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                  <span style="color: #007700">&lt;/div&gt;</span>
+                <span style="color: #007700">&lt;/Breakpoint&gt;</span>
+              <span style="color: #007700">&lt;/BreakpointProvider&gt;</span>
+
+              <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;mainside&#39;</span><span style="color: #007700">&gt;</span>
+                <span style="color: #007700">&lt;NavLink</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;/wallet&quot;</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;btn-main&quot;</span><span style="color: #007700">&gt;</span>Connect Wallet<span style="color: #007700">&lt;/NavLink&gt;</span>
+              <span style="color: #007700">&lt;/div&gt;</span>
+                  
+      <span style="color: #007700">&lt;/div&gt;</span>
+
+        <span style="color: #007700">&lt;button</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;nav-icon&quot;</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()</span> <span style="color: #FF0000; background-color: #FFAAAA">=</span><span style="color: #007700">&gt;</span> btn_icon(!showmenu)}&gt;
+          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;menu-line white&quot;</span><span style="color: #007700">&gt;&lt;/div&gt;</span>
+          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;menu-line1 white&quot;</span><span style="color: #007700">&gt;&lt;/div&gt;</span>
+          <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;menu-line2 white&quot;</span><span style="color: #007700">&gt;&lt;/div&gt;</span>
+        <span style="color: #007700">&lt;/button&gt;</span>
+
+      <span style="color: #007700">&lt;/div&gt;</span>     
+    <span style="color: #007700">&lt;/header&gt;</span>
+    );
+}
+export default Header;
+</pre></div>
+
+			</div>
+		</div>
+
+		<div class="expand">
+			<div class="title">Footer Structure How to change Copyright ?</div>
+			<div class="content">
+				<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">import React from &#39;react&#39;;
+import { Link } from &#39;@reach/router&#39;;
+
+const footer= () =&gt; (
+  <span style="color: #007700">&lt;footer</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;footer-light&quot;</span><span style="color: #007700">&gt;</span>
+            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;container&quot;</span><span style="color: #007700">&gt;</span>
+                <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;row&quot;</span><span style="color: #007700">&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;col-md-3 col-sm-6 col-xs-1&quot;</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;widget&quot;</span><span style="color: #007700">&gt;</span>
+                            <span style="color: #007700">&lt;h5&gt;</span>Marketplace<span style="color: #007700">&lt;/h5&gt;</span>
+                            <span style="color: #007700">&lt;ul&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>All NFTs<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Art<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Music<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Domain Names<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Virtual World<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Collectibles<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                            <span style="color: #007700">&lt;/ul&gt;</span>
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;col-md-3 col-sm-6 col-xs-1&quot;</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;widget&quot;</span><span style="color: #007700">&gt;</span>
+                            <span style="color: #007700">&lt;h5&gt;</span>Resources<span style="color: #007700">&lt;/h5&gt;</span>
+                            <span style="color: #007700">&lt;ul&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Help Center<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Partners<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Suggestions<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Discord<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Docs<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Newsletter<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                            <span style="color: #007700">&lt;/ul&gt;</span>
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;col-md-3 col-sm-6 col-xs-1&quot;</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;widget&quot;</span><span style="color: #007700">&gt;</span>
+                            <span style="color: #007700">&lt;h5&gt;</span>Community<span style="color: #007700">&lt;/h5&gt;</span>
+                            <span style="color: #007700">&lt;ul&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Community<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Documentation<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Brand Assets<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Blog<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Forum<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                                <span style="color: #007700">&lt;li&gt;&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span><span style="color: #007700">&gt;</span>Mailing List<span style="color: #007700">&lt;/Link&gt;&lt;/li&gt;</span>
+                            <span style="color: #007700">&lt;/ul&gt;</span>
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;col-md-3 col-sm-6 col-xs-1&quot;</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;widget&quot;</span><span style="color: #007700">&gt;</span>
+                            <span style="color: #007700">&lt;h5&gt;</span>Newsletter<span style="color: #007700">&lt;/h5&gt;</span>
+                            <span style="color: #007700">&lt;p&gt;</span>Signup for our newsletter to get the latest news in your inbox.<span style="color: #007700">&lt;/p&gt;</span>
+                            <span style="color: #007700">&lt;form</span> <span style="color: #0000CC">action=</span><span style="background-color: #fff0f0">&quot;#&quot;</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;row form-dark&quot;</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&quot;form_subscribe&quot;</span> <span style="color: #0000CC">method=</span><span style="background-color: #fff0f0">&quot;post&quot;</span> <span style="color: #0000CC">name=</span><span style="background-color: #fff0f0">&quot;form_subscribe&quot;</span><span style="color: #007700">&gt;</span>
+                                <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;col text-center&quot;</span><span style="color: #007700">&gt;</span>
+                                    <span style="color: #007700">&lt;input</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;form-control&quot;</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&quot;txt_subscribe&quot;</span> <span style="color: #0000CC">name=</span><span style="background-color: #fff0f0">&quot;txt_subscribe&quot;</span> <span style="color: #0000CC">placeholder=</span><span style="background-color: #fff0f0">&quot;enter your email&quot;</span> <span style="color: #0000CC">type=</span><span style="background-color: #fff0f0">&quot;text&quot;</span> <span style="color: #007700">/&gt;</span> 
+                                    <span style="color: #007700">&lt;Link</span> <span style="color: #0000CC">to=</span><span style="background-color: #fff0f0">&quot;&quot;</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&quot;btn-subscribe&quot;</span><span style="color: #007700">&gt;</span>
+                                      <span style="color: #007700">&lt;i</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;arrow_right bg-color-secondary&quot;</span><span style="color: #007700">&gt;&lt;/i&gt;</span>
+                                    <span style="color: #007700">&lt;/Link&gt;</span>
+                                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;clearfix&quot;</span><span style="color: #007700">&gt;&lt;/div&gt;</span>
+                                <span style="color: #007700">&lt;/div&gt;</span>
+                            <span style="color: #007700">&lt;/form&gt;</span>
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;spacer-10&quot;</span><span style="color: #007700">&gt;&lt;/div&gt;</span>
+                            <span style="color: #007700">&lt;small&gt;</span>Your email is safe with us. We don&#39;t spam.<span style="color: #007700">&lt;/small&gt;</span>
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                <span style="color: #007700">&lt;/div&gt;</span>
+            <span style="color: #007700">&lt;/div&gt;</span>
+            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;subfooter&quot;</span><span style="color: #007700">&gt;</span>
+                <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;container&quot;</span><span style="color: #007700">&gt;</span>
+                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;row&quot;</span><span style="color: #007700">&gt;</span>
+                        <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;col-md-12&quot;</span><span style="color: #007700">&gt;</span>
+                            <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;de-flex&quot;</span><span style="color: #007700">&gt;</span>
+                                <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;de-flex-col&quot;</span><span style="color: #007700">&gt;</span>
+                                    <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()=</span><span style="color: #007700">&gt;</span> window.open(&quot;&quot;, &quot;_self&quot;)}&gt;
+                                        <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;copy&quot;</span><span style="color: #007700">&gt;</span><span style="color: #880000; font-weight: bold">&amp;copy;</span> <span style='background: red'>Copyright 2021 - Gigaland by Designesia</span><span style="color: #007700">&lt;/span&gt;</span>
+                                    <span style="color: #007700">&lt;/span&gt;</span>
+                                <span style="color: #007700">&lt;/div&gt;</span>
+                                <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;de-flex-col&quot;</span><span style="color: #007700">&gt;</span>
+                                    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;social-icons&quot;</span><span style="color: #007700">&gt;</span>
+                                        <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()=</span><span style="color: #007700">&gt;</span> window.open(&quot;&quot;, &quot;_self&quot;)}&gt;<span style="color: #007700">&lt;i</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;fa fa-facebook fa-lg&quot;</span><span style="color: #007700">&gt;&lt;/i&gt;&lt;/span&gt;</span>
+                                        <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()=</span><span style="color: #007700">&gt;</span> window.open(&quot;&quot;, &quot;_self&quot;)}&gt;<span style="color: #007700">&lt;i</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;fa fa-twitter fa-lg&quot;</span><span style="color: #007700">&gt;&lt;/i&gt;&lt;/span&gt;</span>
+                                        <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()=</span><span style="color: #007700">&gt;</span> window.open(&quot;&quot;, &quot;_self&quot;)}&gt;<span style="color: #007700">&lt;i</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;fa fa-linkedin fa-lg&quot;</span><span style="color: #007700">&gt;&lt;/i&gt;&lt;/span&gt;</span>
+                                        <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()=</span><span style="color: #007700">&gt;</span> window.open(&quot;&quot;, &quot;_self&quot;)}&gt;<span style="color: #007700">&lt;i</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;fa fa-pinterest fa-lg&quot;</span><span style="color: #007700">&gt;&lt;/i&gt;&lt;/span&gt;</span>
+                                        <span style="color: #007700">&lt;span</span> <span style="color: #0000CC">onClick=</span><span style="background-color: #fff0f0">{()=</span><span style="color: #007700">&gt;</span> window.open(&quot;&quot;, &quot;_self&quot;)}&gt;<span style="color: #007700">&lt;i</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&quot;fa fa-rss fa-lg&quot;</span><span style="color: #007700">&gt;&lt;/i&gt;&lt;/span&gt;</span>
+                                    <span style="color: #007700">&lt;/div&gt;</span>
+                                <span style="color: #007700">&lt;/div&gt;</span>
+                            <span style="color: #007700">&lt;/div&gt;</span>
+                        <span style="color: #007700">&lt;/div&gt;</span>
+                    <span style="color: #007700">&lt;/div&gt;</span>
+                <span style="color: #007700">&lt;/div&gt;</span>
+            <span style="color: #007700">&lt;/div&gt;</span>
+        <span style="color: #007700">&lt;/footer&gt;</span>
+);
+export default footer;
+</pre></div>
+
+			</div>
+		</div>
+
+	</section>
+
+	</section>
+    
+    <section>
+		<h2>Basics</h2>
+		
+		<div class="expand">
+			<div class="title">Create Columns</div>
+			<div class="content">
+            <p>For a simple two column layout, create a <strong>.row</strong> and add the appropriate number of <strong>.col-md-*</strong> columns. As this is a 12-column grid, each <strong>.col-md-*</strong> spans a number of those 12 columns, and should always add up to 12 for each row (or the number of columns in the parent).</p>
+			
+			<p>Please read more for Bootstrap grid system here: <a href="https://getbootstrap.com/docs/4.5/layout/grid/">https://getbootstrap.com/docs/4.5/layout/grid/</a></p>
+			
+      <pre>&lt;div className=&quot;<strong>row</strong>&quot;&gt;<br>     &lt;div className=&quot;<strong>col-md-6</strong>&quot;&gt; this is 1/2 columns &lt;/div&gt;<br>     &lt;div className=&quot;<strong>col-md-6</strong>&quot;&gt; this is 1/2 columns &lt;/div&gt;<br>&lt;/div&gt;
+
+&lt;div className=&quot;<strong>row</strong>&quot;&gt;<br>     &lt;div className=&quot;<strong>col-md-4</strong>&quot;&gt; this is 1/3 columns &lt;/div&gt;<br>     &lt;div className=&quot;<strong>col-md-8</strong>&quot;&gt; this is 2/3 columns &lt;/div&gt;<br>&lt;/div&gt;
+
+&lt;div className=&quot;<strong>row</strong>&quot;&gt;<br>     &lt;div className=&quot;<strong>col-md-3</strong>&quot;&gt; this is 1/4 columns &lt;/div&gt;<br>     &lt;div className=&quot;<strong>col-md-9</strong>&quot;&gt; this is 3/4 columns &lt;/div&gt;<br>&lt;/div&gt;</pre>
+
+			</div>
+		</div>
+
+
+		<div class="expand">
+			<div class="title">Animate object on scroll</div>
+			<div class="content">
+				<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">import Reveal from &#39;react-awesome-reveal&#39;;
+import { keyframes } from &quot;@emotion/react&quot;;
+
+const fadeInUp = keyframes`
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(40px);
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+`;
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+
+<span style="color: #007700">&lt;Reveal</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;onStep&#39;</span> <span style="color: #0000CC">keyframes=</span><span style="background-color: #fff0f0">{fadeInUp}</span> <span style="color: #0000CC">delay=</span><span style="background-color: #fff0f0">{0}</span> <span style="color: #0000CC">duration=</span><span style="background-color: #fff0f0">{600}</span> <span style="color: #0000CC">triggerOnce</span><span style="color: #007700">&gt;</span> CONTENT HERE <span style="color: #007700">&lt;/Reveal&gt;</span>
+</pre></div>
+
+			</div>
+		</div>
+		
+		<div class="expand">
+			<div class="title">Custom background image for div/section</div>
+			<div class="content">
+            	
+				<p>To make custom background image without touching css file, you can use code <strong>style=&quot;url(your-image-url)&quot; </strong>            within your div/section tag. See sample below:</p>
+				<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">style={{backgroundImage: `url(${&#39;./img/background/4.jpg&#39;})`}}
+</pre></div>
+
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #007700">&lt;section</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&#39;profile_banner&#39;</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;jumbotron breadcumb no-bg&#39;</span> <span style="color: #0000CC">style=</span><span style="background-color: #fff0f0">{{backgroundImage:</span> <span style="color: #FF0000; background-color: #FFAAAA">`</span><span style="color: #0000CC">url</span><span style="color: #FF0000; background-color: #FFAAAA">(${&#39;./</span><span style="color: #0000CC">img</span><span style="color: #FF0000; background-color: #FFAAAA">/</span><span style="color: #0000CC">background</span><span style="color: #FF0000; background-color: #FFAAAA">/</span><span style="color: #0000CC">4</span><span style="color: #FF0000; background-color: #FFAAAA">.</span><span style="color: #0000CC">jpg</span><span style="color: #FF0000; background-color: #FFAAAA">&#39;})`}}</span><span style="color: #007700">&gt;</span>
+    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;mainbreadcumb&#39;</span><span style="color: #007700">&gt;</span>
+    <span style="color: #007700">&lt;/div&gt;</span>
+  <span style="color: #007700">&lt;/section&gt;</span>
+</pre></div>
+
+
+				
+			</div>
+		</div>
+        
+	</section>
+    
+	    
+	<section>
+		<h2>SCSS Files</h2>
+	
+		<div class="expand">
+			<div class="title">List of CSS files</div>
+			<div class="content">
+				<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">/* CSS Document */
+
+
+/* 
+*
+*
+[Table of contents]
+*
+*
+*
+
+  color / $white
+  font / @import 
+  general / html
+  dropdown / .dropdown-custom.btn
+  navbar / .navbar
+  breadcumb / .breadcumb
+  home / .subheading
+  icon scroll / .icon-scroll-wraper
+  footer / footer
+  portofolio / AppContainer
+  contact / .form-side
+  news / .post-content
+  create file / .d-create-file
+  activity / .filter__l
+  feature box / .feature-box .inner
+  column nft / .nft_coll
+  countdown / .de_countdown
+  author list / .author_list
+  icon box / .icon-box 
+  carousel / .d-carousel
+  filter / .items_filter
+  colection / #profile_banner 
+  item details / .item_info
+  wallet / .box-url 
+  login / .field-set label
+  all icon / .demo-icon-wrap-s2 
+  element / .card-header
+  media all / @media only screen and (max-width: 1199px)
+
+*/
+</pre></div>
+
+            </div>
+		</div>
+		
+	</section>
+
+</div>
+	
+</body>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/easing.js"></script>
+    <script src="js/custom.js"></script>
+
+</html>

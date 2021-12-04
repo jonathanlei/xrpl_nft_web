@@ -1,0 +1,31 @@
+[
+    {
+        "previewImg": "./img/carousel/crs-6.jpg",
+        "title": "THE ERA OF 90'S",
+        "nftLink": "/ItemDetail",
+        "username": "Gayle Hicks"
+    },
+    {
+        "previewImg": "./img/carousel/crs-5.jpg",
+        "title": "live Arts",
+        "nftLink": "#",
+        "username": "Nicholas Daniels"
+    },
+    {
+        "previewImg": "./img/carousel/crs-3.jpg",
+        "title": "Hot Lava",
+        "nftLink": "/ItemDetail",
+        "username": "Nicholas Daniels"
+    },
+    {
+        "previewImg": "./img/items/anim-5.webp",
+        "title": "Loop Donut",
+        "nftLink": "/ItemDetail",
+        "username": "Lori Hart"
+    },
+    {
+        "previewImg": "./img/items/anim-8.webp",
+        "title": "I Believe I Can Fly",
+        "username": "Fred Ryan"
+    }
+]

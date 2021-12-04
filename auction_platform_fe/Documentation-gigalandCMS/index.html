@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Gigaland React Documentation</title>
+
+<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen">
+<link rel="stylesheet" href="css/style.css" type="text/css" media="screen">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<section class="bg-color">
+        	<div class="row">
+            	<div class="col-md-3">
+            	  <h1 class="title">Gigaland</h1>
+           	  </div>
+                <div class="col-md-7">Thank you for purchasing our Template. If you have any questions that are beyond the scope of this help file, please feel free to ask via item's comments. Also please don't forget to give item ratings! Thanks so much! :)
+</div>
+                <div class="col-md-2 text-right"><a class="btn btn-primary mt15" href="https://themeforest.net/user/on3stepthemes">View All Our Items</a></div>
+            </div>
+    </section>
+
+    <section>
+		<h2>Getting Started for React Strapi CMS</h2>
+		<div class="expand">
+			<div class="title">How to install strapi CMS in your local</div>
+			<div class="content">
+			<ol class="alpha">
+			  <li>Enter to <b>gigaland-cms</b> directory</li>
+			  <li>Run <b>npm install</b></li>
+			  <li>After that, run <b>npm run develop</b> to deploy the cms project in your local directory</li>
+			  <li>Open http://localhost:1337/admin to enter the cms dashboard</li>
+			  <li>Change password strapi with new password in your profile setting
+   				<br>default <b>user: strapi.admin@mail.com </b>, <b>password : Strapisuperadmin1 </b>
+   			  </li>
+   			  <li>Enter directory <b>gigaland / gigaland-grey / gigaland-retro</b> </li>
+   			  <li>Run <b>npm install</b></li>
+   			  <li>After that, run <b>npm start</b> for work in local your directory at localhost:3000</li>
+   			  <li>Run <b>npm run build</b> to build the project. The build artifacts will be stored in the build/ directory. Use build directory for upload in your server</li>
+			</ol>
+
+			<span><b>Note:</b> Please run <b>npm run develop</b> for <b>gigaland-cms</b> directory & run <b>npm start</b> for front directory <b>gigaland / gigaland-grey / gigaland-retro</b> in same time for work </span>
+			</div>
+		</div>
+		<!-- <div class="expand">
+			<div class="title">How to upload strapi CMS in server</div>
+			<div class="content">
+			<ol class="alpha">
+			  <li>Make sure your hosting support <b>Node js</b>, you can check in cpanel software list</li>
+			  
+			</ol>
+			</div>
+		</div> -->
+	</section>
+
+    <section>
+		<h2>Basics</h2>
+		
+		<div class="expand">
+			<div class="title">Create Columns</div>
+			<div class="content">
+            <p>For a simple two column layout, create a <strong>.row</strong> and add the appropriate number of <strong>.col-md-*</strong> columns. As this is a 12-column grid, each <strong>.col-md-*</strong> spans a number of those 12 columns, and should always add up to 12 for each row (or the number of columns in the parent).</p>
+			
+			<p>Please read more for Bootstrap grid system here: <a href="https://getbootstrap.com/docs/4.5/layout/grid/">https://getbootstrap.com/docs/4.5/layout/grid/</a></p>
+			
+      <pre>&lt;div className=&quot;<strong>row</strong>&quot;&gt;<br>     &lt;div className=&quot;<strong>col-md-6</strong>&quot;&gt; this is 1/2 columns &lt;/div&gt;<br>     &lt;div className=&quot;<strong>col-md-6</strong>&quot;&gt; this is 1/2 columns &lt;/div&gt;<br>&lt;/div&gt;
+
+&lt;div className=&quot;<strong>row</strong>&quot;&gt;<br>     &lt;div className=&quot;<strong>col-md-4</strong>&quot;&gt; this is 1/3 columns &lt;/div&gt;<br>     &lt;div className=&quot;<strong>col-md-8</strong>&quot;&gt; this is 2/3 columns &lt;/div&gt;<br>&lt;/div&gt;
+
+&lt;div className=&quot;<strong>row</strong>&quot;&gt;<br>     &lt;div className=&quot;<strong>col-md-3</strong>&quot;&gt; this is 1/4 columns &lt;/div&gt;<br>     &lt;div className=&quot;<strong>col-md-9</strong>&quot;&gt; this is 3/4 columns &lt;/div&gt;<br>&lt;/div&gt;</pre>
+
+			</div>
+		</div>
+
+
+		<div class="expand">
+			<div class="title">Animate object on scroll</div>
+			<div class="content">
+				<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">import Reveal from &#39;react-awesome-reveal&#39;;
+import { keyframes } from &quot;@emotion/react&quot;;
+
+const fadeInUp = keyframes`
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(40px);
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+`;
+const fadeIn = keyframes`
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+`;
+
+<span style="color: #007700">&lt;Reveal</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;onStep&#39;</span> <span style="color: #0000CC">keyframes=</span><span style="background-color: #fff0f0">{fadeInUp}</span> <span style="color: #0000CC">delay=</span><span style="background-color: #fff0f0">{0}</span> <span style="color: #0000CC">duration=</span><span style="background-color: #fff0f0">{600}</span> <span style="color: #0000CC">triggerOnce</span><span style="color: #007700">&gt;</span> CONTENT HERE <span style="color: #007700">&lt;/Reveal&gt;</span>
+</pre></div>
+
+			</div>
+		</div>
+		
+		<div class="expand">
+			<div class="title">Custom background image for div/section</div>
+			<div class="content">
+            	
+				<p>To make custom background image without touching css file, you can use code <strong>style=&quot;url(your-image-url)&quot; </strong>            within your div/section tag. See sample below:</p>
+				<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">style={{backgroundImage: `url(${&#39;./img/background/4.jpg&#39;})`}}
+</pre></div>
+
+<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%"><span style="color: #007700">&lt;section</span> <span style="color: #0000CC">id=</span><span style="background-color: #fff0f0">&#39;profile_banner&#39;</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;jumbotron breadcumb no-bg&#39;</span> <span style="color: #0000CC">style=</span><span style="background-color: #fff0f0">{{backgroundImage:</span> <span style="color: #FF0000; background-color: #FFAAAA">`</span><span style="color: #0000CC">url</span><span style="color: #FF0000; background-color: #FFAAAA">(${&#39;./</span><span style="color: #0000CC">img</span><span style="color: #FF0000; background-color: #FFAAAA">/</span><span style="color: #0000CC">background</span><span style="color: #FF0000; background-color: #FFAAAA">/</span><span style="color: #0000CC">4</span><span style="color: #FF0000; background-color: #FFAAAA">.</span><span style="color: #0000CC">jpg</span><span style="color: #FF0000; background-color: #FFAAAA">&#39;})`}}</span><span style="color: #007700">&gt;</span>
+    <span style="color: #007700">&lt;div</span> <span style="color: #0000CC">className=</span><span style="background-color: #fff0f0">&#39;mainbreadcumb&#39;</span><span style="color: #007700">&gt;</span>
+    <span style="color: #007700">&lt;/div&gt;</span>
+  <span style="color: #007700">&lt;/section&gt;</span>
+</pre></div>
+
+
+				
+			</div>
+		</div>
+        
+	</section>
+    
+	    
+	<section>
+		<h2>SCSS Files</h2>
+	
+		<div class="expand">
+			<div class="title">List of CSS files</div>
+			<div class="content">
+				<!-- HTML generated using hilite.me --><div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre style="margin: 0; line-height: 125%">/* CSS Document */
+
+
+/* 
+*
+*
+[Table of contents]
+*
+*
+*
+
+  color / $white
+  font / @import 
+  general / html
+  dropdown / .dropdown-custom.btn
+  navbar / .navbar
+  breadcumb / .breadcumb
+  home / .subheading
+  icon scroll / .icon-scroll-wraper
+  footer / footer
+  portofolio / AppContainer
+  contact / .form-side
+  news / .post-content
+  create file / .d-create-file
+  activity / .filter__l
+  feature box / .feature-box .inner
+  column nft / .nft_coll
+  countdown / .de_countdown
+  author list / .author_list
+  icon box / .icon-box 
+  carousel / .d-carousel
+  filter / .items_filter
+  colection / #profile_banner 
+  item details / .item_info
+  wallet / .box-url 
+  login / .field-set label
+  all icon / .demo-icon-wrap-s2 
+  element / .card-header
+  media all / @media only screen and (max-width: 1199px)
+
+*/
+</pre></div>
+
+            </div>
+		</div>
+		
+	</section>
+
+</div>
+	
+</body>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/easing.js"></script>
+    <script src="js/custom.js"></script>
+
+</html>

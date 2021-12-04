@@ -1,0 +1,22 @@
+NFT Minting with Metamask
+
+1. to start using this functionality you have to register an account on alchemy website and pinata first, you will have to use the API key and Secret to start using it
+- https://www.alchemy.com/
+- https://app.pinata.cloud/
+2. also install and create an account for metamask, you will have to configure it to use the ropsten test network
+3. go to https://faucet.metamask.io/ to get some test ETH to use
+4. after installing the metamask follow this article to get your private key
+https://metamask.zendesk.com/hc/en-us/articles/360015289632-How-to-Export-an-Account-Private-Key
+5. after that, you can open the gigaland-nft folder, this folder is needed to create the smart contract that we will deploy to the ethereum network
+6. find the .env file, you will have to copy your alchemy API url and metamask private key
+7. install all the dependencies with npm install, then run npx hardhat compile
+8. run npx hardhat run scripts/deploy.js --network ropsten
+9. you will see the contract address printed on the command line, keep this address so we can use it to mint our NFT
+10. open the gigaland folder, and find the .env file. we will copy the Pinata KEY and SECRET also the Alchemy API url into the file
+11. one last file need to be changed is the interact.js file inside src/core/nft/interact.js
+you will have to change this line `const contractAddress = "0x92d474d216ce429c1efc7f48d7ff66bae5d070cd";` with the address you keep before
+12. you can start developing and test the minting process by going to the minting page
+
+more references:
+- https://ethereum.org/en/developers/tutorials/how-to-mint-an-nft/
+

@@ -1,0 +1,73 @@
+{
+  "kind": "collectionType",
+  "collectionName": "authors",
+  "info": {
+    "name": "author",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "avatar": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false,
+      "pluginOptions": {}
+    },
+    "username": {
+      "type": "string",
+      "required": true,
+      "unique": true
+    },
+    "banner": {
+      "model": "file",
+      "via": "related",
+      "allowedTypes": [
+        "images",
+        "videos"
+      ],
+      "plugin": "upload",
+      "required": false,
+      "pluginOptions": {}
+    },
+    "social": {
+      "type": "string",
+      "required": true
+    },
+    "wallet": {
+      "type": "string",
+      "required": true
+    },
+    "followers": {
+      "type": "integer",
+      "default": 0
+    },
+    "bid": {
+      "via": "author",
+      "model": "bid"
+    },
+    "nfts": {
+      "via": "author",
+      "collection": "nft"
+    },
+    "author_sale": {
+      "model": "author-sales"
+    },
+    "hot_collections": {
+      "via": "author",
+      "collection": "hot-collection"
+    },
+    "about": {
+      "type": "text"
+    }
+  }
+}

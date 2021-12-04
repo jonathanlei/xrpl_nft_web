@@ -1,0 +1,119 @@
+body{
+	margin:60px;
+	font-family:"Arial";
+	background:#f2f2f2;
+	font-weight:normal;
+	color:#555555;
+}
+
+h1.title{
+	line-height:64px;
+	text-transform:uppercase;
+	font-weight:bold;
+	color:#111111;
+}
+
+section{
+	margin-bottom:30px;
+	-webkit-box-shadow: 10px 10px 40px -1px rgba(0,0,0,0.1);
+-moz-box-shadow: 10px 10px 40px -1px rgba(0,0,0,0.1);
+box-shadow: 10px 10px 40px -1px rgba(0,0,0,0.1);
+border-radius:5px;
+-moz-border-radius:5px;
+-webkit-border-radius:5px;
+overflow:hidden;
+}
+
+section.bg-color{
+	background:#f5f5f5;
+	padding:20px;
+}
+
+.expand{
+	background:#ffffff;
+}
+
+section .expand .title{
+	color:#111111;
+	font-weight:bold;
+	padding:20px;
+	background:#f5f5f5;
+	cursor:pointer;
+	-webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */   
+	
+}
+
+section .expand .content{
+	display:block;
+	overflow:hidden;
+	padding:20px;	
+	padding-top:0;
+	background:#f5f5f5;
+}
+
+
+
+section .expand:nth-child(odd) .title,
+section .expand:nth-child(odd) .content{
+	background:#ffffff;
+}
+
+h1{
+	
+	font-size:32px;
+	margin:0;
+}
+
+
+h2{
+	display:block;
+	font-size:18px;
+	padding:15px 20px;
+	background:#111111;
+	color:#ffffff;
+	margin:0;
+	border-bottom:solid 1px #eee;
+}
+
+h3{
+	font-size:14px;
+	font-weight:bold;
+	color:#386BB1;
+}
+
+.btn-primary{
+	background:#386BB1;
+	border-color:#386BB1;
+}
+
+pre {
+            display: block;
+            font: normal 12px/24px "Courier New", Courier, monospace !important;
+            color: #333;
+            background-color: #f5f5f5;
+            background-image: -webkit-repeating-linear-gradient(top, #fefefe 0px, #fefefe 24px, #f5f5f5 24px, #f5f5f5 48px);
+            background-image: -moz-repeating-linear-gradient(top, #fefefe 0px, #fefefe 24px, #f5f5f5 24px, #f5f5f5 48px);
+            background-image: -ms-repeating-linear-gradient(top, #fefefe 0px, #fefefe 24px, #f5f5f5 24px, #f5f5f5 48px);
+            background-image: -o-repeating-linear-gradient(top, #fefefe 0px, #fefefe 24px, #f5f5f5 24px, #f5f5f5 48px);
+            background-image: repeating-linear-gradient(top, #fefefe 0px, #fefefe 24px, #f5f5f5 24px, #f5f5f5 48px);
+            padding: 0em 1em;
+            overflow: auto;
+            border: solid 1px #ccc;
+			margin:20px 0 20px 0;
+        }
+
+        
+
+        pre strong {
+            color: #390;
+        }
+		
+		.mt15{
+		margin-top:15px;
+		}
+		.mt20{
+		margin-top:20px;
+		}
