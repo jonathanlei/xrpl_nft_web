@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 db = SQLAlchemy()
 
 # db design
-
+""" TODO: add table for NFT Token offer (status: deline, accept) """
 
 def connect_db(app):
     """Connect to database."""
@@ -29,9 +29,6 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(255), nullable=False, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
-    account_status = db.Column(db.String, nullable=True)
-    profile_photo = db.Column(
-        db.String(255), nullable=False, default="https://i.imgur.com/tdi3NGa.jpg")
     created_at = db.Column(
         db.DateTime, default=lambda: datetime.now(), nullable=False)
     updated_at = db.Column(
@@ -55,8 +52,6 @@ class User(db.Model, UserMixin):
             "firstName": self.first_name,
             "lastName": self.last_name,
             "email": self.email,
-            "profilePhoto": self.profile_photo,
-            "accountStatus": self.account_status if self.account_status else "",
         }
 
 
@@ -74,6 +69,7 @@ class Nft(db.Model):
 
 
 class Auction(db.Model):
+    """ table for storing NFT auctions """
     __tablename__ = "auctions"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     created_at = db.Column(db.DateTime(timezone=True),
@@ -83,6 +79,7 @@ class Auction(db.Model):
                        server_default=func.now() + datetime.timedelta(days=1),
                        nullable=False)
     ## TODO: duration = db.column(db.Interval())
+    ## timer solution
     nft_id = db.relationship(
         db.Integer, db.ForeignKey("nfts.id"), nullable=False)
     starting_price = db.Column(db.Float, nullable=False)
@@ -90,9 +87,14 @@ class Auction(db.Model):
     current_highest_bidder = db.relationship(
         db.Integer, db.ForeignKey("users.id"))
     winner = db.relationship(db.Integer, db.ForeignKey("users.id"))
-    # TODO: db relationships necessary?
+    ##minimum increment 
+    # TODO: add relationship backrefs for bidders
+    # bidders = db.relationship()
+    # store all the info about all the bids - history of all the previous bids 
+
 
 class AuctionUser(db.model):
+    """ joint table for auctions and bidders """
     __tablename__ = "auctions_users"
     auction_id = db.Column(db.Integer,
                            db.ForeignKey("auctions.id"),
@@ -101,4 +103,9 @@ class AuctionUser(db.model):
                         db.ForeignKey("users.id"),
                         primary_key=True)
     last_bid_price = db.Column(db.Float)
-    user = db.relationship('User', backref="actions_tags")
+    user = db.relationship('User', backref="actions_users")
+
+
+class Transaction(db.model):
+    """ joint table for auctions and bidders """
+    

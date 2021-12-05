@@ -1,7 +1,5 @@
 import json
-from xrpl.models.requests.account_info import AccountInfo
-from xrpl.transaction import send_reliable_submission
-from xrpl.transaction import safe_sign_and_autofill_transaction
+from xrpl.transaction import send_reliable_submissionm, safe_sign_and_autofill_transaction
 from xrpl.models.transactions import Payment, TrustSet, AccountSet, Memo
 from xrpl.clients import JsonRpcClient
 import binascii
@@ -11,7 +9,8 @@ client = JsonRpcClient(JSON_RPC_URL)
 """
 sending and receiving NFTs via XRPL 
 """
-#TODO: sending payment from receiver_wallet
+# TODO: sending payment from receiver_wallet
+
 
 def send_nft(sender_wallet, receiver_wallet, amount, nft_name):
     currency_amount = {
@@ -20,7 +19,7 @@ def send_nft(sender_wallet, receiver_wallet, amount, nft_name):
         # values smaller than 70 zeros are considered NFTs (XLS14), "1000000000000000e-95" is 10
         "value": "1000000000000000e-96"
     }
-    #set up trust set
+    # set up trust set
     trust_set = TrustSet(
         account=receiving_wallet,
         fee="12",
