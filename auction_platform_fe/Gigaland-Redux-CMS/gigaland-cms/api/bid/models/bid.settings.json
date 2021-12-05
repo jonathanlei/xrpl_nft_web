@@ -1,0 +1,27 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bids",
+  "info": {
+    "name": "bid",
+    "description": ""
+  },
+  "options": {
+    "increments": true,
+    "timestamps": true,
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "value": {
+      "type": "decimal"
+    },
+    "nft": {
+      "via": "bids",
+      "model": "nft"
+    },
+    "author": {
+      "via": "bid",
+      "model": "author"
+    }
+  }
+}

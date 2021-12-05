@@ -1,0 +1,81 @@
+{
+    "item_preview": "./img/items/big-1.jpg",
+    "item_title": "Pinky Ocean",
+    "item_deadline": "December, 30, 2021",
+    "item_category": "Art",
+    "item_views": "250",
+    "item_likes": "18",
+    "item_description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
+    "author": {
+        "avatar": "./img/author/author-1.jpg",
+        "username": "Monica Lucas",
+        "sales": 3.2
+    },
+    "bids" : [
+        {
+            "avatar": "./img/author/author-1.jpg",
+            "username": "Monica Lucas",
+            "is_author": true,
+            "value": 0.005,
+            "timestamp" : "6/15/2021, 3:20 AM"
+        },
+        {
+            "avatar": "./img/author/author-2.jpg",
+            "username": "Mamie Barnett",
+            "is_author": false,
+            "value": 0.005,
+            "timestamp" : "6/14/2021, 5:40 AM"
+        },
+        {
+            "avatar": "./img/author/author-3.jpg",
+            "username": "Nicholas Daniels",
+            "is_author": false,
+            "value": 0.004,
+            "timestamp" : "6/13/2021, 5:03 AM"
+        },
+        {
+            "avatar": "./img/author/author-4.jpg",
+            "username": "Lori Hart",
+            "is_author": false,
+            "value": 0.003,
+            "timestamp" : "6/12/2021, 12:57 AM"
+        }
+    ],
+    "history": [
+        {
+            "avatar": "./img/author/author-5.jpg",
+            "username": "Jimmy Wright",
+            "is_author": false,
+            "value": 0.005,
+            "timestamp" : "6/14/2021, 6:40 AM"
+        },
+        {
+            "avatar": "./img/author/author-1.jpg",
+            "username": "Monica Lucas",
+            "is_author": true,
+            "value": 0.005,
+            "timestamp" : "6/15/2021, 3:20 AM"
+        },
+        {
+            "avatar": "./img/author/author-2.jpg",
+            "username": "Mamie Barnett",
+            "is_author": false,
+            "value": 0.005,
+            "timestamp" : "6/14/2021, 5:40 AM"
+        },
+        {
+            "avatar": "./img/author/author-3.jpg",
+            "username": "Nicholas Daniels",
+            "is_author": false,
+            "value": 0.004,
+            "timestamp" : "6/13/2021, 5:03 AM"
+        },
+        {
+            "avatar": "./img/author/author-4.jpg",
+            "username": "Lori Hart",
+            "is_author": false,
+            "value": 0.003,
+            "timestamp" : "6/12/2021, 12:57 AM"
+        }
+    ]
+}
