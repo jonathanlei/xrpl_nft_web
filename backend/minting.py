@@ -1,14 +1,29 @@
 import json
 from xrpl.models.requests.account_info import AccountInfo
-from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction
+from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_transaction
 from xrpl.models.transactions import Payment, TrustSet, AccountSet, Memo, NFTokenMint
 from xrpl.wallet import generate_faucet_wallet
-from xrpl.clients import JsonRpcClient
+from xrpl.clients import WebsocketClient
 import binascii
-JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
-client = JsonRpcClient(JSON_RPC_URL)
+# changed to websocket xls20 test net
+WWC_RPC_URL = "wss://xls20-sandbox.rippletest.net:51233"
+client = WebsocketClient(WWC_RPC_URL)
 
-cd
+# get a test wallet
+test_wallet = generate_faucet_wallet(client)
+
+# create the transaction NFT TOKEN MINT
+my_nft_mint = NFTokenMint(
+    account=test_wallet.classic_address,
+    token_taxon=0,
+    uri="https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/"
+)
+my_tx_payment_signed = safe_sign_and_autofill_transaction(
+    my_nft_mint, test_wallet)
+# submit the transaction
+tx_response = send_reliable_submission(my_tx_payment_signed, client)
+
+print(tx_response)
 """ 
 minting flow: 
 receiving info from FE: receiving wallet address, nft meta info,
