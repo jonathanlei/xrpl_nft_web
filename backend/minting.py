@@ -2,23 +2,27 @@ import json
 from xrpl.models.requests.account_info import AccountInfo
 from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_transaction
 from xrpl.models.transactions import Payment, TrustSet, AccountSet, Memo, NFTokenMint
-from xrpl.wallet import generate_faucet_wallet
+from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.clients import JsonRpcClient
-import binascii
-# changed to websocket xls20 test net
+from xrpl.utils import str_to_hex
 
+# changed to websocket xls20 test net
+print(str_to_hex("https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/"))
 client = JsonRpcClient("http://xls20-sandbox.rippletest.net:51234")
 # get a test wallet
-test_wallet = generate_faucet_wallet(client)
+# test_wallet = generate_faucet_wallet(client)
 
+test_wallet = Wallet.create()
+print(test_wallet.classic_address)
+breakpoint()
 # create the transaction NFT TOKEN MINT
 my_nft_mint = NFTokenMint(
     account=test_wallet.classic_address,
     token_taxon=0,
-    uri="https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/"
+    uri=str_to_hex("https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/")
 )
 my_tx_payment_signed = safe_sign_and_autofill_transaction(
-    my_nft_mint, test_wallet)
+    my_nft_mint, test_wallet, client)
 # submit the transaction
 tx_response = send_reliable_submission(my_tx_payment_signed, client)
 
