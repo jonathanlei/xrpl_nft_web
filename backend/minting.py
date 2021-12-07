@@ -3,12 +3,11 @@ from xrpl.models.requests.account_info import AccountInfo
 from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_transaction
 from xrpl.models.transactions import Payment, TrustSet, AccountSet, Memo, NFTokenMint
 from xrpl.wallet import generate_faucet_wallet
-from xrpl.clients import WebsocketClient
+from xrpl.clients import JsonRpcClient
 import binascii
 # changed to websocket xls20 test net
-WWC_RPC_URL = "wss://xls20-sandbox.rippletest.net:51233"
-client = WebsocketClient(WWC_RPC_URL)
 
+client = JsonRpcClient("http://xls20-sandbox.rippletest.net:51234")
 # get a test wallet
 test_wallet = generate_faucet_wallet(client)
 
