@@ -19,4 +19,4 @@ SQLAlchemy==1.4.26
 typing-extensions==3.10.0.2
 websockets==9.1
 Werkzeug==2.0.2
-xrpl-py @ git+https://github.com/XRPLF/xrpl-py.git@2accdbe58d004414a4e964267cb3e205a723d114
+xrpl-py

@@ -1,10 +1,11 @@
 import json
 from xrpl.models.requests.account_info import AccountInfo
-from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_transaction
+from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_and_autofill_transaction
 from xrpl.models.transactions import Payment, TrustSet, AccountSet, Memo, NFTokenMint
 from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.clients import JsonRpcClient
 from xrpl.utils import str_to_hex
+
 
 # changed to websocket xls20 test net
 print(str_to_hex("https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/"))
@@ -19,14 +20,32 @@ breakpoint()
 my_nft_mint = NFTokenMint(
     account=test_wallet.classic_address,
     token_taxon=0,
-    uri=str_to_hex("https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/")
+    uri=str_to_hex(
+        "https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/"),
 )
 my_tx_payment_signed = safe_sign_and_autofill_transaction(
     my_nft_mint, test_wallet, client)
 # submit the transaction
 tx_response = send_reliable_submission(my_tx_payment_signed, client)
-
+breakpoint()
 print(tx_response)
+
+
+def mint_nft(wallet_address, uri, memo):
+    my_nft_mint = NFTokenMint(
+        account=wallet_address,
+        token_taxon=0,
+        uri=str_to_hex(uri),
+        memo=memo)
+    my_tx_payment_signed = safe_sign_and_autofill_transaction(
+        my_nft_mint, test_wallet, client)
+    # submit the transaction
+    try:
+        tx_response = send_reliable_submission(my_tx_payment_signed, client)
+        return tx_response.status
+    except:
+        return ("an error has occurred")
+
 """ 
 minting flow: 
 receiving info from FE: receiving wallet address, nft meta info,
