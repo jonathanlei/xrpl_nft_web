@@ -15,7 +15,7 @@ print(test_wallet.classic_address, "1")
 print(test_wallet_2.classic_address, "1")
 
 breakpoint()
-# initiate
+# TODO: figure out a way to auto faucet the accounts, right now have to manually fund it
 # create the transaction NFT TOKEN MINT
 my_nft_mint = NFTokenMint(
     account=test_wallet.classic_address,
@@ -41,50 +41,62 @@ except KeyError:
     token_id = tx_response.result["meta"]["AffectedNodes"][0]['CreatedNode'][
         'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
 sell_flag = NFTokenCreateOfferFlag(1)
-breakpoint()
+# create offer 
 my_nft_offer = NFTokenCreateOffer(
     account=test_wallet.classic_address,
     destination=buyer,
-    amount="100",
+    amount="1000000000c",
     token_id=token_id,
     flags=[sell_flag]
 )
-my_tx_payment_signed = safe_sign_and_autofill_transaction(
+my_tx_offer_signed = safe_sign_and_autofill_transaction(
     my_nft_offer, test_wallet, client)
 
 # submit the transaction
-tx_response = send_reliable_submission(my_tx_payment_signed, client)
-breakpoint()
+tx_offer_response = send_reliable_submission(my_tx_offer_signed, client)
 
+#submit offer 
+sell_offer_id = ""
 
+affected_nodes = tx_offer_response.result["meta"]["AffectedNodes"]
+for node in affected_nodes: 
+    if 'CreatedNode' in node:
+        if node['CreatedNode']['LedgerEntryType'] == "NFTokenOffer":
+            sell_offer_id = node['CreatedNode']['LedgerIndex']
+            break
 my_nft_accept_offer = NFTokenAcceptOffer(
-    account=test_wallet.classic_address,
-    sell_offer=True,
+    account=test_wallet_2.classic_address,
+    sell_offer=sell_offer_id,
 )
+my_tx_offer_accepted_signed = safe_sign_and_autofill_transaction(
+    my_nft_accept_offer, test_wallet_2, client)
 
+# submit the transaction
+tx_offer_accepted_response = send_reliable_submission(my_tx_offer_accepted_signed, client)
+print(tx_offer_accepted_response)
 
-def send_nft(sender_wallet, receiver_wallet, amount, nft_name):
-    currency_amount = {
-        "currency": binascii.hexlify(nft_name),
-        "issuer": sender_wallet,
-        # values smaller than 70 zeros are considered NFTs (XLS14), "1000000000000000e-95" is 10
-        "value": "1000000000000000e-96"
-    }
-    # set up trust set
-    trust_set = TrustSet(
-        account=receiving_wallet,
-        fee="12",
-        flags=131072,
-        limit_amount=currency_amount)
-    # Make payment to send the currency
-    tx_payment = Payment(
-        account=sender_wallet,
-        amount=amount,
-        destination=receiver_wallet,
-        memos=nft_name)
-    tx_payment_signed = safe_sign_and_autofill_transaction(
-        tx_payment, sender_wallet, client)
-    tx_response = send_reliable_submission(my_tx_payment_signed, client)
+# def send_nft(sender_wallet, receiver_wallet, amount, nft_name):
+#     currency_amount = {
+#         "currency": binascii.hexlify(nft_name),
+#         "issuer": sender_wallet,
+#         # values smaller than 70 zeros are considered NFTs (XLS14), "1000000000000000e-95" is 10
+#         "value": "1000000000000000e-96"
+#     }
+#     # set up trust set
+#     trust_set = TrustSet(
+#         account=receiving_wallet,
+#         fee="12",
+#         flags=131072,
+#         limit_amount=currency_amount)
+#     # Make payment to send the currency
+#     tx_payment = Payment(
+#         account=sender_wallet,
+#         amount=amount,
+#         destination=receiver_wallet,
+#         memos=nft_name)
+#     tx_payment_signed = safe_sign_and_autofill_transaction(
+#         tx_payment, sender_wallet, client)
+#     tx_response = send_reliable_submission(my_tx_payment_signed, client)
 
 
 result = {'Account': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA',
@@ -107,3 +119,7 @@ result = {'Account': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA',
                                                                     'TokenID': '00000000E02D2398C90E04EFEEA995C206CA26810F73D5560000099B00000000'}}},
                                      {'CreatedNode': {'LedgerEntryType': 'DirectoryNode', 'LedgerIndex': 'BDA4C05E1E8C0BAC3A45DA603660715921FDE950354DBCC9B6A9B1CD4CDC1936',
                                                       'NewFields': {'Owner': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA', 'RootIndex': 'BDA4C05E1E8C0BAC3A45DA603660715921FDE950354DBCC9B6A9B1CD4CDC1936'}}}], 'TransactionIndex': 0, 'TransactionResult': 'tesSUCCESS'}, 'validated': True}
+
+
+
+
