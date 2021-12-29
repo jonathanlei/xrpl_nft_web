@@ -37,6 +37,7 @@ class User(db.Model, UserMixin):
         db.DateTime, default=lambda: datetime.now(), nullable=False)
     nfts = db.relationship('Nft', backref="user")
     transactions = db.relationship('TransactionUser', backref="user")
+    auctions = db.relationship("AuctionUser", backref="user")
 
     @property
     def password(self):
