@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, session, request
 from flask_login import login_required, current_user
-from app.models import User, Nft, Transaction, Auction
+from app.models import User, Nft, Transaction, Auction,  db
 from app.aws import (
     upload_file_to_s3, allowed_file, get_unique_filename)
 
@@ -63,6 +63,8 @@ def update_profile_photo():
     currUser.profile_photo = url
     db.session.commit()
     return currUser.to_dict()
+
+
 
 
 @user_routes.route("/<int:id>/transactions")
