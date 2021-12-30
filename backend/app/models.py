@@ -74,6 +74,7 @@ class Nft(db.Model):
                            nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey(
         "users.id"), nullable=False)
+    contract_address = db.Column(db.String(100), nullable=False)
 
     @property
     def get_owner(self):
@@ -86,6 +87,7 @@ class Nft(db.Model):
             "description": self.description,
             "uri": self.uri,
             "owner": self.owner_id,
+            "contract_address": self.contract_address,
         }
 
 
@@ -93,6 +95,7 @@ class Auction(db.Model):
     """ table for storing NFT auctions """
     __tablename__ = "auctions"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    owner = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now(),
                            nullable=False)
