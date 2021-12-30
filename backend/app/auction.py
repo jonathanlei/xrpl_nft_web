@@ -18,5 +18,28 @@ def open_auction(owner, token_id, starting_price, duration=1):
     return auction.to_dict()
 
 
-def new_bid(bidder, auction_id, price):
-    return None
+def new_bid(user_id, auction_id, price):
+    """ TODO: maybe it's betteer to store current_high_bid_id instead??? and reference it """
+    bid = Bid(auction_id=auction_id, user_id=user_id, price=price)
+    current_auction = Auction.query.filter(Auction.id == auction_id).one()
+    # TODO: check time, if the time is within the last 10 mins, extend the auction
+    if price >= current_auction.current_highest_price:
+        current_auction.current_highest_price = price
+        current_auction.current_highest_bidder = user_id
+        db.session.add(bid)
+        db.session.commit()
+    return bid.to_dict()
+
+
+""" 
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    auction_id = db.Column(db.Integer,
+                           db.ForeignKey("auctions.id"))
+    user_id = db.Column(db.Integer,
+                        db.ForeignKey("users.id"),
+                        primary_key=True)
+    bid_time = db.Column(db.DateTime(timezone=True),
+                         server_default=func.now(),
+                         nullable=False)
+    bid_amount = db.Column(db.Float, nullable=False) 
+"""
