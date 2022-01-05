@@ -3,7 +3,7 @@ detailed rules:
 1. Seller set starting price, if not set the minimum amount will be 1 XRP 
 2. Seller set duration (1 hour -7 days?), default duration is 1 day (24 hours)
 3. Auctions can be extended within the last 10 minutes of bidding window, if a new bid has been submitted, by 10 minutes. 
-4. Seller have the option to cancel the auction anytime before the end of the auction window
+4. Seller have the option to cancel the auction anytime before the end of the auction window?
 5. Seller can set a buy now button? (optinoal, more complexities)
 """
 

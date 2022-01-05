@@ -12,7 +12,12 @@ client = JsonRpcClient("http://xls20-sandbox.rippletest.net:51234")
 test_wallet = Wallet.create()
 test_wallet_2 = Wallet.create()
 print(test_wallet.classic_address, "1")
-print(test_wallet_2.classic_address, "1")
+print(test_wallet_2.classic_address, "2")
+
+# make transaction,request the wallet sign the transaction
+# 1. populate the transaction - with wallet address
+# 2. autofill? send to the wallet
+# 3. xumm wallet sdk (~60%, or ledger nano, lesser used wallets)- or build a small client app with server,key on it 
 
 breakpoint()
 # TODO: figure out a way to auto faucet the accounts, right now have to manually fund it
@@ -23,6 +28,7 @@ my_nft_mint = NFTokenMint(
     uri=str_to_hex(
         "https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/"),
 )
+# TODO: seperate autofill and sign (request for the client to sign)
 my_tx_payment_signed = safe_sign_and_autofill_transaction(
     my_nft_mint, test_wallet, client)
 # submit the transaction
