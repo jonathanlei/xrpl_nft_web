@@ -107,7 +107,7 @@ class Auction(db.Model):
     nft_id = db.relationship(
         db.Integer, db.ForeignKey("nfts.id"), nullable=False)
     starting_price = db.Column(db.Float, nullable=False)
-    # need to be tested
+    # hours?
     duration = db.Column(IntRangeType)
     current_highest_price = db.Column(db.Float)
     current_highest_bidder = db.Column(
@@ -189,7 +189,6 @@ class Transaction(db.model):
             "transaction_time": self.transaction_time,
             "auction_id": self.auction_id,
         }
-
 
 class TransactionUser(db.model):
     """ Joint Table for nft transactions and users"""

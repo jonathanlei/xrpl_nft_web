@@ -1,8 +1,11 @@
 import requests
 import os
+from dotenv import load_dotenv
 
+
+load_dotenv()
 url = "https://xumm.app/api/v1/platform/payload"
-print(os.environ.get("XUMM_APP_SECRET"))
+print(os.getenv("XUMM_APP_SECRET"))
 payload = {"txjson": {"TransactionType": "SignIn"}}
 headers = {
     "Accept": "application/json",

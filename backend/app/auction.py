@@ -8,27 +8,35 @@ detailed rules:
 """
 
 from models import db, Auction, User, Bid
+from datetime import datetime, timedelta
 
 
-def open_auction(owner, token_id, starting_price, duration=1):
+def open_auction(owner, token_id, starting_price, duration=24):
     auction = Auction(owner=owner, duration=duration,
                       starting_price=starting_price, nft_id=token_id)
     db.session.add(auction)
     db.session.commit()
     return auction.to_dict()
+    
 
 
 def new_bid(user_id, auction_id, price):
     """ TODO: maybe it's betteer to store current_high_bid_id instead??? and reference it """
     bid = Bid(auction_id=auction_id, user_id=user_id, price=price)
     current_auction = Auction.query.filter(Auction.id == auction_id).one()
-    # TODO: check time, if the time is within the last 10 mins, extend the auction
-    if price >= current_auction.current_highest_price:
+    # check time, if the time is within the last 10 mins, extend the auction
+    if datetime.now() + timedelta(minutes=10) > current_auction.end_at:
+        current_auction.end_at = current_auction.end_at + timedelta(minutes=10)
+
+    if price > current_auction.current_highest_price:
         current_auction.current_highest_price = price
         current_auction.current_highest_bidder = user_id
         db.session.add(bid)
         db.session.commit()
     return bid.to_dict()
+
+def end_auction():
+
 
 
 """ 

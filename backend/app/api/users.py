@@ -11,7 +11,7 @@ user_routes = Blueprint('users', __name__)
 
 @user_routes.route('/')
 @login_required
-def users():
+def get_all_users():
     users = User.query.all()
     return {"users": [user.to_dict() for user in users]}
 
@@ -65,9 +65,8 @@ def update_profile_photo():
     return currUser.to_dict()
 
 
-
-
 @user_routes.route("/<int:id>/transactions")
+@login_required
 def get_all_transactions(id):
     all_transactions = Transaction.query.filter(
         Transaction.buyer == id, Transaction.seller == id).all()
@@ -75,15 +74,17 @@ def get_all_transactions(id):
 
 
 @user_routes.route("/<int:id>/nfts")
+@login_required
 def get_all_nfts(id):
     all_nfts = Nft.query.filter(Nft.owner_id == id).all()
     return {"nfts": [n.to_dict() for n in all_nfts]}
 
-# TODO: check how to do this
-# @user_routes.route("/<int:id>/auctions")
-# def get_all_auctions(id):
-#     all_auctions = Auction.query.filter(Auction.owner_id == id).all()
-#     return {"auctions": [n.to_dict() for n in all_auctions]}
+
+@user_routes.route("/<int:id>/auctions")
+@login_required
+def get_all_nfts(id):
+    all_nfts = Nft.query.filter(Nft.owner_id == id).all()
+    return {"nfts": [n.to_dict() for n in all_nfts]}
 
 
 @user_routes.route("/", methods=["DELETE"])
@@ -93,3 +94,4 @@ def delete_user():
     db.session.delete(user)
     db.session.commit()
     return {"msg": "User deleted successfully"}, 200
+# TODO: get bids?

@@ -1,8 +1,9 @@
-from flask import Blueprint, jsonify, session, request
+from flask import Blueprint, jsonify, session, request, Response
 from flask_login import login_required, current_user
 from app.models import User, Nft, Transaction, Auction,  db
 from app.aws import (
     upload_file_to_s3, allowed_file, get_unique_filename)
+from nft_transactions.ipfs import upload_to_ipfs
 
 nft_routes = Blueprint('nfts', __name__)
 
@@ -21,45 +22,50 @@ def nft(id):
     return nft.to_dict()
 
 
-""" class Nft(db.Model):
-     table for storing nft metas 
-    __tablename__ = 'nfts'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(100), nullable=False)
-    description = db.Column(db.String, nullable=False)
-    uri = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime(timezone=True),
-                           server_default=func.now(),
-                           nullable=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey(
-        "users.id"), nullable=False)
- """
-
-# TODO: Should we show previous transactions? Auction history?
-
-@nft_routes.route("/<int:id>/transactions")
-def get_all_transactions(id):
-    all_transactions = Transaction.query.filter(
-        Transaction.buyer == id, Transaction.seller == id).all()
-    return {"transactions": [n.to_dict() for n in all_transactions]}
-
-
-@nft_routes.route("/<int:id>/nfts")
-def get_all_nfts(id):
-    all_nfts = Nft.query.filter(Nft.owner_id == id).all()
-    return {"nfts": [n.to_dict() for n in all_nfts]}
-
-# TODO: check how to do this
-# @nft_routes.route("/<int:id>/auctions")
-# def get_all_auctions(id):
-#     all_auctions = Auction.query.filter(Auction.owner_id == id).all()
-#     return {"auctions": [n.to_dict() for n in all_auctions]}
-
-
-@nft_routes.route("/", methods=["DELETE"])
+@nft_routes.route("/mint/", methods=["PUT"])
 @login_required
-def delete_user():
-    user = User.query.get(current_user.id)
-    db.session.delete(user)
+def mint():
+    data = request.json
+    # upload to aws
+    if "image" not in request.files:
+        return {"errors": "image required"}, 400
+
+    image = request.files["image"]
+
+    if not allowed_file(image.filename):
+        return {"errors": "file type not permitted"}, 400
+
+    image.filename = get_unique_filename(image.filename)
+    upload_file_to_s3(image)
+
+    # upload to ipfs
+    uri = upload_to_ipfs(image)
+    # add uri and contract id.
+    nft = Nft(title=data["title"], description=data["description"],
+              owner_id=data["owner"], uri=uri)
+    db.session.ad(nft)
     db.session.commit()
-    return {"msg": "User deleted successfully"}, 200
+    return nft.to_dict()
+
+
+@nft_routes.route("/update/", methods=["PUT"])
+@login_required
+def update_nft_meta():
+    data = request.json
+    nft = Nft.query.filter(Nft.id == data["id"]).one()
+    if current_user.id != data["owner_id"]:
+        return Response("not authorized", 401)
+    nft.title = data["title"]
+    nft.description = data["description"]
+    db.session.commit()
+    return nft.to_dict()
+
+
+@nft_routes.route("/:id", methods=["DELETE"])
+@login_required
+# TODO: add on chain deletion
+def delete_nft():
+    nft = Nft.query.get(id)
+    db.session.delete(nft)
+    db.session.commit()
+    return {"msg": "nft deleted successfully"}, 200
