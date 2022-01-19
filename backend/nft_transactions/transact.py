@@ -1,5 +1,5 @@
 import json
-from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_transaction
+from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_transaction, autofill
 from xrpl.models.transactions import Payment, TrustSet, AccountSet, Memo, NFTokenCreateOffer, NFTokenMint, NFTokenCreateOfferFlag, NFTokenAcceptOffer
 from xrpl.clients import JsonRpcClient
 from xrpl.wallet import generate_faucet_wallet, Wallet
@@ -29,6 +29,10 @@ my_nft_mint = NFTokenMint(
         "https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/"),
 )
 # TODO: seperate autofill and sign (request for the client to sign)
+
+my_tx_payment_filled = autofill(my_nft_mint, client)
+breakpoint()
+
 my_tx_payment_signed = safe_sign_and_autofill_transaction(
     my_nft_mint, test_wallet, client)
 # submit the transaction
@@ -76,6 +80,7 @@ my_nft_accept_offer = NFTokenAcceptOffer(
 )
 my_tx_offer_accepted_signed = safe_sign_and_autofill_transaction(
     my_nft_accept_offer, test_wallet_2, client)
+
 
 # submit the transaction
 tx_offer_accepted_response = send_reliable_submission(my_tx_offer_accepted_signed, client)
