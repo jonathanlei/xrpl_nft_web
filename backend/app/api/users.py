@@ -77,8 +77,9 @@ def get_all_transactions(id):
 @user_routes.route("/<int:id>/connect-wallet")
 @login_required
 def connect_wallet(id):
-    user_sign_in(id)
-    return {}
+    png_url = user_sign_in(id)
+    return {"png_url": png_url}
+
 
 @user_routes.route("/<int:id>/nfts")
 @login_required

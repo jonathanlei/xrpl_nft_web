@@ -35,6 +35,7 @@ class User(db.Model, UserMixin):
     updated_at = db.Column(
         db.DateTime, default=lambda: datetime.now(), nullable=False)
     xumm_user_token = db.Column(db.String(255), nullable=True)
+    xrp_account_id = db.Column(db.String(255), nullable=True)
     nfts = db.relationship('Nft', backref="user")
     transactions = db.relationship('TransactionUser', backref="user")
     auctions = db.relationship("AuctionUser", backref="user")

@@ -14,6 +14,7 @@ test_wallet_2 = Wallet.create()
 print(test_wallet.classic_address, "1")
 print(test_wallet_2.classic_address, "2")
 
+
 # make transaction,request the wallet sign the transaction
 # 1. populate the transaction - with wallet address
 # 2. autofill? send to the wallet

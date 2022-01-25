@@ -6,34 +6,23 @@ from app.models import User, db
 
 load_dotenv()
 url = "https://xumm.app/api/v1/platform/payload"
-print(os.getenv("XUMM_APP_SECRET"))
+
+headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "X-API-Key": os.getenv("XUMM_APP_KEY"),
+    "X-API-Secret": os.getenv("XUMM_APP_SECRET"),
+}
+response = requests.request(
+    "GET", url + "/74ba68e4-6714-47dd-9af1-fbe252a9769c", headers=headers)
 
 
 def sign_transactions(transaction_dict, user_token):
     """ given the trasaction payload and the user_token, send xumm user a push notificaiton to sign the payload"""
     payload = {"txjson": transaction_dict, user_token: "user_token"}
-
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "X-API-Key": os.getenv("XUMM_APP_KEY"),
-        "X-API-Secret": os.getenv("XUMM_APP_SECRET"),
-    }
+    # TODO: if the user doesn't have push, add route to send another QR code
     response = requests.request("POST", url, json=payload, headers=headers)
-    print(response.content)
-    return response
-
-
-trasaction_dict = {
-    "txjson": {
-        "TransactionType": "Payment",
-        "Destination": "rPdvC6ccq8hCdPKSPJkPmyZ4Mi1oG2FFkT",
-        "Fee": "12"
-    },
-    "user_token": 'e5899868-642f-4680-9718-ba563af0c8ab',
-}
-
-sign_transactions(trasaction_dict)
+    return response.content
 
 
 def user_sign_in(id):
@@ -45,24 +34,25 @@ def user_sign_in(id):
             "custom_meta": {"identifier": id, "instruction": "user_sign_in_token"}
         }
     }
-    headers = {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "X-API-Key": os.getenv("XUMM_APP_KEY"),
-        "X-API-Secret": os.getenv("XUMM_APP_SECRET"),
-    }
     response = requests.request("POST", url, json=payload, headers=headers)
-
-    print(response.content)
     data = response.content
     png_url = data["refs"]["qr_png"]
-    # TODO: send the png to frontend
+    return png_url
 
 
-def store_user_token(id, user_token):
-    """ utitlity function to store user token in database"""
+def get_xrp_account(payload_id):
+
+    response = requests.request(
+        "GET", url + "/" + payload_id, headers=headers)
+    data = response.content
+    return data["response"]["account"]
+
+
+def store_user_token(id, user_token, account_address):
+    """ utitlity function to store user token in database, get called by webhook route when signin payload received"""
     user = User.query.get(id)
     user.xumm_user_token = user_token
+    user.xrp_account_id = account_address
     db.session.commit()
 
 
@@ -77,7 +67,7 @@ def store_user_token(id, user_token):
 
 
 """ 
- user token 
+ user token from payload webhook
  {
   "meta": {
     "url": "https://webhook.site/ee978f52-ae51-4c2e-bba7-c053ed972c7d",
@@ -107,3 +97,55 @@ def store_user_token(id, user_token):
   }
 }
 """
+
+{
+
+    "meta": {
+        "exists": true,
+        "uuid": "74ba68e4-6714-47dd-9af1-fbe252a9769c",
+        "multisign": false,
+        "submit": false,
+        "destination": "",
+        "resolved_destination": "",
+        "resolved": true,
+        "signed": true,
+        "cancelled": false,
+        "expired": true,
+        "pushed": false,
+        "app_opened": true,
+        "opened_by_deeplink": true,
+        "return_url_app": null,
+        "return_url_web": null,
+        "is_xapp": false,
+    },
+    "application": {
+        "name": "xumm wallet nft markeplace intergration",
+        "description": "xumm wallet integration for nft marketplace on xrpl",
+        "disabled": 0,
+        "uuidv4": "8c9c69e2-9e90-4ce5-92d5-1b379ff95777",
+        "icon_url": "https://xumm-cdn.imgix.net/app-logo/f7e00f31-a3f7-40f0-91f5-7ff1b7bb2b5b.jpeg",
+        "issued_user_token": null,
+    },
+    "payload": {
+        "tx_type": "SignIn",
+        "tx_destination": "",
+        "tx_destination_tag": null,
+        "request_json": {"TransactionType": "SignIn", "SignIn": true},
+        "origintype": "DEEP_LINK",
+        "signmethod": "BIOMETRIC",
+        "created_at": "2022-01-18T23:18:05Z",
+        "expires_at": "2022-01-19T23:18:05Z",
+        "expires_in_seconds": -519503,
+    },
+    "response": {
+        "hex": "732103DD699122D87D789ADAD5FF0521572BA28B3BAFBD77FE35F70CEB74D04DEE8B2B74473045022100DDFC3CC1750859F4F71CFF803C01D9E6649926C0624CD6348AC5309E39DE1AB5022070CDBD4229877EA4D8A342F2F2860FABC7A0ED030ACD05CEE27D80F613D12D478114F7F917332EB18C40B065F37B729B4FB750A010D4",
+        "txid": "FA70917E8F726B1F002AFFC01C31D6141A025E1ED8E978DD561EAD9F0BB0EE02",
+        "resolved_at": "2022-01-18T23:18:49.000Z",
+        "dispatched_to": "",
+        "dispatched_result": "",
+        "dispatched_nodetype": "",
+        "multisign_account": "",
+        "account": "rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8",
+    },
+    "custom_meta": {"identifier": null, "blob": null, "instruction": null},
+}
