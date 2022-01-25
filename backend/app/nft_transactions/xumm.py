@@ -1,6 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
+from app.models import User, db
 
 
 load_dotenv()
@@ -8,8 +9,9 @@ url = "https://xumm.app/api/v1/platform/payload"
 print(os.getenv("XUMM_APP_SECRET"))
 
 
-def sign_transactions(transaction_dict):
-    payload = {"txjson": transaction_dict}
+def sign_transactions(transaction_dict, user_token):
+    """ given the trasaction payload and the user_token, send xumm user a push notificaiton to sign the payload"""
+    payload = {"txjson": transaction_dict, user_token: "user_token"}
 
     headers = {
         "Accept": "application/json",
@@ -18,14 +20,29 @@ def sign_transactions(transaction_dict):
         "X-API-Secret": os.getenv("XUMM_APP_SECRET"),
     }
     response = requests.request("POST", url, json=payload, headers=headers)
+    print(response.content)
     return response
 
 
-def user_sign_in():
-    # sign in
+trasaction_dict = {
+    "txjson": {
+        "TransactionType": "Payment",
+        "Destination": "rPdvC6ccq8hCdPKSPJkPmyZ4Mi1oG2FFkT",
+        "Fee": "12"
+    },
+    "user_token": 'e5899868-642f-4680-9718-ba563af0c8ab',
+}
+
+sign_transactions(trasaction_dict)
+
+
+def user_sign_in(id):
+    """ generate a QR code for user to scan, should get user_token in return for storage """
     payload = {
         "txjson": {
-            "TransactionType": "SignIn"
+            "TransactionType": "SignIn",
+            "expire": 240,
+            "custom_meta": {"identifier": id, "instruction": "user_sign_in_token"}
         }
     }
     headers = {
@@ -35,10 +52,18 @@ def user_sign_in():
         "X-API-Secret": os.getenv("XUMM_APP_SECRET"),
     }
     response = requests.request("POST", url, json=payload, headers=headers)
-    print(response.content)
 
-    # TODO: once get user_token, store user_token
-    
+    print(response.content)
+    data = response.content
+    png_url = data["refs"]["qr_png"]
+    # TODO: send the png to frontend
+
+
+def store_user_token(id, user_token):
+    """ utitlity function to store user token in database"""
+    user = User.query.get(id)
+    user.xumm_user_token = user_token
+    db.session.commit()
 
 
 """ 

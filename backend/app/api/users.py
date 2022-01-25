@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from app.models import User, Nft, Transaction, Auction,  db
 from app.aws import (
     upload_file_to_s3, allowed_file, get_unique_filename)
+from app.nft_transactions.xumm import user_sign_in
 
 user_routes = Blueprint('users', __name__)
 
@@ -73,6 +74,12 @@ def get_all_transactions(id):
     return {"transactions": [n.to_dict() for n in all_transactions]}
 
 
+@user_routes.route("/<int:id>/connect-wallet")
+@login_required
+def connect_wallet(id):
+    user_sign_in(id)
+    return {}
+
 @user_routes.route("/<int:id>/nfts")
 @login_required
 def get_all_nfts(id):
@@ -82,7 +89,7 @@ def get_all_nfts(id):
 
 @user_routes.route("/<int:id>/auctions")
 @login_required
-def get_all_nfts(id):
+def get_all_auctions(id):
     all_nfts = Nft.query.filter(Nft.owner_id == id).all()
     return {"nfts": [n.to_dict() for n in all_nfts]}
 

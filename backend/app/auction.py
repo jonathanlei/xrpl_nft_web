@@ -36,6 +36,9 @@ def new_bid(user_id, auction_id, price):
     return bid.to_dict()
 
 def end_auction():
+# timer, display winner 
+# set timeout python solution
+#detach callback, (resest timer and delete )
 
 
 

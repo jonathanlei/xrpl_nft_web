@@ -5,7 +5,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from sqlalchemy.orm import backref
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy_utils import IntRangeType
 
 db = SQLAlchemy()
 
@@ -23,7 +22,7 @@ def connect_db(app):
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True, , autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     first_name = db.Column(db.String(20), nullable=False)
     last_name = db.Column(db.String(20), nullable=False)
     user_name = db.Column(db.String(20), nullable=False)
@@ -35,6 +34,7 @@ class User(db.Model, UserMixin):
         db.String(255), nullable=False, default="https://i.imgur.com/tdi3NGa.jpg")
     updated_at = db.Column(
         db.DateTime, default=lambda: datetime.now(), nullable=False)
+    xumm_user_token = db.Column(db.String(255), nullable=True)
     nfts = db.relationship('Nft', backref="user")
     transactions = db.relationship('TransactionUser', backref="user")
     auctions = db.relationship("AuctionUser", backref="user")
@@ -105,14 +105,14 @@ class Auction(db.Model):
     # TODO: duration = db.column(db.Interval())
     # timer solution
     nft_id = db.relationship(
-        db.Integer, db.ForeignKey("nfts.id"), nullable=False)
+        db.Integer, db.ForeignKey("nfts.id"))
     starting_price = db.Column(db.Float, nullable=False)
     # hours?
-    duration = db.Column(IntRangeType)
+    duration = db.Column(db.Integer, nullable=False)
     current_highest_price = db.Column(db.Float)
     current_highest_bidder = db.Column(
-        db.Integer, db.ForeignKeyf("users.id"))
-    winner = db.Colunmn(db.Integer, db.ForeignKey("users.id"))
+        db.Integer, db.ForeignKey("users.id"))
+    winner = db.Column(db.Integer, db.ForeignKey("users.id"))
     bids = db.relationship("Bid")
 
     # minimum increment
@@ -127,7 +127,7 @@ class Auction(db.Model):
         return None
 
 
-class AuctionUser(db.model):
+class AuctionUser(db.Model):
     """ joint table for auctions and bidders """
     __tablename__ = "auctions_users"
     auction_id = db.Column(db.Integer,
@@ -140,7 +140,7 @@ class AuctionUser(db.model):
     user = db.relationship('User', backref="actions_users")
 
 
-class Bid(db.model):
+class Bid(db.Model):
     """ table for individual bids """
     __tablename__ = "bids"
 
@@ -165,7 +165,7 @@ class Bid(db.model):
         }
 
 
-class Transaction(db.model):
+class Transaction(db.Model):
     """ Table for nft transactions"""
     __tablename__ = "transactions"
 
@@ -173,7 +173,7 @@ class Transaction(db.model):
     nft_id = db.Column(db.Integer, db.ForeignKey("nfts.id"))
     buyer = db.Column(db.Integer, db.ForeignKey("users.id"))
     seller = db.Column(db.Integer, db.ForeignKey("users.id"))
-    price = db.Column(db.float, nullable=False, default=0)
+    price = db.Column(db.Float, nullable=False, default=0)
     transaction_time = db.Column(
         db.DateTime, default=lambda: datetime.now(), nullable=False)
     auction_id = db.Column(db.Integer, db.ForeignKey(
@@ -190,7 +190,8 @@ class Transaction(db.model):
             "auction_id": self.auction_id,
         }
 
-class TransactionUser(db.model):
+
+class TransactionUser(db.Model):
     """ Joint Table for nft transactions and users"""
     __tablename__ = "transactions_users"
     transaction_id = db.Column(db.Integer,
