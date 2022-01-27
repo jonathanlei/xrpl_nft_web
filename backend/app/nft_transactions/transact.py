@@ -1,41 +1,60 @@
 import json
+from this import d
 from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_transaction, autofill
 from xrpl.models.transactions import Payment, TrustSet, AccountSet, Memo, NFTokenCreateOffer, NFTokenMint, NFTokenCreateOfferFlag, NFTokenAcceptOffer
 from xrpl.clients import JsonRpcClient
 from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.utils import str_to_hex, hex_to_str
 from xrpl.models.amounts import IssuedCurrencyAmount
+from ...app.models import User
+from xumm import sign_transactions
 
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient("http://xls20-sandbox.rippletest.net:51234")
 
-test_wallet = Wallet.create()
-test_wallet_2 = Wallet.create()
-print(test_wallet.classic_address, "1")
-print(test_wallet_2.classic_address, "2")
-
-
 # make transaction,request the wallet sign the transaction
 # 1. populate the transaction - with wallet address
 # 2. autofill? send to the wallet
-# 3. xumm wallet sdk (~60%, or ledger nano, lesser used wallets)- or build a small client app with server,key on it 
-
-breakpoint()
+# 3. xumm wallet sdk (~60%, or ledger nano, lesser used wallets)- or build a small client app with server,key on it
 # TODO: figure out a way to auto faucet the accounts, right now have to manually fund it
 # create the transaction NFT TOKEN MINT
-my_nft_mint = NFTokenMint(
-    account=test_wallet.classic_address,
-    token_taxon=0,
-    uri=str_to_hex(
-        "https://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4.ipfs.dweb.link/"),
-)
-# TODO: seperate autofill and sign (request for the client to sign)
 
-my_tx_payment_filled = autofill(my_nft_mint, client)
-breakpoint()
 
-my_tx_payment_signed = safe_sign_and_autofill_transaction(
-    my_nft_mint, test_wallet, client)
+def mintNft(id, img_url):
+    user = User.query.get(id)
+    # create token mint object
+    my_nft_mint = NFTokenMint(
+        account=user.xrp_account_id,
+        token_taxon=0,
+        uri=str_to_hex(img_url),
+    )
+    tx_payment_filled = autofill(my_nft_mint, client)
+    tx_payment_filled["custom_meta"] = {
+        "identifier": id, "instruction": "mint_nft"}
+    # {"pushed": True} or {"png_url": "..."} depending on the push status
+    result = sign_transactions(tx_payment_filled, user.xumm_user_token)
+    if "pushed" in result:
+        return result
+    else:
+        result["pushed"] = False
+        return result
+    # TODO: get and store nft token ID?
+
+
+# TEST_ACCOUNT = "rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8"
+# TEST_USER_TOKEN = "e5899868-642f-4680-9718-ba563af0c8ab"
+# TEST_IMG_URL = "ipfs://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4"
+# my_nft_mint = NFTokenMint(
+#     account=TEST_ACCOUNT,
+#     token_taxon=0,
+#     uri=str_to_hex(TEST_IMG_URL),
+# )
+# tx_payment_filled = autofill(my_nft_mint, client)
+# tx_payment_filled["custom_meta"] = {
+#     "identifier": id, "instruction": "mint_nft"}
+# result = sign_transactions(tx_payment_filled, TEST_USER_TOKEN)
+# breakpoint()
+
 # submit the transaction
 tx_response = send_reliable_submission(my_tx_payment_signed, client)
 """
@@ -51,41 +70,69 @@ try:
 except KeyError:
     token_id = tx_response.result["meta"]["AffectedNodes"][0]['CreatedNode'][
         'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
-sell_flag = NFTokenCreateOfferFlag(1)
-# create offer 
-my_nft_offer = NFTokenCreateOffer(
-    account=test_wallet.classic_address,
-    destination=buyer,
-    amount="1000000000c",
-    token_id=token_id,
-    flags=[sell_flag]
-)
-my_tx_offer_signed = safe_sign_and_autofill_transaction(
-    my_nft_offer, test_wallet, client)
 
-# submit the transaction
-tx_offer_response = send_reliable_submission(my_tx_offer_signed, client)
+# create offer
 
-#submit offer 
+
+def createNftSellOffer(seller_id, buyer_id, token_id, amount):
+    buyer = User.query.get(buyer_id)
+    seller = User.query.get(seller_id)
+    # TODO: look into more flags and functionalities
+    sell_flag = NFTokenCreateOfferFlag(1)
+    nft_offer = NFTokenCreateOffer(
+        account=seller.xrp_account_id,
+        destination=buyer.xrp_account_id,
+        amount=amount,
+        token_id=token_id,
+        flags=[sell_flag],
+    )
+    tx_offer_filled = autofill(nft_offer, client)
+    result = sign_transactions(tx_offer_filled, seller.xumm_user_token)
+    if "pushed" in result:
+        return result
+    else:
+        result["pushed"] = False
+        return result
+
+    # submit the transaction
+    tx_offer_response = send_reliable_submission(my_tx_offer_signed, client)
+
+
+# submit offer
 sell_offer_id = ""
 
+
 affected_nodes = tx_offer_response.result["meta"]["AffectedNodes"]
-for node in affected_nodes: 
+for node in affected_nodes:
     if 'CreatedNode' in node:
         if node['CreatedNode']['LedgerEntryType'] == "NFTokenOffer":
             sell_offer_id = node['CreatedNode']['LedgerIndex']
             break
-my_nft_accept_offer = NFTokenAcceptOffer(
-    account=test_wallet_2.classic_address,
-    sell_offer=sell_offer_id,
-)
-my_tx_offer_accepted_signed = safe_sign_and_autofill_transaction(
-    my_nft_accept_offer, test_wallet_2, client)
 
 
-# submit the transaction
-tx_offer_accepted_response = send_reliable_submission(my_tx_offer_accepted_signed, client)
-print(tx_offer_accepted_response)
+def createAcceptOffer(buyer_id, sell_offer_id):
+    buyer = User.query.get(buyer_id)
+    nft_accept_offer = NFTokenAcceptOffer(
+        account=buyer.xrp_account_id,
+        sell_offer=sell_offer_id,
+    )
+    tx_offer_filled = autofill(nft_accept_offer, client)
+    result = sign_transactions(tx_offer_filled, buyer.xumm_user_token)
+    if "pushed" in result:
+        return result
+    else:
+        result["pushed"] = False
+        return result
+
+
+# my_tx_offer_accepted_signed = safe_sign_and_autofill_transaction(
+#     my_nft_accept_offer, test_wallet_2, client)
+
+
+# # submit the transaction
+# tx_offer_accepted_response = send_reliable_submission(
+#     my_tx_offer_accepted_signed, client)
+# print(tx_offer_accepted_response)
 
 # def send_nft(sender_wallet, receiver_wallet, amount, nft_name):
 #     currency_amount = {
@@ -131,7 +178,3 @@ result = {'Account': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA',
                                                                     'TokenID': '00000000E02D2398C90E04EFEEA995C206CA26810F73D5560000099B00000000'}}},
                                      {'CreatedNode': {'LedgerEntryType': 'DirectoryNode', 'LedgerIndex': 'BDA4C05E1E8C0BAC3A45DA603660715921FDE950354DBCC9B6A9B1CD4CDC1936',
                                                       'NewFields': {'Owner': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA', 'RootIndex': 'BDA4C05E1E8C0BAC3A45DA603660715921FDE950354DBCC9B6A9B1CD4CDC1936'}}}], 'TransactionIndex': 0, 'TransactionResult': 'tesSUCCESS'}, 'validated': True}
-
-
-
-

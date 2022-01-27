@@ -20,9 +20,12 @@ response = requests.request(
 def sign_transactions(transaction_dict, user_token):
     """ given the trasaction payload and the user_token, send xumm user a push notificaiton to sign the payload"""
     payload = {"txjson": transaction_dict, user_token: "user_token"}
-    # TODO: if the user doesn't have push, add route to send another QR code
+    # if the user doesn't have push, add route to send transaction sign qr code
     response = requests.request("POST", url, json=payload, headers=headers)
-    return response.content
+    if not response.content["pushed"]:
+        return {"png_url":  response.content["refs"]["qr_png"]}
+    else:
+        return {"pushed": True}
 
 
 def user_sign_in(id):
@@ -37,11 +40,10 @@ def user_sign_in(id):
     response = requests.request("POST", url, json=payload, headers=headers)
     data = response.content
     png_url = data["refs"]["qr_png"]
-    return png_url
+    return {"png_url": png_url}
 
 
 def get_xrp_account(payload_id):
-
     response = requests.request(
         "GET", url + "/" + payload_id, headers=headers)
     data = response.content
@@ -57,12 +59,14 @@ def store_user_token(id, user_token, account_address):
 
 
 """ 
+response.content
 "uuid":"a98fab1f-9553-4c96-88c9-f7439de5e8dd",
 "next":{"always":"https://xumm.app/sign/a98fab1f-9553-4c96-88c9-f7439de5e8dd"},
 "refs":{"qr_png":"https://xumm.app/sign/a98fab1f-9553-4c96-88c9-f7439de5e8dd_q.png",
 "qr_matrix":"https://xumm.app/sign/a98fab1f-9553-4c96-88c9-f7439de5e8dd_q.json",
 "qr_uri_quality_opts":["m","q","h"],
-"websocket_status":"wss://xumm.app/sign/a98fab1f-9553-4c96-88c9-f7439de5e8dd"},"pushed":false}'
+"websocket_status":"wss://xumm.app/sign/a98fab1f-9553-4c96-88c9-f7439de5e8dd"},
+"pushed":false}'
  """
 
 
@@ -97,7 +101,7 @@ def store_user_token(id, user_token, account_address):
   }
 }
 """
-
+""" 
 {
 
     "meta": {
@@ -148,4 +152,4 @@ def store_user_token(id, user_token, account_address):
         "account": "rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8",
     },
     "custom_meta": {"identifier": null, "blob": null, "instruction": null},
-}
+} """
