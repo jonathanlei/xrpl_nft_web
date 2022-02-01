@@ -27,7 +27,7 @@ const featurebox= () => (
                         <h4 className="">Set up your wallet</h4>
                       </Reveal>
                       <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                        <p className="">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+                        <p className="">Connect your account with an existing Xumm Wallet or create a new Xumm Wallet.</p>
                       </Reveal>
                     </div>
                     <i className="wm icon_wallet"></i>
@@ -44,7 +44,7 @@ const featurebox= () => (
                       <h4 className="">Add your NFT's</h4>
                     </Reveal>
                     <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                      <p className="">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+                      <p className="">Upload your NFT's, and we'll store them on chain and mint them on the XRP Ledger for you. </p>
                     </Reveal>
                   </div>
                   <i className="wm icon_cloud-upload_alt"></i>
@@ -61,7 +61,7 @@ const featurebox= () => (
                       <h4 className="">Sell your NFT's</h4>
                     </Reveal>
                     <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                      <p className="">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+                      <p className=""> Set up auctions for your NFT's or create sell offers to directly sell them to another buyer</p>
                     </Reveal>
                   </div>
                   <i className="wm icon_tags_alt"></i>
