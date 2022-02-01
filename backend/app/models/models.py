@@ -1,5 +1,6 @@
 """ db model for nft marketplace """
 import datetime
+from turtle import back
 from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
@@ -36,9 +37,11 @@ class User(db.Model, UserMixin):
         db.DateTime, default=lambda: datetime.now(), nullable=False)
     xumm_user_token = db.Column(db.String(255), nullable=True)
     xrp_account_id = db.Column(db.String(255), nullable=True)
-    nfts = db.relationship('Nft', backref="user")
-    transactions = db.relationship('TransactionUser', backref="user")
-    auctions = db.relationship("AuctionUser", backref="user")
+    nfts = db.relationship('Nft', backref="owners")
+    transactions = db.relationship(
+        'Transaction', secondary="transactions_users", backref="users")
+    auctions = db.relationship(
+        "Auction", secondary="auctions_users", backref="bidders")
 
     @property
     def password(self):
@@ -55,6 +58,7 @@ class User(db.Model, UserMixin):
         return self.nfts
 
     def to_dict(self):
+        # TODO: return more things
         return {
             "id": self.id,
             "firstName": self.first_name,
@@ -114,7 +118,10 @@ class Auction(db.Model):
     current_highest_bidder = db.Column(
         db.Integer, db.ForeignKey("users.id"))
     winner = db.Column(db.Integer, db.ForeignKey("users.id"))
-    bids = db.relationship("Bid")
+    # don't need a joint table because it's a one-to-many relationship
+    bids = db.relationship("Bid", backref="auctions")
+    bidders = db.relationship(
+        "AuctionUser", secondary='auctions_users', backref="users")
 
     # minimum increment
     # TODO: add relationship backrefs for bidders
@@ -138,7 +145,6 @@ class AuctionUser(db.Model):
                         db.ForeignKey("users.id"),
                         primary_key=True)
     last_bid_price = db.Column(db.Float)
-    user = db.relationship('User', backref="actions_users")
 
 
 class Bid(db.Model):

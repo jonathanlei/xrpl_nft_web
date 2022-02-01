@@ -7,7 +7,7 @@ detailed rules:
 5. Seller can set a buy now button? (optinoal, more complexities)
 """
 
-from models import db, Auction, User, Bid
+from models import db, Auction, User, Bid, AuctionUser
 from datetime import datetime, timedelta
 
 
@@ -17,17 +17,20 @@ def open_auction(owner, token_id, starting_price, duration=24):
     db.session.add(auction)
     db.session.commit()
     return auction.to_dict()
-    
 
 
 def new_bid(user_id, auction_id, price):
     """ TODO: maybe it's betteer to store current_high_bid_id instead??? and reference it """
+    # TODO: if the bid is smaller than current bid, disgard (could do it in the frontend too)
     bid = Bid(auction_id=auction_id, user_id=user_id, price=price)
     current_auction = Auction.query.filter(Auction.id == auction_id).one()
+    # add to the relationship
+    # will there be duplicates?
+    bidder = User.query.get(user_id)
+    current_auction.append(bidder)
     # check time, if the time is within the last 10 mins, extend the auction
     if datetime.now() + timedelta(minutes=10) > current_auction.end_at:
         current_auction.end_at = current_auction.end_at + timedelta(minutes=10)
-
     if price > current_auction.current_highest_price:
         current_auction.current_highest_price = price
         current_auction.current_highest_bidder = user_id
@@ -35,12 +38,11 @@ def new_bid(user_id, auction_id, price):
         db.session.commit()
     return bid.to_dict()
 
+
 def end_auction():
-# timer, display winner 
-# set timeout python solution
-#detach callback, (resest timer and delete )
-
-
+    # timer, display winner
+    # set timeout python solution
+    # detach callback, (resest timer and delete )
 
 """ 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
