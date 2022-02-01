@@ -1,7 +1,7 @@
 from flask import Blueprint, request
 from flask_login import login_required, current_user
-from app.models import User, Nft, Transaction, Auction,  db
-from app.nft_transactions.xumm import store_user_token, get_xrp_account
+from models import User, Nft, Transaction, Auction,  db
+from nft_transactions.xumm import store_user_token, get_xrp_account
 webhook_routes = Blueprint('webhook', __name__)
 
 

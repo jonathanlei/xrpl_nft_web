@@ -1,9 +1,9 @@
 from flask import Blueprint, jsonify, session, request
 from flask_login import login_required, current_user
-from app.models import User, Nft, Transaction, Auction,  db
-from app.aws import (
+from models import User, Nft, Transaction, Auction,  db
+from aws import (
     upload_file_to_s3, allowed_file, get_unique_filename)
-from app.nft_transactions.xumm import user_sign_in
+from nft_transactions.xumm import user_sign_in
 
 user_routes = Blueprint('users', __name__)
 

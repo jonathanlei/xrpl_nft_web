@@ -3,9 +3,9 @@ from flask import Flask, render_template, request, redirect, send_from_directory
 # from flask_cors import CORS
 # from flask_wtf.csrf import CSRFProtect, generate_csrf
 # from flask_login import LoginManager
-from .models.models import db, User
-from .api.users import user_routes
-from .api.webhook import webhook_routes
+from models import db, User
+from api.users import user_routes
+from api.webhook import webhook_routes
 
 
 app = Flask(__name__)
@@ -25,6 +25,7 @@ app = Flask(__name__)
 #     return send_from_directory("../frontend/build/", path)
 
 # CORS(app)
+
 
 # @login.user_loader
 # def load_user(id):

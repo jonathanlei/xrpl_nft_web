@@ -1,7 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
-from app.models import User, db
+from models import User, db
 
 
 load_dotenv()

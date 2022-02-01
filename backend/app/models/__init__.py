@@ -1,1 +1,1 @@
-from models import User, db, Nft, Auction, AuctionUser, TransactionUser, Transaction
+from .models import User, db, Nft, Auction, AuctionUser, TransactionUser, Transaction

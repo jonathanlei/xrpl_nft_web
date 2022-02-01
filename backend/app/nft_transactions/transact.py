@@ -6,7 +6,7 @@ from xrpl.clients import JsonRpcClient
 from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.utils import str_to_hex, hex_to_str
 from xrpl.models.amounts import IssuedCurrencyAmount
-from ...app.models import User
+from models import User
 from xumm import sign_transactions
 
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
