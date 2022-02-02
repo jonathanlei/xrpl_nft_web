@@ -16,7 +16,7 @@ headers = {
 response = requests.request(
     "GET", url + "/74ba68e4-6714-47dd-9af1-fbe252a9769c", headers=headers)
 
-
+#TODO: nft sandbox in Xumm app, unlock. 
 def sign_transactions(transaction_dict, user_token):
     """ given the trasaction payload and the user_token, send xumm user a push notificaiton to sign the payload"""
     payload = {"txjson": transaction_dict, user_token: "user_token"}
@@ -47,12 +47,14 @@ def get_xrp_account(payload_id):
     response = requests.request(
         "GET", url + "/" + payload_id, headers=headers)
     data = response.content
+    # TODO: store as cookie on the browser, representing them as login
     return data["response"]["account"]
 
 
 def store_user_token(id, user_token, account_address):
     """ utitlity function to store user token in database, get called by webhook route when signin payload received"""
     user = User.query.get(id)
+    # TODO: store the expiration. 12 months expiration date. 
     user.xumm_user_token = user_token
     user.xrp_account_id = account_address
     db.session.commit()

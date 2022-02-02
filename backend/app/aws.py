@@ -1,7 +1,7 @@
 import boto3
 import os
 import uuid
-
+# TODO: side feature of the app to set profiles. xrpl user avator ("domain").
 ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "gif"}
 BUCKET_NAME = os.environ.get("S3_BUCKET")
 S3_LOCATION = f"http://{BUCKET_NAME}.s3.amazonaws.com/"

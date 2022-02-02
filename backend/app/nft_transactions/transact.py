@@ -71,7 +71,14 @@ except KeyError:
     token_id = tx_response.result["meta"]["AffectedNodes"][0]['CreatedNode'][
         'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
 
-# create offer
+#TODO: verify the user own the account and have the reserve, check public key hashes to address.
+
+#issue:
+# rely on two different people to authorize - no direct control over the transaction. 
+
+#TODO: set expirations date of offer. and look into how to cancel (NFTokenCancel)
+#TODO: have buy/sell offer on chain for bids.
+#TODO: test the reserve for the offer amount.
 
 
 def createNftSellOffer(seller_id, buyer_id, token_id, amount):

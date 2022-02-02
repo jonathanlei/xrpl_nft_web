@@ -40,6 +40,10 @@ def update_user():
 @user_routes.route("/update/image/", methods=["PATCH"])
 @login_required
 def update_profile_photo():
+    """ TODO: Domain is cool to use; there is also EmailHash, 
+    which is sometimes used to look up 
+    avatars from Gravatar 
+    (which maps email hashes to profile pictures) """
     if "image" not in request.files:
         return {"errors": "image required"}, 400
 
