@@ -123,6 +123,21 @@ class Auction(db.Model):
     bidders = db.relationship(
         "AuctionUser", secondary='auctions_users', backref="users")
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "owner": self.owner,
+            "created_at": self.created_at,
+            "nft_id": self.nft_id,
+            "starting_price": self.starting_price,
+            "duration": self.duration,
+            "current_highest_price": self.current_highest_price,
+            "current_highest_bidder": self.current_highest_bidder,
+            "winner": self.winner,
+            "bids": self.bids,
+            "bidders": self.bidders,
+        }
+
     # minimum increment
     # TODO: add relationship backrefs for bidders
     # bidders = db.relationship()

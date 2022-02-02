@@ -4,7 +4,6 @@ from models import User, Nft, Transaction, Auction,  db
 from nft_transactions.xumm import store_user_token, get_xrp_account
 webhook_routes = Blueprint('webhook', __name__)
 
-
 @webhook_routes.route("/", methods=["POST"])
 def receive_webhook():
     data = request.json

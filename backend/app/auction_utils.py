@@ -11,13 +11,6 @@ from models import db, Auction, User, Bid, AuctionUser
 from datetime import datetime, timedelta
 
 
-def open_auction(owner, token_id, starting_price, duration=24):
-    auction = Auction(owner=owner, duration=duration,
-                      starting_price=starting_price, nft_id=token_id)
-    db.session.add(auction)
-    db.session.commit()
-    return auction.to_dict()
-
 
 def new_bid(user_id, auction_id, price):
     """ TODO: maybe it's betteer to store current_high_bid_id instead??? and reference it """
@@ -43,8 +36,7 @@ def end_auction():
     # timer, display winner
     # set timeout python solution
     # detach callback, (resest timer and delete )
-
-""" 
+    """
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     auction_id = db.Column(db.Integer,
                            db.ForeignKey("auctions.id"))
@@ -55,4 +47,4 @@ def end_auction():
                          server_default=func.now(),
                          nullable=False)
     bid_amount = db.Column(db.Float, nullable=False) 
-"""
+    """
