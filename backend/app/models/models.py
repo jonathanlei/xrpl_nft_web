@@ -117,6 +117,7 @@ class Auction(db.Model):
     current_highest_price = db.Column(db.Float)
     current_highest_bidder = db.Column(
         db.Integer, db.ForeignKey("users.id"))
+    isActive = db.Column(db.Boolean, nullable=False, default=True)
     winner = db.Column(db.Integer, db.ForeignKey("users.id"))
     # don't need a joint table because it's a one-to-many relationship
     bids = db.relationship("Bid", backref="auctions")
@@ -176,6 +177,7 @@ class Bid(db.Model):
                          server_default=func.now(),
                          nullable=False)
     bid_amount = db.Column(db.Float, nullable=False)
+    ledger_idx = db.Column(db.String, nullable=True)
 
     def to_dict(self):
         return {
@@ -184,14 +186,15 @@ class Bid(db.Model):
             "user_id": self.user_id,
             "bid_time": self.bid_time,
             "bid_amount": self.bid_amount,
+            "ledger_idx": self.ledger_idx,
         }
 
 
 class Transaction(db.Model):
     """ Table for nft transactions"""
     __tablename__ = "transactions"
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    # id represented by ledger entry
+    id = db.Column(db.Integer, primary_key=True)
     nft_id = db.Column(db.Integer, db.ForeignKey("nfts.id"))
     buyer = db.Column(db.Integer, db.ForeignKey("users.id"))
     seller = db.Column(db.Integer, db.ForeignKey("users.id"))

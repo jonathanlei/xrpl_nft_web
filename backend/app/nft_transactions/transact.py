@@ -71,14 +71,35 @@ except KeyError:
     token_id = tx_response.result["meta"]["AffectedNodes"][0]['CreatedNode'][
         'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
 
-#TODO: verify the user own the account and have the reserve, check public key hashes to address.
+# TODO: verify the user own the account and have the reserve, check public key hashes to address.
 
-#issue:
-# rely on two different people to authorize - no direct control over the transaction. 
+# issue:
+# rely on two different people to authorize - no direct control over the transaction.
 
-#TODO: set expirations date of offer. and look into how to cancel (NFTokenCancel)
-#TODO: have buy/sell offer on chain for bids.
-#TODO: test the reserve for the offer amount.
+# TODO: set expirations date of offer. and look into how to cancel (NFTokenCancel)
+# TODO: have buy/sell offer on chain for bids.
+# TODO: test the reserve for the offer amount.
+
+
+def createNftBuyOffer(seller_id, buyer_id, token_id, amount):
+    buyer = User.query.get(buyer_id)
+    seller = User.query.get(seller_id)
+    # any other flag than 1 is buy, 1 is sell
+    sell_flag = NFTokenCreateOfferFlag(2)
+    nft_offer = NFTokenCreateOffer(
+        account=buyer.xrp_account_id,
+        destination=seller.xrp_account_id,
+        amount=amount,
+        token_id=token_id,
+        flags=[sell_flag],
+    )
+    tx_offer_filled = autofill(nft_offer, client)
+    result = sign_transactions(tx_offer_filled, seller.xumm_user_token)
+    if "pushed" in result:
+        return result
+    else:
+        result["pushed"] = False
+        return result
 
 
 def createNftSellOffer(seller_id, buyer_id, token_id, amount):
@@ -117,12 +138,19 @@ for node in affected_nodes:
             break
 
 
-def createAcceptOffer(buyer_id, sell_offer_id):
-    buyer = User.query.get(buyer_id)
-    nft_accept_offer = NFTokenAcceptOffer(
-        account=buyer.xrp_account_id,
-        sell_offer=sell_offer_id,
-    )
+def createAcceptOffer(offer_id, destination_user_id, isSell):
+    user = User.query.get(destination_user_id)
+    nft_accept_offer = None
+    if isSell:
+        nft_accept_offer = NFTokenAcceptOffer(
+            account=user.xrp_account_id,
+            sell_offer=offer_id,
+        )
+    else:
+        nft_accept_offer = NFTokenAcceptOffer(
+            account=user.xrp_account_id,
+            buy_offer=offer_id,
+        )
     tx_offer_filled = autofill(nft_accept_offer, client)
     result = sign_transactions(tx_offer_filled, buyer.xumm_user_token)
     if "pushed" in result:
