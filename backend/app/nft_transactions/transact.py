@@ -1,18 +1,22 @@
 import json
-from this import d
-from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_transaction, autofill
+from xrpl.transaction import send_reliable_submission, safe_sign_and_autofill_transaction, safe_sign_transaction, autofill, get_transaction_from_hash, transaction_json_to_binary_codec_form
 from xrpl.models.transactions import Payment, TrustSet, AccountSet, Memo, NFTokenCreateOffer, NFTokenMint, NFTokenCreateOfferFlag, NFTokenAcceptOffer
 from xrpl.clients import JsonRpcClient
 from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.utils import str_to_hex, hex_to_str
 from xrpl.models.amounts import IssuedCurrencyAmount
-from models import User
+import requests
+# from models import User
 from xumm import sign_transactions
 
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient("http://xls20-sandbox.rippletest.net:51234")
 
-# make transaction,request the wallet sign the transaction
+# url = "http://xls20-sandbox.rippletest.net:51234"
+# "AD9825BC11FB54DA3E5DBE911E4F5F4B0208ADFB7FA677BB60DB9971964B79C1"
+# response = requests.post(url, data={"method": "tx", "params": [{"transaction": "AD9825BC11FB54DA3E5DBE911E4F5F4B0208ADFB7FA677BB60DB9971964B79C1"}]})
+# breakpoint()
+# make dtransaction,request the wallet sign the transaction
 # 1. populate the transaction - with wallet address
 # 2. autofill? send to the wallet
 # 3. xumm wallet sdk (~60%, or ledger nano, lesser used wallets)- or build a small client app with server,key on it
@@ -26,13 +30,14 @@ def mintNft(id, img_url):
     my_nft_mint = NFTokenMint(
         account=user.xrp_account_id,
         token_taxon=0,
-        uri=str_to_hex(img_url),
+        uri=str_to_hex(img_url)
     )
-    tx_payment_filled = autofill(my_nft_mint, client)
-    tx_payment_filled["custom_meta"] = {
-        "identifier": id, "instruction": "mint_nft"}
+    # TODO: test this
+    tx_payment_filled = autofill(my_nft_mint, client).to_xrpl()
+    custom_meta = {"identifier": id, "instruction": "mint_nft"}
     # {"pushed": True} or {"png_url": "..."} depending on the push status
-    result = sign_transactions(tx_payment_filled, user.xumm_user_token)
+    result = sign_transactions(
+        tx_payment_filled, user.xumm_user_token, custom_meta)
     if "pushed" in result:
         return result
     else:
@@ -41,35 +46,48 @@ def mintNft(id, img_url):
     # TODO: get and store nft token ID?
 
 
-# TEST_ACCOUNT = "rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8"
-# TEST_USER_TOKEN = "e5899868-642f-4680-9718-ba563af0c8ab"
-# TEST_IMG_URL = "ipfs://bafkreigap6xzj33z4f72sl7qc3bbcksq3k26bjtevbtfiv3vpffcxwczg4"
-# my_nft_mint = NFTokenMint(
-#     account=TEST_ACCOUNT,
-#     token_taxon=0,
-#     uri=str_to_hex(TEST_IMG_URL),
-# )
-# tx_payment_filled = autofill(my_nft_mint, client)
-# tx_payment_filled["custom_meta"] = {
-#     "identifier": id, "instruction": "mint_nft"}
-# result = sign_transactions(tx_payment_filled, TEST_USER_TOKEN)
-# breakpoint()
+def get_transaction_dict(txid):
+    """ reponse = get_transaction_from_hash(
+    "71ECA5C1D9145507EE022E363197F2621A8E8784E98E8F13A1EA5CED92C7691F", client) """
+    reponse = get_transaction_from_hash(txid, client)
+    return reponse.result['meta']["AffectedNodes"]
 
+my_nft_mint = NFTokenMint(
+    account="r9jcocVzhfkH5PvgasDPhtde3zPVE2zDBK",
+    token_taxon=0,
+    uri=str_to_hex(
+        "https://images.livemint.com/img/2022/02/14/1600x900/NFT_1644804887471_1644804887655.jpg")
+)
+tx_payment_filled = autofill(my_nft_mint, client)
+tx_payment_filled = transaction_json_to_binary_codec_form(
+    tx_payment_filled.to_dict())
+custom_meta = {"identifier": 1, "instruction": "mint_nft"}
+sign_transactions(tx_payment_filled,
+                  "608e97e9-6b22-43e5-8580-e1712ede505a", custom_meta)
+
+# asih token : 608e97e9-6b22-43e5-8580-e1712ede505a
+# {'Account': 'rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8', 'Fee': '10', 'Flags': 2147483648, 'LastLedgerSequence': 923674, 'Sequence': 666099, 'SigningPubKey': '03DD699122D87D789ADAD5FF0521572BA28B3BAFBD77FE35F70CEB74D04DEE8B2B', 'TokenTaxon': 0, 'TransactionType': 'NFTokenMint',
+#  'TxnSignature': '30440220162C0D00CC26D01744A84D32835A5E2A2CD553A150D3E94C9B572480C22B89D602202A01F5B5C04081722D9F35BBA70E2EDC8F416EE5523528FF6C221881F805E691',
+#  'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734',
+#  'date': 698279591, 'hash': '71ECA5C1D9145507EE022E363197F2621A8E8784E98E8F13A1EA5CED92C7691F', 'inLedger': 923660, 'ledger_index': 923660, 'meta': {'AffectedNodes': [{'ModifiedNode': {'FinalFields': {'Account': 'rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8', 'Balance': '989999785', 'Flags': 0, 'MintedTokens': 11, 'OwnerCount': 8, 'Sequence': 666100}, 'LedgerEntryType': 'AccountRoot', 'LedgerIndex': '7FBDFE631F9102BEEBA03D3FEF0C556A1A0315EBFF06F113C24CB6EFE1AC6157', 'PreviousFields': {'Balance': '989999795', 'MintedTokens': 10, 'Sequence': 666099}, 'PreviousTxnID': 'C8891B82C79361C81C1968FC76ACCB8F8BDEA8069A2BEF02976EE67F750B6604', 'PreviousTxnLgrSeq': 917659}}, {'ModifiedNode': {'FinalFields': {'Flags': 0, 'NonFungibleTokens': [{'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D40000099B00000000'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D416E5DA9C00000001'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D42DCBAB9D00000002'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D444B17C9E00000003', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D45B974D9F00000004', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D4727D1EA000000005', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D48962EFA100000006', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D4A048C0A200000007', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D4B72E91A300000008', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {
+#      'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D4CE1462A400000009', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D4E4FA33A50000000A', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}]}, 'LedgerEntryType': 'NFTokenPage', 'LedgerIndex': 'F7F917332EB18C40B065F37B729B4FB750A010D4FFFFFFFFFFFFFFFFFFFFFFFF', 'PreviousFields': {'NonFungibleTokens': [{'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D40000099B00000000'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D416E5DA9C00000001'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D42DCBAB9D00000002'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D444B17C9E00000003', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D45B974D9F00000004', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D4727D1EA000000005', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D48962EFA100000006', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D4A048C0A200000007', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D4B72E91A300000008', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}, {'NonFungibleToken': {'TokenID': '00000000F7F917332EB18C40B065F37B729B4FB750A010D4CE1462A400000009', 'URI': '68747470733A2F2F697066732E696F2F697066732F6261666B72656967617036787A6A33337A34663732736C377163336262636B7371336B3236626A74657662746669763376706666637877637A6734'}}]}, 'PreviousTxnID': 'C8891B82C79361C81C1968FC76ACCB8F8BDEA8069A2BEF02976EE67F750B6604', 'PreviousTxnLgrSeq': 917659}}], 'TransactionIndex': 0, 'TransactionResult': 'tesSUCCESS'}, 'validated': True}
+# reponse.result['meta']['AffectedNodes'][1]['ModifiedNode'][']
+# other wallet token id "e3bf2a28-a7c7-421a-a1c5-4c86b806551b"
 # submit the transaction
-tx_response = send_reliable_submission(my_tx_payment_signed, client)
+# tx_response = send_reliable_submission(my_tx_payment_signed, client)
 """
 sending and receiving NFTs via XRPL
 """
-# TODO: sending payment from receiver_wallet
-buyer = test_wallet_2.classic_address
+# # TODO: sending payment from receiver_wallet
+# buyer = test_wallet_2.classic_address
 
-token_id = ""
-try:
-    token_id = tx_response.result["meta"]["AffectedNodes"][1]['CreatedNode'][
-        'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
-except KeyError:
-    token_id = tx_response.result["meta"]["AffectedNodes"][0]['CreatedNode'][
-        'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
+# token_id = ""
+# try:
+#     token_id = tx_response.result["meta"]["AffectedNodes"][1]['CreatedNode'][
+#         'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
+# except KeyError:
+#     token_id = tx_response.result["meta"]["AffectedNodes"][0]['CreatedNode'][
+#         'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
 
 # TODO: verify the user own the account and have the reserve, check public key hashes to address.
 
@@ -85,21 +103,41 @@ def createNftBuyOffer(seller_id, buyer_id, token_id, amount):
     buyer = User.query.get(buyer_id)
     seller = User.query.get(seller_id)
     # any other flag than 1 is buy, 1 is sell
-    sell_flag = NFTokenCreateOfferFlag(2)
     nft_offer = NFTokenCreateOffer(
         account=buyer.xrp_account_id,
         destination=seller.xrp_account_id,
         amount=amount,
         token_id=token_id,
-        flags=[sell_flag],
+        flags=[],
     )
-    tx_offer_filled = autofill(nft_offer, client)
-    result = sign_transactions(tx_offer_filled, seller.xumm_user_token)
+
+    tx_offer_filled = transaction_json_to_binary_codec_form(
+        autofill(nft_offer, client).to_dict())
+    custom_meta = {
+        "identifier": buyer_id, "instruction": "create_buy_offer"}
+    result = sign_transactions(
+        tx_offer_filled, buyer.xumm_user_token, custom_meta)
     if "pushed" in result:
         return result
     else:
         result["pushed"] = False
         return result
+
+
+ # TODO: try no flag and test buy offer
+# sell_flag = NFTokenCreateOfferFlag(1)
+# tokenId = "00000000F7F917332EB18C40B065F37B729B4FB750A010D40000099B00000000"
+# nft_offer = NFTokenCreateOffer(
+#     account="rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8",
+#     destination="r9jcocVzhfkH5PvgasDPhtde3zPVE2zDBK",
+#     amount="1",
+#     token_id=tokenId,
+#     flags=[sell_flag],
+# )
+# tx_offer_filled = autofill(nft_offer, client)
+# tx_offer_filled = transaction_json_to_binary_codec_form(
+#         tx_offer_filled.to_dict())
+# sign_transactions(tx_offer_filled, "e5899868-642f-4680-9718-ba563af0c8ab")
 
 
 def createNftSellOffer(seller_id, buyer_id, token_id, amount):
@@ -114,8 +152,12 @@ def createNftSellOffer(seller_id, buyer_id, token_id, amount):
         token_id=token_id,
         flags=[sell_flag],
     )
-    tx_offer_filled = autofill(nft_offer, client)
-    result = sign_transactions(tx_offer_filled, seller.xumm_user_token)
+    tx_offer_filled = transaction_json_to_binary_codec_form(
+        autofill(nft_offer, client).to_dict())
+    custom_meta = {
+        "identifier": buyer_id, "instruction": "create_sell_offer"}
+    result = sign_transactions(
+        tx_offer_filled, seller.xumm_user_token, custom_meta)
     if "pushed" in result:
         return result
     else:
@@ -123,19 +165,17 @@ def createNftSellOffer(seller_id, buyer_id, token_id, amount):
         return result
 
     # submit the transaction
-    tx_offer_response = send_reliable_submission(my_tx_offer_signed, client)
+
+# # submit offer
+# sell_offer_id = ""
 
 
-# submit offer
-sell_offer_id = ""
-
-
-affected_nodes = tx_offer_response.result["meta"]["AffectedNodes"]
-for node in affected_nodes:
-    if 'CreatedNode' in node:
-        if node['CreatedNode']['LedgerEntryType'] == "NFTokenOffer":
-            sell_offer_id = node['CreatedNode']['LedgerIndex']
-            break
+# affected_nodes = tx_offer_response.result["meta"]["AffectedNodes"]
+# for node in affected_nodes:
+#     if 'CreatedNode' in node:
+#         if node['CreatedNode']['LedgerEntryType'] == "NFTokenOffer":
+#             sell_offer_id = node['CreatedNode']['LedgerIndex']
+#             break
 
 
 def createAcceptOffer(offer_id, destination_user_id, isSell):
@@ -152,13 +192,19 @@ def createAcceptOffer(offer_id, destination_user_id, isSell):
             buy_offer=offer_id,
         )
     tx_offer_filled = autofill(nft_accept_offer, client)
-    result = sign_transactions(tx_offer_filled, buyer.xumm_user_token)
+    tx_offer_filled = transaction_json_to_binary_codec_form(
+        autofill(tx_offer_filled, client).to_dict())
+    custom_meta = {
+        "identifier": offer_id, "instruction": "create_accept_offer"}
+    result = sign_transactions(
+        tx_offer_filled, buyer.xumm_user_token, custom_meta)
     if "pushed" in result:
         return result
     else:
         result["pushed"] = False
         return result
 
+#TODO: cancel offer 
 
 # my_tx_offer_accepted_signed = safe_sign_and_autofill_transaction(
 #     my_nft_accept_offer, test_wallet_2, client)

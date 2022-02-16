@@ -1,14 +1,18 @@
 from flask import Blueprint, request
 from flask_login import login_required, current_user
+from nft_transactions.xumm import get_transaction_id
 from models import User, Nft, Transaction, Auction,  db
-from nft_transactions.xumm import store_user_token, get_xrp_account
+from nft_transactions.xumm import store_user_token, get_xrp_account, get_transaction_id
 webhook_routes = Blueprint('webhook', __name__)
+
 
 @webhook_routes.route("/", methods=["POST"])
 def receive_webhook():
     data = request.json
     user_token = ""
-    if data["custom_meta"]["instruction"] == "user_sign_in_token":
+    print(request.json, "here")
+    instruction = data["custom_meta"]["instruction"]
+    if instruction == "user_sign_in_token":
         # store user token
         user_token = data['meta']['userToken']["user_token"]
         user_id = data['meta']["custom_meta"]["identifier"]
@@ -17,7 +21,20 @@ def receive_webhook():
         # TODO: auto update token after certain amount of time
         store_user_token(user_id, user_token, xrp_account_address)
         return {'msg': "user token and account address successfully stored"}
-    return
+    elif instruction == "mint_nft":
+        payload_id = data['meta']['payload_uuidv4']
+        get_transaction_id(payload_id=data['meta']['payload_uuidv4'])
+        #store nft id from transaction
+    elif instruction == "create_buy_offer":
+        print(data['meta'])
+    elif instruction == "create_sell_offer":
+        print(data['meta'])
+    elif instruction == "create_accept_offer":
+        print(data['meta'])
+    else:
+        return {}
+
+    return {}
 
 
 # format

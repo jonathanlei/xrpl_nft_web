@@ -5,6 +5,20 @@ detailed rules:
 3. Auctions can be extended within the last 10 minutes of bidding window, if a new bid has been submitted, by 10 minutes.
 4. Seller have the option to cancel the auction anytime before the end of the auction window?
 5. Seller can set a buy now button? (optinoal, more complexities)
+
+
+
+new potential work flow: 
+"1) buyers submit buy offers with YOU as the destination. No expiration necessary.
+    allow cancel offers
+    no expiration now
+set the fee to 0? and have an env 
+more realistic
+2) when the auction is over - you send a receipt to the seller, showing the amount you are going to take as a fee, and requesting they sign a sell offer with the amount being the best buy side offer minus your fee. You are again the destination. They must sign this.
+    binding? - 1. before auction seller send offer indicate the minimum amount reserve, broker might rip off
+    2. agreement to pay the fee. 
+3) then you can sign the NFTokenAcceptOffer transaction to complete the tx
+4) finally, you can now immediately cancel all of the losing offers, since you are the destination"
 """
 
 from models import db, Auction, User, Bid, AuctionUser
@@ -18,7 +32,7 @@ def create_new_bid_offer(user_id, auction_id, nft_id, amount):
     # custom meta
     auction = Auction.query.get(auction_id)
     return createNftBuyOffer(auction.owner, user_id, nft_id, amount)
-
+    
 
 def confirm_new_bid(ledger_idx, auction_id, buyer_id, price):
     # once they sign the transactions, come back and create that

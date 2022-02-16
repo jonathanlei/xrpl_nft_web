@@ -1,12 +1,11 @@
-import os
 from flask import Flask, render_template, request, redirect, send_from_directory
 # from flask_cors import CORS
 # from flask_wtf.csrf import CSRFProtect, generate_csrf
 # from flask_login import LoginManager
-from models import db, User
+# from models import db, User
 from api.users import user_routes
 from api.webhook import webhook_routes
-
+from config import Config
 
 app = Flask(__name__)
 
@@ -14,7 +13,7 @@ app = Flask(__name__)
 # login = LoginManager(app)
 # login.login_view = 'auth.unauthorized'
 
-
+app.config.from_object(Config)
 # @app.route('/')
 # def serve():
 #     return render_template("index.html")
@@ -33,7 +32,7 @@ app = Flask(__name__)
 
 app.register_blueprint(user_routes, url_prefix='/users')
 app.register_blueprint(webhook_routes, url_prefix='/webhook')
-db.init_app(app)
+# db.init_app(app)
 
 # Application Security
 # CORS(app)
@@ -64,4 +63,3 @@ db.init_app(app)
 #                             'FLASK_ENV') == 'production' else None,
 #                         httponly=True)
 #     return response
-
