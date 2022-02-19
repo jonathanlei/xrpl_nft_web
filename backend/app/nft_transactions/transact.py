@@ -50,7 +50,7 @@ def get_transaction_dict(txid):
     """ reponse = get_transaction_from_hash(
     "71ECA5C1D9145507EE022E363197F2621A8E8784E98E8F13A1EA5CED92C7691F", client) """
     reponse = get_transaction_from_hash(txid, client)
-    return reponse.result['meta']["AffectedNodes"]
+    return reponse.result['meta']
 
 my_nft_mint = NFTokenMint(
     account="r9jcocVzhfkH5PvgasDPhtde3zPVE2zDBK",
@@ -108,7 +108,7 @@ def createNftBuyOffer(seller_id, buyer_id, token_id, amount):
         destination=seller.xrp_account_id,
         amount=amount,
         token_id=token_id,
-        flags=[],
+        # TODO: test if flag works
     )
 
     tx_offer_filled = transaction_json_to_binary_codec_form(

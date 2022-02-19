@@ -2,7 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 import json
-# from transact import get_transaction_dict
+from transact import get_transaction_dict
 # from models import User, db
 
 
@@ -63,15 +63,38 @@ def get_xrp_account(payload_id):
 
 def get_nft_id(payload_id):
     transaction_hash = get_transaction_id(payload_id)
-    tx_dict = get_transaction_dict(transaction_hash)
+    meta = get_transaction_dict(transaction_hash)
+    affected_node = None
+    if "CreatedNode" in meta:
+        if meta["CreatedNode"] == "NFTokenPage":
+            affected_node = meta["CreatedNode"]
+    elif "ModifiedNode" in meta:
+        if meta["ModifiedNode"] == "NFTokenPage":
+            affected_node = meta["ModifiedNode"]
+    previous_token_ids = []
+    if "PreviousFields" in affected_node:
+        previousFields = affected_node["PreviousFields"]
+        if "NonFungibleTokens" in previousFields:
+            # might have to check the two keys
+            previous_token_ids = [token["NonFungibleToken"]["TokenID"]
+                                  for token in previousFields["NonFungibleTokens"]]
+    previous_token_id_set = set(previous_token_ids)
+    final_token_ids = []
+    final_tokens = None
+    if "FinalFields" in affected_node:
+        final_tokens = affected_node["FinalFields"]
+    elif "NewFields" in affected_node:
+        final_tokens = affected_node["NewFields"]
+    if "NonFungibleTokens" in final_tokens:
+        final_token_ids = [token["NonFungibleToken"]["TokenID"]
+                           for token in final_tokens["NonFungibleTokens"]]
 
+    token_id = [t not in previous_token_id_set for t in final_token_ids][0]
     # get transaction details
 
     # NFTokenPage creation
 
     # Modifying NFTokenPage
-
-
 """ const { convertHexToString } = require('xrpl');
 
 module.exports = (tx, meta) => {
@@ -110,8 +133,9 @@ def get_transaction_id(payload_id):
     data = json.loads(response.content.decode('utf-8'))
     return data["response"]["txid"]
 
+
 response = requests.request(
-        "GET", url + "/" + "feb49af9-72bf-434c-8607-852633cd0d9f", headers=headers)
+    "GET", url + "/" + "feb49af9-72bf-434c-8607-852633cd0d9f", headers=headers)
 data = json.loads(response.content.decode('utf-8'))
 breakpoint()
 
