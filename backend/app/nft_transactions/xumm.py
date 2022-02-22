@@ -90,9 +90,12 @@ def get_nft_id(payload_id):
                            for token in final_tokens["NonFungibleTokens"]]
 
     token_id = [t not in previous_token_id_set for t in final_token_ids][0]
+    # TODO: make sure token_id is stored
+    return token_id
     # get transaction details
 
     # NFTokenPage creation
+
 
     # Modifying NFTokenPage
 """ const { convertHexToString } = require('xrpl');
@@ -121,10 +124,10 @@ module.exports = (tx, meta) => {
   };
 }; """
 
-response = requests.request(
-    "GET", url + "/" + "abf91ee3-b4b8-4404-94ac-ee72d27687bf", headers=headers)
-data = json.loads(response.content.decode('utf-8'))
-print(data["response"])
+# response = requests.request(
+#     "GET", url + "/" + "abf91ee3-b4b8-4404-94ac-ee72d27687bf", headers=headers)
+# data = json.loads(response.content.decode('utf-8'))
+# print(data["response"])
 
 
 def get_transaction_id(payload_id):
@@ -137,8 +140,6 @@ def get_transaction_id(payload_id):
 response = requests.request(
     "GET", url + "/" + "feb49af9-72bf-434c-8607-852633cd0d9f", headers=headers)
 data = json.loads(response.content.decode('utf-8'))
-breakpoint()
-
 # # This is to get Payload
 # response = requests.request(
 #       "GET", url + "/" + "0e3f7226-4269-4b9d-a288-04973ab6083d", headers=headers)

@@ -70,7 +70,7 @@ class User(db.Model, UserMixin):
 class Nft(db.Model):
     """ table for storing nft metas """
     __tablename__ = 'nfts'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String, nullable=False)
     uri = db.Column(db.Text, nullable=False)
@@ -79,7 +79,6 @@ class Nft(db.Model):
                            nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey(
         "users.id"), nullable=False)
-    contract_address = db.Column(db.String(100), nullable=False)
 
     @property
     def get_owner(self):
@@ -92,7 +91,6 @@ class Nft(db.Model):
             "description": self.description,
             "uri": self.uri,
             "owner": self.owner_id,
-            "contract_address": self.contract_address,
         }
 
 

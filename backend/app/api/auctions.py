@@ -5,6 +5,7 @@ from aws import (
     upload_file_to_s3, allowed_file, get_unique_filename)
 from datetime import datetime
 from auction_utils import new_bid
+from nft_transactions.transact import createNftBuyOffer
 auction_routes = Blueprint('auctions', __name__)
 
 
@@ -35,9 +36,12 @@ def create_new_action():
 @auction_routes.route("/<int:id>/new_bid", methods=["PUT"])
 @login_required
 def create_new_bid(id):
+    # TODO: frontend filter out lower prices so price check here
     data = request.json
-    result = new_bid(current_user.id, id, data["price"])
-    return result
+    auction = Auction.query.get(id)
+    new_offer = createNftBuyOffer(
+        auction.id, auction.owner, current_user.id, auction.nft_id, data["price"])
+    return new_offer
 
 
 @auction_routes.route("/<int:id>/extend", methods=["PATCH"])

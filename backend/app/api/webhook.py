@@ -1,8 +1,11 @@
 from flask import Blueprint, request
 from flask_login import login_required, current_user
 from nft_transactions.xumm import get_transaction_id
-from models import User, Nft, Transaction, Auction,  db
+from models import User, Nft, Transaction, Auction,  Bid, db
 from nft_transactions.xumm import store_user_token, get_xrp_account, get_transaction_id
+from auction_utils import confirm_new_bid
+import json
+
 webhook_routes = Blueprint('webhook', __name__)
 
 
@@ -26,6 +29,13 @@ def receive_webhook():
         get_transaction_id(payload_id=data['meta']['payload_uuidv4'])
         #store nft id from transaction
     elif instruction == "create_buy_offer":
+        #TODO: 
+        data = json.loads(data['meta']["custom_meta"]["identifier"])
+        
+        result = Bid(current_user.id, id, data["price"])
+        # TODO: get the buy_offer_id, auction id, buyer id and price
+        confirm_new_bid(ledger_idx, auction_id, buyer_id, price)
+
         print(data['meta'])
     elif instruction == "create_sell_offer":
         print(data['meta'])

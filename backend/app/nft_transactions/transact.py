@@ -6,7 +6,8 @@ from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.utils import str_to_hex, hex_to_str
 from xrpl.models.amounts import IssuedCurrencyAmount
 import requests
-# from models import User
+import datetime
+from models import User
 from xumm import sign_transactions
 
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
@@ -51,6 +52,7 @@ def get_transaction_dict(txid):
     "71ECA5C1D9145507EE022E363197F2621A8E8784E98E8F13A1EA5CED92C7691F", client) """
     reponse = get_transaction_from_hash(txid, client)
     return reponse.result['meta']
+
 
 my_nft_mint = NFTokenMint(
     account="r9jcocVzhfkH5PvgasDPhtde3zPVE2zDBK",
@@ -99,7 +101,7 @@ sending and receiving NFTs via XRPL
 # TODO: test the reserve for the offer amount.
 
 
-def createNftBuyOffer(seller_id, buyer_id, token_id, amount):
+def createNftBuyOffer(auction_id, seller_id, buyer_id, token_id, amount):
     buyer = User.query.get(buyer_id)
     seller = User.query.get(seller_id)
     # any other flag than 1 is buy, 1 is sell
@@ -114,7 +116,7 @@ def createNftBuyOffer(seller_id, buyer_id, token_id, amount):
     tx_offer_filled = transaction_json_to_binary_codec_form(
         autofill(nft_offer, client).to_dict())
     custom_meta = {
-        "identifier": buyer_id, "instruction": "create_buy_offer"}
+        "identifier": f"buyer: {buyer_id}, signed_time: {datetime.now()}, auction: {auction_id}", "instruction": "create_buy_offer"}
     result = sign_transactions(
         tx_offer_filled, buyer.xumm_user_token, custom_meta)
     if "pushed" in result:
@@ -122,7 +124,6 @@ def createNftBuyOffer(seller_id, buyer_id, token_id, amount):
     else:
         result["pushed"] = False
         return result
-
 
  # TODO: try no flag and test buy offer
 # sell_flag = NFTokenCreateOfferFlag(1)
@@ -204,7 +205,7 @@ def createAcceptOffer(offer_id, destination_user_id, isSell):
         result["pushed"] = False
         return result
 
-#TODO: cancel offer 
+# TODO: cancel offer
 
 # my_tx_offer_accepted_signed = safe_sign_and_autofill_transaction(
 #     my_nft_accept_offer, test_wallet_2, client)

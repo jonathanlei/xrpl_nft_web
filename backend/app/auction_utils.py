@@ -26,13 +26,20 @@ from datetime import datetime, timedelta
 from nft_transactions.transact import createNftBuyOffer, createAcceptOffer
 
 
+# create a broker account and user token as secret 
+# set the receiving end to the broker account 
+#store auction dat off chain as well?
+# create sell offer with best buy offer with fee deducted and have the sell offer 
+# TODO: why have buy offers? 
+
 def create_new_bid_offer(user_id, auction_id, nft_id, amount):
     """ TODO: might need to refactor to to have it all in transaction """
     # TODO: if the bid is smaller than current bid, disgard (could do it in the frontend too)
     # custom meta
     auction = Auction.query.get(auction_id)
+    # TODO: change the destination to the brokered account
     return createNftBuyOffer(auction.owner, user_id, nft_id, amount)
-    
+
 
 def confirm_new_bid(ledger_idx, auction_id, buyer_id, price):
     # once they sign the transactions, come back and create that
