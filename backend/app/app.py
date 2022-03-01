@@ -1,11 +1,12 @@
-from flask import Flask, render_template, request, redirect, send_from_directory
-# from flask_cors import CORS
-# from flask_wtf.csrf import CSRFProtect, generate_csrf
+from flask import Flask
+from flask_cors import CORS
+from flask_wtf.csrf import CSRFProtect, generate_csrf
 # from flask_login import LoginManager
-# from models import db, User
+# # from models import db, User
 from api.users import user_routes
 from api.webhook import webhook_routes
-from config import Config
+from auction_utils import confirm_new_bid
+# from config import Config
 
 app = Flask(__name__)
 
@@ -13,7 +14,7 @@ app = Flask(__name__)
 # login = LoginManager(app)
 # login.login_view = 'auth.unauthorized'
 
-app.config.from_object(Config)
+# app.config.from_object(Config)
 # @app.route('/')
 # def serve():
 #     return render_template("index.html")
@@ -32,7 +33,7 @@ app.config.from_object(Config)
 
 app.register_blueprint(user_routes, url_prefix='/users')
 app.register_blueprint(webhook_routes, url_prefix='/webhook')
-# db.init_app(app)
+# db.init_app(app)Î
 
 # Application Security
 # CORS(app)
@@ -62,4 +63,8 @@ app.register_blueprint(webhook_routes, url_prefix='/webhook')
 #                         samesite='Strict' if os.environ.get(
 #                             'FLASK_ENV') == 'production' else None,
 #                         httponly=True)
+
+
 #     return response
+if __name__ == '__main__':
+    app.run()

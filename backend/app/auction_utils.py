@@ -23,14 +23,14 @@ more realistic
 
 from models import db, Auction, User, Bid, AuctionUser
 from datetime import datetime, timedelta
-from nft_transactions.transact import createNftBuyOffer, createAcceptOffer
+from nft_transactions.xrp_transact import createNftBuyOffer, createAcceptOffer
 
 
-# create a broker account and user token as secret 
-# set the receiving end to the broker account 
-#store auction dat off chain as well?
-# create sell offer with best buy offer with fee deducted and have the sell offer 
-# TODO: why have buy offers? 
+# create a broker account and user token as secret
+# set the receiving end to the broker account
+# store auction dat off chain as well?
+# create sell offer with best buy offer with fee deducted and have the sell offer
+# TODO: why have buy offers?
 
 def create_new_bid_offer(user_id, auction_id, nft_id, amount):
     """ TODO: might need to refactor to to have it all in transaction """

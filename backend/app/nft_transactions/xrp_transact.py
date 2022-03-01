@@ -7,8 +7,8 @@ from xrpl.utils import str_to_hex, hex_to_str
 from xrpl.models.amounts import IssuedCurrencyAmount
 import requests
 import datetime
-from models import User
-from xumm import sign_transactions
+# from models import User
+from .xumm import sign_transactions, get_transaction_id
 
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient("http://xls20-sandbox.rippletest.net:51234")
@@ -50,22 +50,58 @@ def mintNft(id, img_url):
 def get_transaction_dict(txid):
     """ reponse = get_transaction_from_hash(
     "71ECA5C1D9145507EE022E363197F2621A8E8784E98E8F13A1EA5CED92C7691F", client) """
-    reponse = get_transaction_from_hash(txid, client)
-    return reponse.result['meta']
+    response = get_transaction_from_hash(txid, client)
+    return response.result['meta']
 
 
-my_nft_mint = NFTokenMint(
-    account="r9jcocVzhfkH5PvgasDPhtde3zPVE2zDBK",
-    token_taxon=0,
-    uri=str_to_hex(
-        "https://images.livemint.com/img/2022/02/14/1600x900/NFT_1644804887471_1644804887655.jpg")
-)
-tx_payment_filled = autofill(my_nft_mint, client)
-tx_payment_filled = transaction_json_to_binary_codec_form(
-    tx_payment_filled.to_dict())
-custom_meta = {"identifier": 1, "instruction": "mint_nft"}
-sign_transactions(tx_payment_filled,
-                  "608e97e9-6b22-43e5-8580-e1712ede505a", custom_meta)
+def get_nft_id(payload_id):
+    transaction_hash = get_transaction_id(payload_id)
+    meta = get_transaction_dict(transaction_hash)
+    relevant_nodes = meta['AffectedNodes']
+    nft_toke_page = None
+    for node in relevant_nodes:
+        if "CreatedNode" in node:
+            if node["CreatedNode"]["LedgerEntryType"] == "NonFungibleTokens":
+                nft_toke_page = node["CreatedNode"]
+        elif "ModifiedNode" in node:
+            if node["ModifiedNode"]["LedgerEntryType"] == "NFTokenPage":
+                nft_toke_page = node["ModifiedNode"]
+    if "PreviousFields" in nft_toke_page:
+        previousFields = nft_toke_page["PreviousFields"]
+        if "NonFungibleTokens" in previousFields:
+            # might have to check the two keys
+            previous_token_ids = [token["NonFungibleToken"]["TokenID"]
+                                  for token in previousFields["NonFungibleTokens"]]
+    previous_token_id_set = set(previous_token_ids)
+    final_token_ids = []
+    final_tokens = None
+    if "FinalFields" in nft_toke_page:
+        final_tokens = nft_toke_page["FinalFields"]
+    elif "NewFields" in nft_toke_page:
+        final_tokens = nft_toke_page["NewFields"]
+    if "NonFungibleTokens" in final_tokens:
+        final_token_ids = [token["NonFungibleToken"]["TokenID"]
+                           for token in final_tokens["NonFungibleTokens"]]
+
+    token_id = list(filter(
+        lambda final_token_ids: final_token_ids not in previous_token_id_set, final_token_ids))[0]
+    # TODO: make sure token_id is stored
+    return token_id
+
+
+# my_nft_mint = NFTokenMint(
+#     account="rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8",
+#     token_taxon=0,
+#     uri=str_to_hex(
+#         "https://images.livemint.com/img/2022/02/14/1600x900/NFT_1644804887471_1644804887655.jpg")
+# )
+# tx_payment_filled = autofill(my_nft_mint, client)
+# tx_payment_filled = transaction_json_to_binary_codec_form(
+#     tx_payment_filled.to_dict())
+# custom_meta = {"identifier": 1, "instruction": "mint_nft"}
+# sign_transactions(tx_payment_filled,
+#                   "e5899868-642f-4680-9718-ba563af0c8ab", custom_meta)
+
 
 # asih token : 608e97e9-6b22-43e5-8580-e1712ede505a
 # {'Account': 'rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8', 'Fee': '10', 'Flags': 2147483648, 'LastLedgerSequence': 923674, 'Sequence': 666099, 'SigningPubKey': '03DD699122D87D789ADAD5FF0521572BA28B3BAFBD77FE35F70CEB74D04DEE8B2B', 'TokenTaxon': 0, 'TransactionType': 'NFTokenMint',

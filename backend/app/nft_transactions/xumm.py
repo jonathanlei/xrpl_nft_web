@@ -2,7 +2,6 @@ import requests
 import os
 from dotenv import load_dotenv
 import json
-from transact import get_transaction_dict
 # from models import User, db
 
 
@@ -16,6 +15,13 @@ headers = {
     "X-API-Secret": os.getenv("XUMM_APP_SECRET"),
 }
 # TODO: nft sandbox in Xumm app, unlock.
+
+
+def get_transaction_id(payload_id):
+    response = requests.request(
+        "GET", url + "/" + payload_id, headers=headers)
+    data = json.loads(response.content.decode('utf-8'))
+    return data["response"]["txid"]
 
 
 def sign_transactions(transaction_dict, user_token, custom_meta):
@@ -50,6 +56,7 @@ def user_sign_in(id):
     print(data)
     png_url = data["refs"]["qr_png"]
     return {"png_url": png_url}
+# user_sign_in(2)
 
 
 def get_xrp_account(payload_id):
@@ -60,38 +67,6 @@ def get_xrp_account(payload_id):
     print(data["response"]["account"])
     return data["response"]["account"]
 
-
-def get_nft_id(payload_id):
-    transaction_hash = get_transaction_id(payload_id)
-    meta = get_transaction_dict(transaction_hash)
-    affected_node = None
-    if "CreatedNode" in meta:
-        if meta["CreatedNode"] == "NFTokenPage":
-            affected_node = meta["CreatedNode"]
-    elif "ModifiedNode" in meta:
-        if meta["ModifiedNode"] == "NFTokenPage":
-            affected_node = meta["ModifiedNode"]
-    previous_token_ids = []
-    if "PreviousFields" in affected_node:
-        previousFields = affected_node["PreviousFields"]
-        if "NonFungibleTokens" in previousFields:
-            # might have to check the two keys
-            previous_token_ids = [token["NonFungibleToken"]["TokenID"]
-                                  for token in previousFields["NonFungibleTokens"]]
-    previous_token_id_set = set(previous_token_ids)
-    final_token_ids = []
-    final_tokens = None
-    if "FinalFields" in affected_node:
-        final_tokens = affected_node["FinalFields"]
-    elif "NewFields" in affected_node:
-        final_tokens = affected_node["NewFields"]
-    if "NonFungibleTokens" in final_tokens:
-        final_token_ids = [token["NonFungibleToken"]["TokenID"]
-                           for token in final_tokens["NonFungibleTokens"]]
-
-    token_id = [t not in previous_token_id_set for t in final_token_ids][0]
-    # TODO: make sure token_id is stored
-    return token_id
     # get transaction details
 
     # NFTokenPage creation
@@ -130,16 +105,9 @@ module.exports = (tx, meta) => {
 # print(data["response"])
 
 
-def get_transaction_id(payload_id):
-    response = requests.request(
-        "GET", url + "/" + payload_id, headers=headers)
-    data = json.loads(response.content.decode('utf-8'))
-    return data["response"]["txid"]
-
-
-response = requests.request(
-    "GET", url + "/" + "feb49af9-72bf-434c-8607-852633cd0d9f", headers=headers)
-data = json.loads(response.content.decode('utf-8'))
+# response = requests.request(
+#     "GET", url + "/" + "feb49af9-72bf-434c-8607-852633cd0d9f", headers=headers)
+# data = json.loads(response.content.decode('utf-8'))
 # # This is to get Payload
 # response = requests.request(
 #       "GET", url + "/" + "0e3f7226-4269-4b9d-a288-04973ab6083d", headers=headers)
