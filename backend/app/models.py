@@ -115,6 +115,7 @@ class Auction(db.Model):
     current_highest_price = db.Column(db.Float)
     current_highest_bidder = db.Column(
         db.Integer, db.ForeignKey("users.id"))
+    highest_bid_ledger_idx = db.Column(db.String, nullable=True)
     isActive = db.Column(db.Boolean, nullable=False, default=True)
     winner = db.Column(db.Integer, db.ForeignKey("users.id"))
     # don't need a joint table because it's a one-to-many relationship

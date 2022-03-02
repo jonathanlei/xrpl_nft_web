@@ -23,7 +23,7 @@ more realistic
 
 from models import db, Auction, User, Bid, AuctionUser
 from datetime import datetime, timedelta
-from nft_transactions.xrp_transact import createNftBuyOffer, createAcceptOffer
+from nft_transactions.xrp_transact import createNftBuyOffer, createAcceptOffer, createNftSellOffer
 
 
 # create a broker account and user token as secret
@@ -58,20 +58,26 @@ def confirm_new_bid(ledger_idx, auction_id, buyer_id, price):
     if price > current_auction.current_highest_price:
         current_auction.current_highest_price = price
         current_auction.current_highest_bidder = buyer_id
+        current_auction.highest_bid_ledger_idx = ledger_idx
         db.session.add(bid)
         db.session.commit()
     return bid.to_dict()
 
 
-def end_auction_and_create_accept_offer(auction_id, offer_id, owner_id):
+def end_auction_and_create_accept_offer(auction_id, owner_id):
     auction = Auction.query.get(auction_id)
     auction.isActive = False
     db.session.commit()
 
     # timer, display winner
     # set timeout python solution
-    # detach callback, (resest timer and delete )
-    return createAcceptOffer(offer_id, owner_id, True)
+    # detach callback, (resest timer and delete)
+    winning_buy_offer_idx = auction.highest_bid_ledger_idx
+    # TODO: central wallet id to be passed in
+    # XRPL library - store secret key of the wallet, xrpl py create wallet, do signing programmatically.
+    buyer_id = None
+    createNftSellOffer(owner_id, buyer_id, auction.nft_id, auction.current_highest_price)
+    return {"result": "sell wallet created"}
 
     """
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

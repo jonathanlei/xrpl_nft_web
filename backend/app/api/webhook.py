@@ -35,9 +35,10 @@ def receive_webhook():
         result = Bid(current_user.id, id, data["price"])
         # TODO: get the buy_offer_id, auction id, buyer id and price
         confirm_new_bid(ledger_idx, auction_id, buyer_id, price)
-
         print(data['meta'])
-    elif instruction == "create_sell_offer":
+    elif instruction == "create_sell_offer_broker":
+
+        # create accept offer for both sides, complete transaction
         print(data['meta'])
     elif instruction == "create_accept_offer":
         print(data['meta'])

@@ -2,7 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 import json
-# from models import User, db
+from models import User, db
 
 
 load_dotenv()
@@ -23,12 +23,17 @@ def get_transaction_id(payload_id):
     data = json.loads(response.content.decode('utf-8'))
     return data["response"]["txid"]
 
+# response = requests.request(
+#         "GET", url + "/" + "4691575d-5c52-4a6f-8278-c6b3f15c47e9", headers=headers)
+# data = json.loads(response.content.decode('utf-8'))
+# print(data)
+
 
 def sign_transactions(transaction_dict, user_token, custom_meta):
     # TODO: take in meta data
     """ given the trasaction payload and the user_token, send xumm user a push notificaiton to sign the payload"""
     payload = {"txjson": transaction_dict,
-               "user_token": user_token, "CustomMeta": custom_meta}
+               "user_token": user_token, "custom_meta": custom_meta}
     # TODO: convert the format for TransactionType and TokenTaxon later
     # print(payload)
     # if the user doesn't have push, add route to send transaction sign qr code
@@ -73,36 +78,11 @@ def get_xrp_account(payload_id):
 
 
     # Modifying NFTokenPage
-""" const { convertHexToString } = require('xrpl');
 
-module.exports = (tx, meta) => {
-  const affectedNode = meta.AffectedNodes.find(
-    node =>
-      node?.CreatedNode?.LedgerEntryType === 'NFTokenPage' ||
-      node?.ModifiedNode?.LedgerEntryType === 'NFTokenPage'
-  );
-  const nftNode = affectedNode.CreatedNode ?? affectedNode.ModifiedNode;
-
-  const previousTokenIds = nftNode?.PreviousFields?.NonFungibleTokens?.map(
-    token => token?.NonFungibleToken?.TokenID
-  );
-  const previousTokenIdSet = new Set(previousTokenIds);
-  const finalTokenIds = (nftNode.FinalFields ?? nftNode.NewFields)?.NonFungibleTokens?.map(
-    token => token?.NonFungibleToken?.TokenID
-  );
-  const tokenID = finalTokenIds.find(tid => !previousTokenIdSet.has(tid));
-
-  return {
-    tokenID,
-    tokenTaxon: tx.TokenTaxon,
-    uri: convertHexToString(tx.URI),
-  };
-}; """
-
-# response = requests.request(
-#     "GET", url + "/" + "abf91ee3-b4b8-4404-94ac-ee72d27687bf", headers=headers)
-# data = json.loads(response.content.decode('utf-8'))
-# print(data["response"])
+response = requests.request(
+    "GET", url + "/" + "5ca1096f-aa23-41d1-9d14-752101de8a16", headers=headers)
+data = json.loads(response.content.decode('utf-8'))
+print(data["response"])
 
 
 # response = requests.request(
