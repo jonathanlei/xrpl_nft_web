@@ -3,6 +3,7 @@ from flask_login import login_required, current_user
 from nft_transactions.xumm import get_transaction_id
 from models import User, Nft, Transaction, Auction,  Bid, db
 from nft_transactions.xumm import store_user_token, get_xrp_account, get_transaction_id
+from nft_transactions.xrp_transact import get_transaction_dict
 from auction_utils import confirm_new_bid
 import json
 
@@ -13,7 +14,11 @@ webhook_routes = Blueprint('webhook', __name__)
 def receive_webhook():
     data = request.json
     user_token = ""
-    print(request.json, "here")
+    print("THIS IS THE WEBHOOK RECEIVING PAYLOAD",data)
+    # payload_id = data['meta']['payload_uuidv4']
+    # breakpoint()
+    # transaction_hash = get_transaction_id(payload_id)
+    # meta = get_transaction_dict(transaction_hash)
     instruction = data["custom_meta"]["instruction"]
     if instruction == "user_sign_in_token":
         # store user token
@@ -27,11 +32,11 @@ def receive_webhook():
     elif instruction == "mint_nft":
         payload_id = data['meta']['payload_uuidv4']
         get_transaction_id(payload_id=data['meta']['payload_uuidv4'])
-        #store nft id from transaction
+        # store nft id from transaction
     elif instruction == "create_buy_offer":
-        #TODO: 
+        # TODO:
         data = json.loads(data['meta']["custom_meta"]["identifier"])
-        
+
         result = Bid(current_user.id, id, data["price"])
         # TODO: get the buy_offer_id, auction id, buyer id and price
         confirm_new_bid(ledger_idx, auction_id, buyer_id, price)

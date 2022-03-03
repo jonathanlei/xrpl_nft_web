@@ -35,7 +35,7 @@ def mintNft(id, img_url):
     )
     # TODO: test this
     tx_payment_filled = autofill(my_nft_mint, client).to_xrpl()
-    custom_meta = {"identifier": id, "instruction": "mint_nft"}
+    custom_meta = {'blob': {"user_id": id}, "instruction": "mint_nft"}
     # {"pushed": True} or {"png_url": "..."} depending on the push status
     result = sign_transactions(
         tx_payment_filled, user.xumm_user_token, custom_meta)
@@ -65,6 +65,7 @@ def get_offer_id(payload_id):
                 break
     return offer_id
 # print(get_offer_id("43993fc3-4587-44e0-9bc6-8365074d8587"))
+
 
 def get_nft_id(payload_id):
     """ get nft_token_id from minting payload """
@@ -111,7 +112,7 @@ def get_nft_id(payload_id):
 # tx_payment_filled = autofill(my_nft_mint, client)
 # tx_payment_filled = transaction_json_to_binary_codec_form(
 #     tx_payment_filled.to_dict())
-# custom_meta = {"identifier": 1, 'blob': None, "instruction": "mint_nft"}
+# custom_meta = {'blob':{"user_id":1},"instruction": "mint_nft"}
 # sign_transactions(tx_payment_filled,
 #                   "e5899868-642f-4680-9718-ba563af0c8ab", custom_meta)
 
@@ -165,7 +166,7 @@ def createNftBuyOffer(auction_id, seller_id, buyer_id, token_id, amount):
     tx_offer_filled = transaction_json_to_binary_codec_form(
         autofill(nft_offer, client).to_dict())
     custom_meta = {
-        "identifier": f"buyer: {buyer_id}, signed_time: {datetime.now()}, auction: {auction_id}", "instruction": "create_buy_offer"}
+        "blob": {"buyer": buyer_id, "signed_time": {datetime.now()}, "auction": {auction_id}}, "instruction": "create_buy_offer"}
     result = sign_transactions(
         tx_offer_filled, buyer.xumm_user_token, custom_meta)
     if "pushed" in result:
@@ -174,7 +175,7 @@ def createNftBuyOffer(auction_id, seller_id, buyer_id, token_id, amount):
         result["pushed"] = False
         return result
 
-# # trying sell offer 
+# # trying sell offer
 # sell_flag = NFTokenCreateOfferFlag(1)
 # tokenId = "00000000F7F917332EB18C40B065F37B729B4FB750A010D48542EAAC00000011"
 # nft_offer = NFTokenCreateOffer(
@@ -190,7 +191,7 @@ def createNftBuyOffer(auction_id, seller_id, buyer_id, token_id, amount):
 # sign_transactions(tx_offer_filled, "e5899868-642f-4680-9718-ba563af0c8ab",{})
 
 
-# trying buy offer 
+# trying buy offer
 
 # tokenId = "00000000F7F917332EB18C40B065F37B729B4FB750A010D412C5D5A70000000C"
 # nft_offer = NFTokenCreateOffer(
@@ -208,7 +209,7 @@ def createNftBuyOffer(auction_id, seller_id, buyer_id, token_id, amount):
 
 
 def createNftSellOffer(seller_id, buyer_id, token_id, amount):
-    #TODO: create a central wallet for buyer
+    # TODO: create a central wallet for buyer
     buyer = User.query.get(buyer_id)
     seller = User.query.get(seller_id)
     # TODO: look into more flags and functionalities
@@ -223,7 +224,7 @@ def createNftSellOffer(seller_id, buyer_id, token_id, amount):
     tx_offer_filled = transaction_json_to_binary_codec_form(
         autofill(nft_offer, client).to_dict())
     custom_meta = {
-        "identifier": buyer_id, "instruction": "create_sell_offer"}
+        "blob": {"seller": seller_id}, "instruction": "create_sell_offer"}
     result = sign_transactions(
         tx_offer_filled, seller.xumm_user_token, custom_meta)
     if "pushed" in result:
@@ -252,7 +253,7 @@ def createAcceptOffer(offer_id, destination_user_id, isSell):
     tx_offer_filled = transaction_json_to_binary_codec_form(
         autofill(tx_offer_filled, client).to_dict())
     custom_meta = {
-        "identifier": offer_id, "instruction": "create_accept_offer"}
+        "blob": {"offer_id": offer_id}, "instruction": "create_accept_offer"}
     result = sign_transactions(
         tx_offer_filled, user.xumm_user_token, custom_meta)
     if "pushed" in result:
@@ -264,13 +265,14 @@ def createAcceptOffer(offer_id, destination_user_id, isSell):
 
 nft_offer = NFTokenAcceptOffer(
     account="rGaqbQwA2PFEQETV3hg3bFPvkKkVbFDaMN",
-    sell_offer = "499B436399FAC5CE9FBE603D16BC8401ADA235E7FCCE3B913980A4B4097D026C"
+    sell_offer="499B436399FAC5CE9FBE603D16BC8401ADA235E7FCCE3B913980A4B4097D026C"
 )
 tx_offer_filled = autofill(nft_offer, client)
 tx_offer_filled = transaction_json_to_binary_codec_form(
-        tx_offer_filled.to_dict())
-custom_meta = {"identifier": id, "instruction": "nft_buy_offer", "blob":None}
-sign_transactions(tx_offer_filled, "e3bf2a28-a7c7-421a-a1c5-4c86b806551b", custom_meta)
+    tx_offer_filled.to_dict())
+custom_meta = {"instruction": "nft_buy_offer", "blob": {}}
+sign_transactions(
+    tx_offer_filled, "e3bf2a28-a7c7-421a-a1c5-4c86b806551b", custom_meta)
 
 
 result = {'Account': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA',

@@ -78,11 +78,36 @@ def get_xrp_account(payload_id):
 
 
     # Modifying NFTokenPage
+""" const { convertHexToString } = require('xrpl');
 
-response = requests.request(
-    "GET", url + "/" + "5ca1096f-aa23-41d1-9d14-752101de8a16", headers=headers)
-data = json.loads(response.content.decode('utf-8'))
-print(data["response"])
+module.exports = (tx, meta) => {
+  const affectedNode = meta.AffectedNodes.find(
+    node =>
+      node?.CreatedNode?.LedgerEntryType === 'NFTokenPage' ||
+      node?.ModifiedNode?.LedgerEntryType === 'NFTokenPage'
+  );
+  const nftNode = affectedNode.CreatedNode ?? affectedNode.ModifiedNode;
+
+  const previousTokenIds = nftNode?.PreviousFields?.NonFungibleTokens?.map(
+    token => token?.NonFungibleToken?.TokenID
+  );
+  const previousTokenIdSet = new Set(previousTokenIds);
+  const finalTokenIds = (nftNode.FinalFields ?? nftNode.NewFields)?.NonFungibleTokens?.map(
+    token => token?.NonFungibleToken?.TokenID
+  );
+  const tokenID = finalTokenIds.find(tid => !previousTokenIdSet.has(tid));
+
+  return {
+    tokenID,
+    tokenTaxon: tx.TokenTaxon,
+    uri: convertHexToString(tx.URI),
+  };
+}; """
+
+# response = requests.request(
+#     "GET", url + "/" + "abf91ee3-b4b8-4404-94ac-ee72d27687bf", headers=headers)
+# data = json.loads(response.content.decode('utf-8'))
+# print(data["response"])
 
 
 # response = requests.request(
