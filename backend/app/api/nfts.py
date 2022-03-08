@@ -4,6 +4,7 @@ from app.models import User, Nft, Transaction, Auction,  db
 from app.aws import (
     upload_file_to_s3, allowed_file, get_unique_filename)
 from nft_transactions.ipfs import upload_to_ipfs
+from nft_transactions.xrp_transact import mintNft
 
 nft_routes = Blueprint('nfts', __name__)
 
@@ -31,7 +32,6 @@ def mint():
         return {"errors": "image required"}, 400
 
     image = request.files["image"]
-
     if not allowed_file(image.filename):
         return {"errors": "file type not permitted"}, 400
 
@@ -41,11 +41,7 @@ def mint():
     # upload to ipfs
     uri = upload_to_ipfs(image)
     # add uri and contract id.
-    nft = Nft(title=data["title"], description=data["description"],
-              owner_id=data["owner"], uri=uri)
-    db.session.ad(nft)
-    db.session.commit()
-    return nft.to_dict()
+    return mintNft(data["owner"], uri, data)
 
 
 @nft_routes.route("/update/", methods=["PUT"])

@@ -27,7 +27,7 @@ central_wallet = Wallet(sequence=os.getenv(
 # create the transaction NFT TOKEN MINT
 
 
-def mintNft(id, img_url):
+def mintNft(id, img_url, nft_meta):
     user = User.query.get(id)
     # create token mint object
     my_nft_mint = NFTokenMint(
@@ -37,7 +37,8 @@ def mintNft(id, img_url):
     )
     # TODO: test this
     tx_payment_filled = autofill(my_nft_mint, client).to_xrpl()
-    custom_meta = {'blob': {"user_id": id}, "instruction": "mint_nft"}
+    nft_meta["uri"] = img_url
+    custom_meta = {'blob': nft_meta, "instruction": "mint_nft"}
     # {"pushed": True} or {"png_url": "..."} depending on the push status
     result = sign_transactions(
         tx_payment_filled, user.xumm_user_token, custom_meta)
@@ -156,7 +157,10 @@ def createNftBuyOffer(auction_id, buyer_id, amount, brokered_mode=True, seller_i
     tx_offer_filled = transaction_json_to_binary_codec_form(
         autofill(nft_offer, client).to_dict())
     custom_meta = {
-        "blob": {"buyer": buyer_id, "signed_time": {datetime.now()}, "auction": {auction_id}}, "instruction": "create_buy_offer"}
+        "blob": {"buyer_id": buyer_id,
+                 "auction_id": auction_id,
+                 "price": amount},
+        "instruction": "create_buy_offer"}
     result = sign_transactions(
         tx_offer_filled, buyer.xumm_user_token, custom_meta)
     if "pushed" in result:
