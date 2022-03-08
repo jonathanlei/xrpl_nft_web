@@ -37,10 +37,11 @@ def create_new_action():
 @login_required
 def create_new_bid(id):
     # TODO: frontend filter out lower prices so price check here
+    # all new bids are brokered for now
     data = request.json
     auction = Auction.query.get(id)
     new_offer = createNftBuyOffer(
-        auction.id, auction.owner, current_user.id, auction.nft_id, data["price"])
+        auction.id, current_user.id, data["price"], True)
     return new_offer
 
 

@@ -13,8 +13,6 @@ nft_storage_url = "https://api.nft.storage/upload"
 api_key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDVjMjlFYjYxMjQ1OUM3YTIxNUJCNjY0MDQwNDMzNDk4QzAzN0ZCMDYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzNzY4OTE3NjMxNywibmFtZSI6InhycCB0ZXN0IGtleSJ9.HvzCF4V52Tse0Hp-EGL7eC6pZEcEEFG60HA9Z_1K2yM"
 
 
-data = open(image_file3, 'rb').read()
-
 
 def upload_to_ipfs(image):
     Headers = {"Authorization": f"Bearer {api_key}"}

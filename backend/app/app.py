@@ -5,6 +5,9 @@ from flask_wtf.csrf import CSRFProtect, generate_csrf
 # # from models import db, User
 from api.users import user_routes
 from api.webhook import webhook_routes
+from api.auctions import auction_routes
+from api.auth import auth_routes 
+from api.nfts import nft_routes
 from auction_utils import confirm_new_bid
 # from config import Config
 
@@ -33,6 +36,9 @@ app = Flask(__name__)
 
 app.register_blueprint(user_routes, url_prefix='/users')
 app.register_blueprint(webhook_routes, url_prefix='/webhook')
+app.register_blueprint(nft_routes, url_prefix='/nft')
+app.register_blueprint(auth_routes, url_prefix='/auth')
+app.register_blueprint(auction_routes, url_prefix='/auction')
 # db.init_app(app)Î
 
 # Application Security
