@@ -5,14 +5,16 @@ from xrpl.clients import JsonRpcClient
 from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.utils import str_to_hex, hex_to_str
 from xrpl.models.amounts import IssuedCurrencyAmount
-import requests
 import datetime
 from models import User
 from .xumm import sign_transactions, get_transaction_id
+import os
 
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient("http://xls20-sandbox.rippletest.net:51234")
 
+central_wallet = Wallet(sequence=os.getenv(
+    "CENTRAL_WALLET_SEED"), seed=os.getenv("CENTRAL_WALLET_SEQUENCE"))
 # url = "http://xls20-sandbox.rippletest.net:51234"
 # "AD9825BC11FB54DA3E5DBE911E4F5F4B0208ADFB7FA677BB60DB9971964B79C1"
 # response = requests.post(url, data={"method": "tx", "params": [{"transaction": "AD9825BC11FB54DA3E5DBE911E4F5F4B0208ADFB7FA677BB60DB9971964B79C1"}]})

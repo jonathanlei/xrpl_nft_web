@@ -5,7 +5,7 @@ from aws import (
     upload_file_to_s3, allowed_file, get_unique_filename)
 from datetime import datetime
 from auction_utils import new_bid
-from nft_transactions.transact import createNftBuyOffer
+from nft_transactions.xrp_transact import createNftBuyOffer
 auction_routes = Blueprint('auctions', __name__)
 
 

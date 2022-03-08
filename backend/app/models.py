@@ -70,7 +70,7 @@ class User(db.Model, UserMixin):
 class Nft(db.Model):
     """ table for storing nft metas """
     __tablename__ = 'nfts'
-    id = db.Column(db.Integer, primary_key=True)
+    token_id = db.Column(db.Text, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String, nullable=False)
     uri = db.Column(db.Text, nullable=False)
@@ -86,7 +86,7 @@ class Nft(db.Model):
 
     def to_dict(self):
         return {
-            "id": self.id,
+            "token_id": self.token_id,
             "title": self.title,
             "description": self.description,
             "uri": self.uri,
