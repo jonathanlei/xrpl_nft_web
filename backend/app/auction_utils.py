@@ -74,7 +74,7 @@ def end_auction_and_create_sell_offer(auction_id, owner_id):
     # detach callback, (resest timer and delete)
     # TODO: central wallet id to be passed in
     # XRPL library - store secret key of the wallet, xrpl py create wallet, do signing programmatically.
-    return createNftSellOffer(owner_id, auction.nft_id, auction.current_highest_price, True)
+    return createNftSellOffer(auction_id, owner_id, auction.current_highest_price, True)
 
     """
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)

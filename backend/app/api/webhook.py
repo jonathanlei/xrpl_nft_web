@@ -3,8 +3,8 @@ from flask_login import login_required, current_user
 from nft_transactions.xumm import get_transaction_id
 from models import User, Nft, Transaction, Auction,  Bid, db
 from nft_transactions.xumm import store_user_token, get_xrp_account, get_transaction_id
-from nft_transactions.xrp_transact import get_transaction_dict, get_nft_id, get_offer_id
-from auction_utils import confirm_new_bid.
+from nft_transactions.xrp_transact import createAcceptOfferAndSign, get_nft_id, get_offer_id
+from auction_utils import confirm_new_bid
 import json
 
 webhook_routes = Blueprint('webhook', __name__)
@@ -13,20 +13,14 @@ webhook_routes = Blueprint('webhook', __name__)
 @webhook_routes.route("/", methods=["POST"])
 def receive_webhook():
     data = request.json
-    user_token = ""
     print("THIS IS THE WEBHOOK RECEIVING PAYLOAD", data)
-    # payload_id = data['meta']['payload_uuidv4']
-    # breakpoint()
-    # transaction_hash = get_transaction_id(payload_id)
-    # meta = get_transaction_dict(transaction_hash)
     instruction = data["custom_meta"]["instruction"]
     meta = data["custom_meta"]["blob"]
     payload_id = data['meta']['payload_uuidv4']
-
     if instruction == "user_sign_in_token":
         # store user token
         user_token = data['meta']['userToken']["user_token"]
-        user_id = data['meta']["custom_meta"]["identifier"]
+        user_id = meta["id"]
         xrp_account_address = get_xrp_account(payload_id)
         # TODO: auto update token after certain amount of time
         store_user_token(user_id, user_token, xrp_account_address)
@@ -39,22 +33,15 @@ def receive_webhook():
         db.session.commit()
         return nft.to_dict()
     elif instruction == "create_buy_offer":
-        # TODO:
-        result = Bid(current_user.id, id, data["price"])
-        buyer_offer_idx = get_offer_id(payload_id)
-        # TODO: get the buy_offer_id, auction id, buyer id and price
-        return confirm_new_bid(buyer_offer_idx, meta["auction_id"], meta["buyer_id"],  meta["price"])
-    elif instruction == "create_sell_offer_broker":
-
+        buyer_offer_id = get_offer_id(payload_id)
+        return confirm_new_bid(buyer_offer_id, meta["auction_id"], meta["buyer_id"],  meta["price"])
+    elif instruction == "create_sell_offer":
+        sell_offer_id = get_offer_id(payload_id)
+        return createAcceptOfferAndSign(meta["auction_id"], sell_offer_id)
         # create accept offer for both sides, complete transaction
-        print(data['meta'])
     elif instruction == "create_accept_offer":
         print(data['meta'])
-    else:
-        return {}
-
-    return {}
-
+    return "this is webhook"
 
 # format
 {'meta':

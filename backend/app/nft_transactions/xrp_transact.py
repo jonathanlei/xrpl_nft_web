@@ -8,13 +8,15 @@ from xrpl.models.amounts import IssuedCurrencyAmount
 import datetime
 from models import User, Auction
 from .xumm import sign_transactions, get_transaction_id
-import os
+import os 
+from dotenv import load_dotenv
 
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
 client = JsonRpcClient("http://xls20-sandbox.rippletest.net:51234")
+load_dotenv()
 
-central_wallet = Wallet(sequence=os.getenv(
-    "CENTRAL_WALLET_SEED"), seed=os.getenv("CENTRAL_WALLET_SEQUENCE"))
+central_wallet = Wallet(sequence=int(os.getenv(
+    "CENTRAL_WALLET_SEQUENCE")), seed=os.getenv("CENTRAL_WALLET_SEED"))
 # url = "http://xls20-sandbox.rippletest.net:51234"
 # "AD9825BC11FB54DA3E5DBE911E4F5F4B0208ADFB7FA677BB60DB9971964B79C1"
 # response = requests.post(url, data={"method": "tx", "params": [{"transaction": "AD9825BC11FB54DA3E5DBE911E4F5F4B0208ADFB7FA677BB60DB9971964B79C1"}]})
@@ -202,13 +204,14 @@ def createNftBuyOffer(auction_id, buyer_id, amount, brokered_mode=True, seller_i
 # # sell_offer_id = 398AAA98324AB8C4C69E63D480BB66F2164329306FD9397CACC54EC4F48C339B
 
 
-def createNftSellOffer(seller_id, token_id, amount, brokered_mode=True, buyer_id=None):
+def createNftSellOffer(auction_id, seller_id, amount, brokered_mode=True, buyer_id=None):
     # TODO: create a central wallet for buyer
     buyer_address = None
     if brokered_mode:
         buyer_address = central_wallet.classic_address
     else:
         buyer_address = User.query.get(buyer_id).xrp_account
+    token_id = Auction.query.get(auction_id).nft_id
     seller = User.query.get(seller_id)
     sell_flag = NFTokenCreateOfferFlag(1)
     nft_offer = NFTokenCreateOffer(
@@ -221,7 +224,7 @@ def createNftSellOffer(seller_id, token_id, amount, brokered_mode=True, buyer_id
     tx_offer_filled = transaction_json_to_binary_codec_form(
         autofill(nft_offer, client).to_dict())
     custom_meta = {
-        "blob": {"seller": seller_id}, "instruction": "create_sell_offer"}
+        "blob": {"seller": seller_id, "auction_id": auction_id}, "instruction": "create_sell_offer"}
     result = sign_transactions(
         tx_offer_filled, seller.xumm_user_token, custom_meta)
     if "pushed" in result:
