@@ -6,7 +6,7 @@ from xrpl.wallet import generate_faucet_wallet, Wallet
 from xrpl.utils import str_to_hex, hex_to_str
 from xrpl.models.amounts import IssuedCurrencyAmount
 import datetime
-from models import User
+from models import User, Auction
 from .xumm import sign_transactions, get_transaction_id
 import os
 
@@ -137,18 +137,22 @@ sending and receiving NFTs via XRPL
 # TODO: test the reserve for the offer amount.
 
 
-def createNftBuyOffer(auction_id, seller_id, buyer_id, token_id, amount):
+def createNftBuyOffer(auction_id, buyer_id, amount, brokered_mode=True, seller_id=None):
     buyer = User.query.get(buyer_id)
-    seller = User.query.get(seller_id)
+    owner_address = None
+    if brokered_mode:
+        owner_address = central_wallet.classic_address
+    else:
+        owner_address = User.query.get(seller_id).xrp_account
+    token_id = Auction.query.get(auction_id).nft_id
     # any other flag than 1 is buy, 1 is sell
     nft_offer = NFTokenCreateOffer(
         account=buyer.xrp_account,
-        owner=seller.xrp_account,
+        owner=owner_address,
         amount=amount,
         token_id=token_id,
         # TODO: test if flag works
     )
-
     tx_offer_filled = transaction_json_to_binary_codec_form(
         autofill(nft_offer, client).to_dict())
     custom_meta = {
@@ -199,7 +203,7 @@ def createNftSellOffer(seller_id, token_id, amount, brokered_mode=True, buyer_id
     buyer_address = None
     if brokered_mode:
         buyer_address = central_wallet.classic_address
-    else: 
+    else:
         buyer_address = User.query.get(buyer_id).xrp_account
     seller = User.query.get(seller_id)
     sell_flag = NFTokenCreateOfferFlag(1)
@@ -252,11 +256,13 @@ def createAcceptOffer(offer_id, destination_user_id, isSell):
         return result
 
 
-def createAcceptOfferAndSign(offer_id):
+def createAcceptOfferAndSign(auction_id, sell_offer_id):
     """ accept sell offer after the auction ending from central wallet"""
+    highest_buy_offer = Auction.query.get(auction_id).highest_offer_id
     nft_accept_offer = NFTokenAcceptOffer(
         account=central_wallet.classic_address,
-        sell_offer=offer_id,
+        sell_offer=sell_offer_id,
+        buy_offer=highest_buy_offer
     )
     my_tx_payment_signed = safe_sign_and_autofill_transaction(
         nft_accept_offer, central_wallet, client)
@@ -264,35 +270,13 @@ def createAcceptOfferAndSign(offer_id):
     return tx_response
 
 
-nft_offer = NFTokenAcceptOffer(
-    account="rGaqbQwA2PFEQETV3hg3bFPvkKkVbFDaMN",
-    sell_offer="499B436399FAC5CE9FBE603D16BC8401ADA235E7FCCE3B913980A4B4097D026C"
-)
-tx_offer_filled = autofill(nft_offer, client)
-tx_offer_filled = transaction_json_to_binary_codec_form(
-    tx_offer_filled.to_dict())
-custom_meta = {"instruction": "nft_buy_offer", "blob": {}}
-sign_transactions(
-    tx_offer_filled, "e3bf2a28-a7c7-421a-a1c5-4c86b806551b", custom_meta)
-
-
-result = {'Account': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA',
-          'Amount': '100', 'Destination': 'rKjZpLYqJzjb3ziNVfL3AVkracbAK4HRAT',
-          'Fee': '10', 'Flags': 1, 'LastLedgerSequence': 1402668, 'Sequence': 1402640,
-          'SigningPubKey': 'ED5D356242B72EB1CC8E94A4A244B61B2C6CC55A996D7CD2CBD00CB66C36F2D5E8',
-          'TokenID': '00000000E02D2398C90E04EFEEA995C206CA26810F73D5560000099B00000000',
-          'TransactionType': 'NFTokenCreateOffer', 'TxnSignature': 'C8478B1D3CBD4CDC82D6DEE88F6D05012D7C9B22C3A4B9545186E584A66691691123DD699791A06B4E41A925B39E13F41B1D1507B9840819412D9DC9F989EA06', 'date': 693961741, 'hash': '678A197364391540FE938B609F9666ED29277C210B8C292E7D84959CC4ACFDAD', 'inLedger': 1402650, 'ledger_index': 1402650,
-          'meta': {'AffectedNodes': [{'ModifiedNode': {'LedgerEntryType': 'AccountRoot', 'LedgerIndex': '2CBE8D81337E42235DFBE5C2E1FE5AB6CCFDFD2531230E15D8137480E6920C43',
-                                                       'PreviousTxnID': '26176DC2E51DDB1EB3084C571A0966859289DF6E6DEB8BB4B6DCF7DDF0E25D0D', 'PreviousTxnLgrSeq': 1396325}},
-                                     {'ModifiedNode': {'FinalFields': {'Account': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA',
-                                                                       'Balance': '999999980', 'Flags': 0, 'MintedTokens': 1, 'OwnerCount': 2, 'Sequence': 1402641}, 'LedgerEntryType': 'AccountRoot', 'LedgerIndex': '375D28248B03462978E3F4CEEECD8182689142B82DD84A8489BE75BAF5777979', 'PreviousFields': {
-                                         'Balance': '999999990', 'OwnerCount': 1, 'Sequence': 1402640}, 'PreviousTxnID': '439BC3C38B0E4085867235FAD136E86CD157206D4947BC030D378FB6F242C472', 'PreviousTxnLgrSeq': 1402644}},
-                                     {'CreatedNode': {'LedgerEntryType': 'NFTokenOffer',
-                                                      'LedgerIndex': '65DAB58BB31FA8BF0095A7A2C84B078967D32B914C759923DB2F392ED7B34112',
-                                                      'NewFields': {'Amount': '100', 'Destination': 'rKjZpLYqJzjb3ziNVfL3AVkracbAK4HRAT', 'Flags': 1,
-                                                                    'Owner': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA', 'TokenID': '00000000E02D2398C90E04EFEEA995C206CA26810F73D5560000099B00000000'}}},
-                                     {'CreatedNode': {'LedgerEntryType': 'DirectoryNode', 'LedgerIndex': '7C4AA035D66A99CBD7A22320A9E4DC3F1663ADC4A4B2DB031CC4659E1F3CD158',
-                                                      'NewFields': {'Flags': 2, 'RootIndex': '7C4AA035D66A99CBD7A22320A9E4DC3F1663ADC4A4B2DB031CC4659E1F3CD158',
-                                                                    'TokenID': '00000000E02D2398C90E04EFEEA995C206CA26810F73D5560000099B00000000'}}},
-                                     {'CreatedNode': {'LedgerEntryType': 'DirectoryNode', 'LedgerIndex': 'BDA4C05E1E8C0BAC3A45DA603660715921FDE950354DBCC9B6A9B1CD4CDC1936',
-                                                      'NewFields': {'Owner': 'rMSLSHbmJ6QbWtGGiUGQr5eKNJs7cz3WVA', 'RootIndex': 'BDA4C05E1E8C0BAC3A45DA603660715921FDE950354DBCC9B6A9B1CD4CDC1936'}}}], 'TransactionIndex': 0, 'TransactionResult': 'tesSUCCESS'}, 'validated': True}
+# nft_offer = NFTokenAcceptOffer(
+#     account="rGaqbQwA2PFEQETV3hg3bFPvkKkVbFDaMN",
+#     sell_offer="499B436399FAC5CE9FBE603D16BC8401ADA235E7FCCE3B913980A4B4097D026C"
+# )
+# tx_offer_filled = autofill(nft_offer, client)
+# tx_offer_filled = transaction_json_to_binary_codec_form(
+#     tx_offer_filled.to_dict())
+# custom_meta = {"instruction": "nft_buy_offer", "blob": {}}
+# sign_transactions(
+#     tx_offer_filled, "e3bf2a28-a7c7-421a-a1c5-4c86b806551b", custom_meta)

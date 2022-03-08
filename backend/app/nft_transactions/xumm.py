@@ -150,7 +150,7 @@ def store_user_token(id, user_token, account_address):
     user = User.query.get(id)
     # TODO: store the expiration. 12 months expiration date.
     user.xumm_user_token = user_token
-    user.xrp_account_id = account_address
+    user.xrp_account = account_address
     db.session.commit()
 
 

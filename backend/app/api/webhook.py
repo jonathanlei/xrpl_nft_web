@@ -3,7 +3,7 @@ from flask_login import login_required, current_user
 from nft_transactions.xumm import get_transaction_id
 from models import User, Nft, Transaction, Auction,  Bid, db
 from nft_transactions.xumm import store_user_token, get_xrp_account, get_transaction_id
-from nft_transactions.xrp_transact import get_transaction_dict
+from nft_transactions.xrp_transact import get_transaction_dict, get_nft_id
 from auction_utils import confirm_new_bid
 import json
 
@@ -31,7 +31,8 @@ def receive_webhook():
         return {'msg': "user token and account address successfully stored"}
     elif instruction == "mint_nft":
         payload_id = data['meta']['payload_uuidv4']
-        get_transaction_id(payload_id=data['meta']['payload_uuidv4'])
+        token_id = get_nft_id(payload_id=data['meta']['payload_uuidv4'])
+        
         # store nft id from transaction
     elif instruction == "create_buy_offer":
         # TODO:
