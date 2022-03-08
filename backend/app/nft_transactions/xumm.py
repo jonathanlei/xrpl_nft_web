@@ -14,7 +14,6 @@ headers = {
     "X-API-Key": os.getenv("XUMM_APP_KEY"),
     "X-API-Secret": os.getenv("XUMM_APP_SECRET"),
 }
-# TODO: nft sandbox in Xumm app, unlock.
 
 
 def get_transaction_id(payload_id):

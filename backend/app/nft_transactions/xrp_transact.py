@@ -31,7 +31,7 @@ def mintNft(id, img_url):
     user = User.query.get(id)
     # create token mint object
     my_nft_mint = NFTokenMint(
-        account=user.xrp_account_id,
+        account=user.xrp_account,
         token_taxon=0,
         uri=str_to_hex(img_url)
     )
@@ -132,22 +132,6 @@ def get_nft_id(payload_id):
 """
 sending and receiving NFTs via XRPL
 """
-# # TODO: sending payment from receiver_wallet
-# buyer = test_wallet_2.classic_address
-
-# token_id = ""
-# try:
-#     token_id = tx_response.result["meta"]["AffectedNodes"][1]['CreatedNode'][
-#         'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
-# except KeyError:
-#     token_id = tx_response.result["meta"]["AffectedNodes"][0]['CreatedNode'][
-#         'NewFields']['NonFungibleTokens'][0]['NonFungibleToken']['TokenID']
-
-# TODO: verify the user own the account and have the reserve, check public key hashes to address.
-
-# issue:
-# rely on two different people to authorize - no direct control over the transaction.
-
 # TODO: set expirations date of offer. and look into how to cancel (NFTokenCancel)
 # TODO: have buy/sell offer on chain for bids.
 # TODO: test the reserve for the offer amount.
@@ -158,8 +142,8 @@ def createNftBuyOffer(auction_id, seller_id, buyer_id, token_id, amount):
     seller = User.query.get(seller_id)
     # any other flag than 1 is buy, 1 is sell
     nft_offer = NFTokenCreateOffer(
-        account=buyer.xrp_account_id,
-        owner=seller.xrp_account_id,
+        account=buyer.xrp_account,
+        owner=seller.xrp_account,
         amount=amount,
         token_id=token_id,
         # TODO: test if flag works
@@ -210,15 +194,18 @@ def createNftBuyOffer(auction_id, seller_id, buyer_id, token_id, amount):
 # # sell_offer_id = 398AAA98324AB8C4C69E63D480BB66F2164329306FD9397CACC54EC4F48C339B
 
 
-def createNftSellOffer(seller_id, buyer_id, token_id, amount):
+def createNftSellOffer(seller_id, token_id, amount, brokered_mode=True, buyer_id=None):
     # TODO: create a central wallet for buyer
-    buyer = User.query.get(buyer_id)
+    buyer_address = None
+    if brokered_mode:
+        buyer_address = central_wallet.classic_address
+    else: 
+        buyer_address = User.query.get(buyer_id).xrp_account
     seller = User.query.get(seller_id)
-    # TODO: look into more flags and functionalities
     sell_flag = NFTokenCreateOfferFlag(1)
     nft_offer = NFTokenCreateOffer(
-        account=seller.xrp_account_id,
-        destination=buyer.xrp_account_id,
+        account=seller.xrp_account,
+        destination=buyer_address,
         amount=amount,
         token_id=token_id,
         flags=[sell_flag],
@@ -243,12 +230,12 @@ def createAcceptOffer(offer_id, destination_user_id, isSell):
     nft_accept_offer = None
     if isSell:
         nft_accept_offer = NFTokenAcceptOffer(
-            account=user.xrp_account_id,
+            account=user.xrp_account,
             sell_offer=offer_id,
         )
     else:
         nft_accept_offer = NFTokenAcceptOffer(
-            account=user.xrp_account_id,
+            account=user.xrp_account,
             buy_offer=offer_id,
         )
     tx_offer_filled = autofill(nft_accept_offer, client)
@@ -263,6 +250,18 @@ def createAcceptOffer(offer_id, destination_user_id, isSell):
     else:
         result["pushed"] = False
         return result
+
+
+def createAcceptOfferAndSign(offer_id):
+    """ accept sell offer after the auction ending from central wallet"""
+    nft_accept_offer = NFTokenAcceptOffer(
+        account=central_wallet.classic_address,
+        sell_offer=offer_id,
+    )
+    my_tx_payment_signed = safe_sign_and_autofill_transaction(
+        nft_accept_offer, central_wallet, client)
+    tx_response = send_reliable_submission(my_tx_payment_signed, client)
+    return tx_response
 
 
 nft_offer = NFTokenAcceptOffer(
