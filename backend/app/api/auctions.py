@@ -36,10 +36,9 @@ def create_new_action():
 @auction_routes.route("/<int:id>/new_bid", methods=["PUT"])
 @login_required
 def create_new_bid(id):
-    # TODO: frontend filter out lower prices so price check here
-    # all new bids are brokered for now
     data = request.json
     auction = Auction.query.get(id)
+    #TODO: current_user login - 
     new_offer = createNftBuyOffer(
         auction.id, current_user.id, data["price"], True)
     return new_offer

@@ -17,10 +17,10 @@ def get_all_users():
     return {"users": [user.to_dict() for user in users]}
 
 
-@user_routes.route('/<int:id>')
+@user_routes.route('/<str:xrp_account>')
 @login_required
-def user(id):
-    user = User.query.get(id)
+def user(xrp_account):
+    user = User.query.get(xrp_account)
     return user.to_dict()
 
 
@@ -30,8 +30,6 @@ def update_user():
     print("inside update user")
     data = request.json
     user = User.query.filter(User.id == current_user.id).one()
-    user.first_name = data["firstName"]
-    user.last_name = data["lastName"]
     user.email = data["email"]
     db.session.commit()
     return user.to_dict()
@@ -70,32 +68,32 @@ def update_profile_photo():
     return currUser.to_dict()
 
 
-@user_routes.route("/<int:id>/transactions")
+@user_routes.route("/<str:xrp_account>/transactions")
 @login_required
-def get_all_transactions(id):
+def get_all_transactions(xrp_account):
     all_transactions = Transaction.query.filter(
-        Transaction.buyer == id, Transaction.seller == id).all()
+        Transaction.buyer == xrp_account, Transaction.seller == xrp_account).all()
     return {"transactions": [n.to_dict() for n in all_transactions]}
 
 
-@user_routes.route("/<int:id>/connect-wallet")
+@user_routes.route("/<str:xrp_account>/connect-wallet")
 @login_required
-def connect_wallet(id):
-    png_url = user_sign_in(id)
+def connect_wallet(xrp_account):
+    png_url = user_sign_in(xrp_account)
     return {"png_url": png_url}
 
 
-@user_routes.route("/<int:id>/nfts")
+@user_routes.route("/<str:xrp_account>/nfts")
 @login_required
-def get_all_nfts(id):
-    all_nfts = Nft.query.filter(Nft.owner_id == id).all()
+def get_all_nfts(xrp_account):
+    all_nfts = Nft.query.filter(Nft.owner_xrp_account == xrp_account).all()
     return {"nfts": [n.to_dict() for n in all_nfts]}
 
 
-@user_routes.route("/<int:id>/auctions")
+@user_routes.route("/<str:xrp_account>/auctions")
 @login_required
-def get_all_auctions(id):
-    all_nfts = Nft.query.filter(Nft.owner_id == id).all()
+def get_all_auctions(xrp_account):
+    all_nfts = Nft.query.filter(Nft.owner_xrp_account == xrp_account).all()
     return {"nfts": [n.to_dict() for n in all_nfts]}
 
 

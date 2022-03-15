@@ -8,7 +8,7 @@ from xrpl.models.amounts import IssuedCurrencyAmount
 import datetime
 from models import User, Auction
 from .xumm import sign_transactions, get_transaction_id
-import os 
+import os
 from dotenv import load_dotenv
 
 JSON_RPC_URL = "https://s.altnet.rippletest.net:51234/"
@@ -29,8 +29,8 @@ central_wallet = Wallet(sequence=int(os.getenv(
 # create the transaction NFT TOKEN MINT
 
 
-def mintNft(id, img_url, nft_meta):
-    user = User.query.get(id)
+def mintNft(xrp_account, img_url, nft_meta):
+    user = User.query.get(xrp_account)
     # create token mint object
     my_nft_mint = NFTokenMint(
         account=user.xrp_account,
@@ -140,8 +140,8 @@ sending and receiving NFTs via XRPL
 # TODO: test the reserve for the offer amount.
 
 
-def createNftBuyOffer(auction_id, buyer_id, amount, brokered_mode=True, seller_id=None):
-    buyer = User.query.get(buyer_id)
+def createNftBuyOffer(auction_id, buyer_xrp_account, amount, brokered_mode=True, seller_id=None):
+    buyer = User.query.get(buyer_xrp_account)
     owner_address = None
     if brokered_mode:
         owner_address = central_wallet.classic_address
@@ -150,7 +150,7 @@ def createNftBuyOffer(auction_id, buyer_id, amount, brokered_mode=True, seller_i
     token_id = Auction.query.get(auction_id).nft_id
     # any other flag than 1 is buy, 1 is sell
     nft_offer = NFTokenCreateOffer(
-        account=buyer.xrp_account,
+        account=buyer_xrp_account,
         owner=owner_address,
         amount=amount,
         token_id=token_id,
@@ -159,7 +159,7 @@ def createNftBuyOffer(auction_id, buyer_id, amount, brokered_mode=True, seller_i
     tx_offer_filled = transaction_json_to_binary_codec_form(
         autofill(nft_offer, client).to_dict())
     custom_meta = {
-        "blob": {"buyer_id": buyer_id,
+        "blob": {"buyer_xrp_account": buyer_xrp_account,
                  "auction_id": auction_id,
                  "price": amount},
         "instruction": "create_buy_offer"}
@@ -204,15 +204,16 @@ def createNftBuyOffer(auction_id, buyer_id, amount, brokered_mode=True, seller_i
 # # sell_offer_id = 398AAA98324AB8C4C69E63D480BB66F2164329306FD9397CACC54EC4F48C339B
 
 
-def createNftSellOffer(auction_id, seller_id, amount, brokered_mode=True, buyer_id=None):
+def createNftSellOffer(auction_id, seller_xrp_account, amount,
+                       brokered_mode=True, buyer_xrp_account=None):
     # TODO: create a central wallet for buyer
     buyer_address = None
     if brokered_mode:
         buyer_address = central_wallet.classic_address
     else:
-        buyer_address = User.query.get(buyer_id).xrp_account
+        buyer_address = User.query.get(buyer_xrp_account).xrp_account
     token_id = Auction.query.get(auction_id).nft_id
-    seller = User.query.get(seller_id)
+    seller = User.query.get(seller_xrp_account)
     sell_flag = NFTokenCreateOfferFlag(1)
     nft_offer = NFTokenCreateOffer(
         account=seller.xrp_account,
@@ -224,7 +225,7 @@ def createNftSellOffer(auction_id, seller_id, amount, brokered_mode=True, buyer_
     tx_offer_filled = transaction_json_to_binary_codec_form(
         autofill(nft_offer, client).to_dict())
     custom_meta = {
-        "blob": {"seller": seller_id, "auction_id": auction_id}, "instruction": "create_sell_offer"}
+        "blob": {"seller": seller_xrp_account, "auction_id": auction_id}, "instruction": "create_sell_offer"}
     result = sign_transactions(
         tx_offer_filled, seller.xumm_user_token, custom_meta)
     if "pushed" in result:
@@ -236,17 +237,17 @@ def createNftSellOffer(auction_id, seller_id, amount, brokered_mode=True, buyer_
     # submit the transaction
 
 
-def createAcceptOffer(offer_id, destination_user_id, isSell):
-    user = User.query.get(destination_user_id)
+def createAcceptOffer(offer_id, destination_xrp_account, isSell):
+    user = User.query.get(destination_xrp_account)
     nft_accept_offer = None
     if isSell:
         nft_accept_offer = NFTokenAcceptOffer(
-            account=user.xrp_account,
+            account=destination_xrp_account,
             sell_offer=offer_id,
         )
     else:
         nft_accept_offer = NFTokenAcceptOffer(
-            account=user.xrp_account,
+            account=destination_xrp_account,
             buy_offer=offer_id,
         )
     tx_offer_filled = autofill(nft_accept_offer, client)

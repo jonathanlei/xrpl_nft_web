@@ -22,7 +22,7 @@ def connect_db(app):
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
-    # TODO: have xrp_account to be primary key - easier workflow 
+    # TODO: have xrp_account to be primary key - easier workflow
     xrp_account = db.Column(db.String(255), primary_key=True)
     email = db.Column(db.String(255), nullable=True, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
@@ -39,7 +39,6 @@ class User(db.Model, UserMixin):
     auctions = db.relationship(
         "Auction", secondary="auctions_users", backref="bidders")
 
-
     def get_nfts(self):
         return self.nfts
 
@@ -52,6 +51,7 @@ class User(db.Model, UserMixin):
             "email": self.email,
         }
 
+
 class Nft(db.Model):
     """ table for storing nft metas """
     __tablename__ = 'nfts'
@@ -62,12 +62,12 @@ class Nft(db.Model):
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now(),
                            nullable=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey(
-        "users.id"), nullable=False)
+    owner_xrp_account = db.Column(db.Integer, db.ForeignKey(
+        "users.xrp_account"), nullable=False)
 
     @property
     def get_owner(self):
-        return self.owner_id
+        return self.owner_xrp_account
 
     def to_dict(self):
         return {
@@ -75,7 +75,7 @@ class Nft(db.Model):
             "title": self.title,
             "description": self.description,
             "uri": self.uri,
-            "owner": self.owner_id,
+            "owner": self.owner_xrp_account,
         }
 
 
@@ -83,7 +83,8 @@ class Auction(db.Model):
     """ table for storing NFT auctions """
     __tablename__ = "auctions"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    owner = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    owner_xrp_account = db.Column(db.Integer, db.ForeignKey(
+        "users.xrp_account"), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now(),
                            nullable=False)
@@ -99,10 +100,10 @@ class Auction(db.Model):
     duration = db.Column(db.Integer, nullable=False)
     current_highest_price = db.Column(db.Float)
     current_highest_bidder = db.Column(
-        db.Integer, db.ForeignKey("users.id"))
+        db.Integer, db.ForeignKey("users.xrp_account"))
     highest_offer_id = db.Column(db.String, nullable=True)
     isActive = db.Column(db.Boolean, nullable=False, default=True)
-    winner = db.Column(db.Integer, db.ForeignKey("users.id"))
+    winner = db.Column(db.Integer, db.ForeignKey("users.xrp_account"))
     # don't need a joint table because it's a one-to-many relationship
     bids = db.relationship("Bid", backref="auctions")
     bidders = db.relationship(
@@ -111,7 +112,7 @@ class Auction(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "owner": self.owner,
+            "owner": self.owner_xrp_account,
             "created_at": self.created_at,
             "nft_id": self.nft_id,
             "starting_price": self.starting_price,
@@ -141,36 +142,33 @@ class AuctionUser(db.Model):
     auction_id = db.Column(db.Integer,
                            db.ForeignKey("auctions.id"),
                            primary_key=True)
-    user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.id"),
-                        primary_key=True)
+    user_xrp_acount = db.Column(db.Integer,
+                                db.ForeignKey("users.xrp_acount"),
+                                primary_key=True)
     last_bid_price = db.Column(db.Float)
 
 
 class Bid(db.Model):
     """ table for individual bids """
     __tablename__ = "bids"
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    ledger_idx = db.Column(db.String, primary_key=True)
     auction_id = db.Column(db.Integer,
                            db.ForeignKey("auctions.id"))
-    user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.id"),
-                        primary_key=True)
+    xrp_account = db.Column(db.Integer,
+                            db.ForeignKey("users.xrp_account"),
+                            primary_key=True)
     bid_time = db.Column(db.DateTime(timezone=True),
                          server_default=func.now(),
                          nullable=False)
     bid_amount = db.Column(db.Float, nullable=False)
-    ledger_idx = db.Column(db.String, nullable=True)
 
     def to_dict(self):
         return {
-            "id": self.id,
+            "ledger_idx": self.ledger_idx,
             "auction_id": self.auction_id,
-            "user_id": self.user_id,
+            "xrp_account": self.xrp_account,
             "bid_time": self.bid_time,
             "bid_amount": self.bid_amount,
-            "ledger_idx": self.ledger_idx,
         }
 
 
@@ -180,8 +178,8 @@ class Transaction(db.Model):
     # id represented by ledger entry
     id = db.Column(db.Integer, primary_key=True)
     nft_id = db.Column(db.Integer, db.ForeignKey("nfts.id"))
-    buyer = db.Column(db.Integer, db.ForeignKey("users.id"))
-    seller = db.Column(db.Integer, db.ForeignKey("users.id"))
+    buyer = db.Column(db.Integer, db.ForeignKey("users.xrp_account"))
+    seller = db.Column(db.Integer, db.ForeignKey("users.xrp_account"))
     price = db.Column(db.Float, nullable=False, default=0)
     transaction_time = db.Column(
         db.DateTime, default=lambda: datetime.now(), nullable=False)
@@ -207,5 +205,5 @@ class TransactionUser(db.Model):
                                db.ForeignKey("transactions.id"),
                                primary_key=True)
     user_id = db.Column(db.Integer,
-                        db.ForeignKey("users.id"),
+                        db.ForeignKey("users.xrp_account"),
                         primary_key=True)
