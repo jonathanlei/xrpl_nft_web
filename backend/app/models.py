@@ -22,37 +22,23 @@ def connect_db(app):
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    first_name = db.Column(db.String(20), nullable=False)
-    last_name = db.Column(db.String(20), nullable=False)
-    user_name = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(255), nullable=False, unique=True)
+    # TODO: have xrp_account to be primary key - easier workflow 
+    xrp_account = db.Column(db.String(255), primary_key=True)
+    email = db.Column(db.String(255), nullable=True, unique=True)
     hashed_password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(
         db.DateTime, default=lambda: datetime.now(), nullable=False)
     profile_photo = db.Column(
-        db.String(255), nullable=False, default="https://i.imgur.com/tdi3NGa.jpg")
+        db.String(255), nullable=True, default="https://i.imgur.com/tdi3NGa.jpg")
     updated_at = db.Column(
         db.DateTime, default=lambda: datetime.now(), nullable=False)
     xumm_user_token = db.Column(db.String(255), nullable=True)
-    xrp_account = db.Column(db.String(255), nullable=True)
     nfts = db.relationship('Nft', backref="owners")
     transactions = db.relationship(
         'Transaction', secondary="transactions_users", backref="users")
     auctions = db.relationship(
         "Auction", secondary="auctions_users", backref="bidders")
 
-    @property
-    def password(self):
-        return self.hashed_password
-
-    @password.setter
-    def password(self, password):
-        self.hashed_password = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password, password)
 
     def get_nfts(self):
         return self.nfts
@@ -61,11 +47,10 @@ class User(db.Model, UserMixin):
         # TODO: return more things
         return {
             "id": self.id,
-            "firstName": self.first_name,
-            "lastName": self.last_name,
+            "xrp_account": self.xrp_account,
+            "xumm_user_token": self.xumm_user_token,
             "email": self.email,
         }
-
 
 class Nft(db.Model):
     """ table for storing nft metas """

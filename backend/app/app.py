@@ -39,7 +39,7 @@ app.register_blueprint(webhook_routes, url_prefix='/webhook')
 app.register_blueprint(nft_routes, url_prefix='/nft')
 app.register_blueprint(auth_routes, url_prefix='/auth')
 app.register_blueprint(auction_routes, url_prefix='/auction')
-# db.init_app(app)Î
+# db.init_app(app)
 
 # Application Security
 # CORS(app)

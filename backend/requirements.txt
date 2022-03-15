@@ -1,5 +1,6 @@
 anyio==3.3.4
 base58==2.1.1
+bidict==0.21.4
 boto3==1.20.38
 botocore==1.23.38
 certifi==2021.10.8
@@ -9,6 +10,7 @@ ECPy==1.2.5
 Flask==2.0.2
 Flask-Cors==3.0.10
 Flask-Login==0.5.0
+Flask-SocketIO==5.1.1
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==1.0.0
 greenlet==1.1.2
@@ -22,6 +24,8 @@ jmespath==0.10.0
 MarkupSafe==2.0.1
 python-dateutil==2.8.2
 python-dotenv==0.19.2
+python-engineio==4.3.1
+python-socketio==5.5.2
 requests==2.27.1
 rfc3986==1.5.0
 s3transfer==0.5.0
