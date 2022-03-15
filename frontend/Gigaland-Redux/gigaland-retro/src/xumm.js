@@ -1,39 +1,22 @@
-// change the web socket address to hosted.
-const ws = new WebSocket(`ws://localhost:5050/xumm`);
+import React, { useState, useEffect } from "react";
+import socketIOClient from "socket.io-client";
+const ENDPOINT = "http://127.0.0.1:5050";
 
-/** called when connection opens, sends join info to server. */
+function Xumm() {
+  const [response, setResponse] = useState("");
 
-ws.onopen = function (evt) {
-  console.log("open", evt);
-  // data :
-  ws.send(JSON.stringify(data));
-};
+  useEffect(() => {
+    const socket = socketIOClient(ENDPOINT);
+    socket.on("FromAPI", (data) => {
+      setResponse(data);
+    });
+  }, []);
 
-/** called when msg received from server; displays it. */
+  return (
+    <p>
+      It's <time dateTime={response}>{response}</time>
+    </p>
+  );
+}
 
-ws.onmessage = function (evt) {
-  console.log("message", evt);
-
-  let msg = JSON.parse(evt.data);
-  let item;
-
-  if (msg.type === "note") {
-    item = $(`<li><i>${msg.text}</i></li>`);
-  } else if (msg.type === "chat") {
-    item = $(`<li><b>${msg.name}: </b>${msg.text}</li>`);
-  } else {
-    return console.error(`bad message: ${msg}`);
-  }
-};
-
-/** called on error; logs it. */
-
-ws.onerror = function (evt) {
-  console.error(`err ${evt}`);
-};
-
-/** called on connection-closed; logs it. */
-
-ws.onclose = function (evt) {
-  console.log("close", evt);
-};
+export default Xumm;

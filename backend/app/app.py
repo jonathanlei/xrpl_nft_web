@@ -6,11 +6,11 @@ from flask_wtf.csrf import CSRFProtect, generate_csrf
 from api.users import user_routes
 from api.webhook import webhook_routes
 from api.auctions import auction_routes
-from api.auth import auth_routes 
+from api.auth import auth_routes
 from api.nfts import nft_routes
 from auction_utils import confirm_new_bid
 # from config import Config
-
+from flask_socketio import SocketIO
 app = Flask(__name__)
 
 # # Setup login manager
@@ -33,6 +33,7 @@ app = Flask(__name__)
 # @login.user_loader
 # def load_user(id):
 #     return User.query.get(int(id))
+socketio = SocketIO(app)
 
 app.register_blueprint(user_routes, url_prefix='/users')
 app.register_blueprint(webhook_routes, url_prefix='/webhook')
@@ -69,8 +70,11 @@ app.register_blueprint(auction_routes, url_prefix='/auction')
 #                         samesite='Strict' if os.environ.get(
 #                             'FLASK_ENV') == 'production' else None,
 #                         httponly=True)
+def send_socket_message(event_name, data):
+    socketio.emit(event_name, data)
 
 
 #     return response
 if __name__ == '__main__':
     app.run()
+    socketio.run(app)
