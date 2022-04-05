@@ -19,7 +19,9 @@ class Clock extends Component {
   }
   getTimeUntil(deadline) {
     const time = Date.parse(deadline) - Date.parse(new Date());
+    // console.log(deadline, time);
     if (time < 0) {
+      //TODO: call backend to end auction
       this.setState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     } else {
       const seconds = Math.floor((time / 1000) % 60);

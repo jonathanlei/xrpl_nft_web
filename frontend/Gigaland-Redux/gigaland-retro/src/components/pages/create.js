@@ -8,18 +8,29 @@ constructor() {
     super();
     this.onChange = this.onChange.bind(this);
     this.state = {
-      files: [],
+      files: null,
+      title: "", 
+      description: "",
+      price: "",
+      preiewUrl: "", 
     };
   }
 
-  onChange(e) {
-    var files = e.target.files;
-    console.log(files);
-    var filesArr = Array.prototype.slice.call(files);
-    console.log(filesArr);
-    document.getElementById("file_name").style.display = "none";
-    this.setState({ files: [...this.state.files, ...filesArr] });
+  onChange(evt) {
+    evt.preventDefault();
+    const {name, value} = evt.target;
+    if (name === "files"){
+      console.log("HERE");
+      document.getElementById("file_name").style.display = "none";
+      let url = window.webkitURL.createObjectURL(value);
+      console.log(url);
+      this.setState(fData => ({...fData, preiewUrl:url}));
+    }
+    this.setState(fData =>  ({...fData, [name]: value}));
   }
+
+
+  
 
 render() {
     return (
@@ -46,13 +57,12 @@ render() {
                       <h5>Upload file</h5>
 
                       <div className="d-create-file">
-                          <p id="file_name">PNG, JPG, GIF, WEBP or MP4. Max 200mb.</p>
-                          {this.state.files.map(x => 
-                          <p key="{index}">PNG, JPG, GIF, WEBP or MP4. Max 200mb.{x.name}</p>
-                          )}
+                          {this.state.files ? <></> : <p id="file_name">PNG, JPG, GIF, WEBP or MP4. Max 200mb.</p> }
+                        { this.state.files ?  (<p key="{index}">{this.state.files}</p>) : <></>}
+                        
                           <div className='browse'>
                             <input type="button" id="get_file" className="btn-main" value="Browse"/>
-                            <input id='upload_file' type="file" multiple onChange={this.onChange} />
+                            <input name="files" id='upload_file' type="file" onChange={this.onChange} />
                           </div>
                           
                       </div>
@@ -60,23 +70,19 @@ render() {
                       <div className="spacer-single"></div>
 
                       <h5>Title</h5>
-                      <input type="text" name="item_title" id="item_title" className="form-control" placeholder="e.g. 'Crypto Funk" />
+                      <input type="text" name="item_title" id="item_title" className="form-control" placeholder="e.g. 'Crypto Funk"  onChange={this.onChange} />
 
                       <div className="spacer-10"></div>
 
                       <h5>Description</h5>
-                      <textarea data-autoresize name="item_desc" id="item_desc" className="form-control" placeholder="e.g. 'This is very limited item'"></textarea>
+                      <textarea data-autoresize name="item_desc" id="item_desc" className="form-control" placeholder="e.g. 'This is very limited item'" value={this.state.description} onChange={this.onChange} ></textarea>
 
                       <div className="spacer-10"></div>
 
                       <h5>Price</h5>
-                      <input type="text" name="item_price" id="item_price" className="form-control" placeholder="enter price for one item (ETH)" />
+                      <input type="text" name="item_price" id="item_price" className="form-control" placeholder="enter price for one item (XRP)"  value={this.state.value} onChange={this.onChange} />
 
                       <div className="spacer-10"></div>
-
-                      <h5>Royalties</h5>
-                      <input type="text" name="item_royalties" id="item_royalties" className="form-control" placeholder="suggested: 0, 10%, 20%, 30%. Maximum is 70%" />
-
                       <div className="spacer-10"></div>
 
                       <input type="button" id="submit" className="btn-main" value="Create Item"/>
@@ -98,15 +104,15 @@ render() {
                       </div>
                       <div className="nft__item_wrap">
                           <span>
-                              <img src="./img/collections/coll-item-3.jpg" id="get_file_2" className="lazy nft__item_preview" alt=""/>
+                              <img src={this.state.previewUrl} id="get_file_2" className="lazy nft__item_preview" alt=""/>
                           </span>
                       </div>
                       <div className="nft__item_info">
                           <span >
-                              <h4>Pinky Ocean</h4>
+                              <h4>{this.state.title}</h4>
                           </span>
                           <div className="nft__item_price">
-                              0.08 ETH<span>1/20</span>
+                              {this.state.price}XRP<span>{this.state.price}</span>
                           </div>
                           <div className="nft__item_action">
                               <span>Place a bid</span>

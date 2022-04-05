@@ -1,74 +1,53 @@
-import React from 'react';
+import React from "react";
+import { useState,useEffect } from "react";
+import frontendAPI from "../../core/axios";
 
+function Wallet() {
+  let [qrCode, setQrCode] = useState("");
+  let [isConnecting, setIsConnecting] = useState(false);
+  
+  function handleClick(e){
+      e.preventDefault();
+      setIsConnecting(true);
+  }
 
-const Wallet= () => (
-  <div className="row">
-    <div className="col-lg-3 mb30">
-        <span className="box-url left p-3">
+  useEffect(function getUrl() {
+    async function getQrcodeUrl(){
+        let url = await frontendAPI.connectWallet();
+        setQrCode(url);
+    }
+    if (isConnecting){
+        getQrcodeUrl();
+    }
+  }, [isConnecting])
+  return (
+    <div className="row">
+      {qrCode ? (
+          
+        <div className="mx-auto center mb30 col-lg-10 w-30"> 
+        <span className="box-url center p-30 w-30">
+            <img src={qrCode} alt=""></img>
+            <p className="text-center text-nowrap text-font-weight-bold text-dark">please scan the QR code to connect wallet</p>
+        </span>
+        </div>
+      ) : (
+        <div className="col-lg-5 mb30 mx-auto center">
+          <span className="box-url center mx-auto p-13">
             <span className="box-url-label">Most Popular</span>
-            <img src="./img/wallet/1.png" alt="" className="mb20"/>
-            <h4>Metamask</h4>
-            <p>Start exploring blockchain applications in seconds.  Trusted by over 1 million users worldwide.</p>
-        </span>
-    </div>
-
-    <div className="col-lg-3 mb30">
-        <span className="box-url left p-3">
-            <img src="./img/wallet/2.png" alt="" className="mb20"/>
-            <h4>Bitski</h4>
-            <p>Bitski connects communities, creators and brands through unique, ownable digital content.</p>
-        </span>
-    </div>       
-
-    <div className="col-lg-3 mb30">
-        <span className="box-url left p-3">
-            <img src="./img/wallet/3.png" alt="" className="mb20"/>
-            <h4>Fortmatic</h4>
-            <p>Let users access your Ethereum app from anywhere. No more browser extensions.</p>
-        </span>
-    </div>    
-
-    <div className="col-lg-3 mb30">
-        <span className="box-url left p-3">
-            <img src="./img/wallet/4.png" alt="" className="mb20"/>
-            <h4>WalletConnect</h4>
-            <p>Open source protocol for connecting decentralised applications to mobile wallets.</p>
-        </span>
-    </div>
-
-    <div className="col-lg-3 mb30">
-        <span className="box-url left p-3">
-            <img src="./img/wallet/5.png" alt="" className="mb20"/>
-            <h4>Coinbase Wallet</h4>
-            <p>The easiest and most secure crypto wallet. ... No Coinbase account required.
+            <a href="https://xumm.app/">
+              <img src="./img/wallet/1.png" alt="" className="mb5 w-75" />
+            </a>
+            <h4>Xumm</h4>
+            <p>
+              Most Popular and user-friendly XRP wallet, developed by XRPL Labs
             </p>
-        </span>
+            <button className="btn-dark mx-auto w-50" onClick={handleClick}>
+              Connect Wallet
+            </button>
+          </span>
+        </div>
+      )}
     </div>
-
-    <div className="col-lg-3 mb30">
-        <span className="box-url left p-3">
-            <img src="./img/wallet/6.png" alt="" className="mb20"/>
-            <h4>Arkane</h4>
-            <p>Make it easy to create blockchain applications with secure wallets solutions.</p>
-        </span>
-    </div>       
-
-    <div className="col-lg-3 mb30">
-        <span className="box-url left p-3">
-            <img src="./img/wallet/7.png" alt="" className="mb20"/>
-            <h4>Authereum</h4>
-            <p>Your wallet where you want it. Log into your favorite dapps with Authereum.</p>
-        </span>
-    </div>    
-
-    <div className="col-lg-3 mb30">
-        <span className="box-url left p-3">
-            <span className="box-url-label">Most Simple</span>
-            <img src="./img/wallet/8.png" alt="" className="mb20"/>
-            <h4>Torus</h4>
-            <p>Open source protocol for connecting decentralised applications to mobile wallets.</p>
-        </span>
-    </div>                                  
-</div>
-);
+  );
+}
 export default Wallet;
