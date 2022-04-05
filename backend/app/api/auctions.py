@@ -18,7 +18,7 @@ def get_all_actions():
 @auction_routes.route('/<int:id>')
 def get_auction(id):
     auction = Auction.query.get(id)
-    return auction.to_dict()
+    return {"auction": auction.to_dict()}
 
 
 @auction_routes.route("/new", methods=["PUT"])
@@ -38,7 +38,7 @@ def create_new_action():
 def create_new_bid(id):
     data = request.json
     auction = Auction.query.get(id)
-    #TODO: current_user login - 
+    #TODO: current_user login - and address
     new_offer = createNftBuyOffer(
         auction.id, current_user.id, data["price"], True)
     return new_offer
@@ -56,7 +56,7 @@ def extend_auction(id):
         db.session.commit()
     else:
         return {"msg": "User can only extend, not shorten the auction"}, 400
-    return auction.to_dict()
+    return {"auction": auction.to_dict()}
 
 
 @auction_routes.route("/<int:id>/cancel", methods=["DELETE"])

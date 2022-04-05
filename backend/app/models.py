@@ -23,8 +23,10 @@ def connect_db(app):
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     # TODO: have xrp_account to be primary key - easier workflow
+    # connect wallet -> xumm -> have them sign something. 
     xrp_account = db.Column(db.String(255), primary_key=True)
     email = db.Column(db.String(255), nullable=True, unique=True)
+    # TODO: have them sign nounce/current time
     hashed_password = db.Column(db.String(255), nullable=False)
     created_at = db.Column(
         db.DateTime, default=lambda: datetime.now(), nullable=False)

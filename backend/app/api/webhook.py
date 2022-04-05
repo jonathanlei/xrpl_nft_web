@@ -21,15 +21,14 @@ def receive_webhook():
     if instruction == "user_sign_in_token":
         # store user token
         user_token = data['meta']['userToken']["user_token"]
-        user_id = meta["id"]
         xrp_account_address = get_xrp_account(payload_id)
         # TODO: auto update token after certain amount of time
-        store_user_token(user_id, user_token, xrp_account_address)
+        store_user_token(user_token, xrp_account_address)
         return {'msg': "user token and account address successfully stored"}
     elif instruction == "mint_nft":
         token_id = get_nft_id(payload_id=data['meta']['payload_uuidv4'])
         nft = Nft(token_id=token_id, title=meta["title"], description=meta["description"],
-                  owner_id=meta["owner"], uri=meta["uri"])
+                  owner_xrp_account=meta["owner"], uri=meta["uri"])
         db.session.add(nft)
         db.session.commit()
         send_socket_message("mint_nft", {"msg": "success"})
@@ -37,7 +36,8 @@ def receive_webhook():
     elif instruction == "create_buy_offer":
         buyer_offer_id = get_offer_id(payload_id)
         confirm_new_bid(
-            buyer_offer_id, meta["auction_id"], meta["buyer_id"],  meta["price"])
+            buyer_offer_id, meta["auction_id"], meta["buyer_xrp_account"],
+            meta["price"])
         send_socket_message("sign_buy_offer", {"msg": "success"})
     elif instruction == "create_sell_offer":
         sell_offer_id = get_offer_id(payload_id)
