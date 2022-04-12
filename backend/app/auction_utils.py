@@ -56,16 +56,18 @@ def confirm_new_bid(ledger_idx, auction_id, buyer_xrp_account, price):
     return bid.to_dict()
 
 
-def end_auction_and_create_sell_offer(auction_id, seller_xrp_account):
-    auction = Auction.query.get(auction_id)
-    auction.isActive = False
-    auction.winner = User.query.get(seller_xrp_account)
-    db.session.commit()
+def end_auction_and_create_sell_offer(auction_id, end_at):
 
+    auction = Auction.query.get(auction_id)
+    if auction.end_at != end_at:
+        return {"msg": "the auction has been extended, can't end it"}
+    auction.isActive = False
+    auction.winner = auction.current_highest_bidder
+    db.session.commit()
     # timer, display winner
     # set timeout python solution
     # detach callback, (resest timer and delete)
-    return createNftSellOffer(auction_id, seller_xrp_account,
+    return createNftSellOffer(auction_id, auction.owner_xrp_account,
                               auction.current_highest_price, True)
 
     """
@@ -80,7 +82,3 @@ def end_auction_and_create_sell_offer(auction_id, seller_xrp_account):
                          nullable=False)
     bid_amount = db.Column(db.Float, nullable=False)
     """
-
-
-def accept_broker_offer(auction_id, sell_offer_id):
-    createAcceptOfferAndSign(auction_id, sell_offer_id)

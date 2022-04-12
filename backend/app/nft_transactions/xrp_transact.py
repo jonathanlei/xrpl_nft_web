@@ -76,6 +76,10 @@ def get_nft_id(payload_id):
     """ get nft_token_id from minting payload """
     transaction_hash = get_transaction_id(payload_id)
     meta = get_transaction_dict(transaction_hash)
+    #TODO: check if the transaction is applied/valid 
+        # alternative: python websocket - subscribe to ledger 
+        # enqueue a job in the job queue, check again on the status of the transaction - has it been validated (go through the conditions), loop through jobs 
+        
     relevant_nodes = meta['AffectedNodes']
     nft_toke_page = None
     for node in relevant_nodes:

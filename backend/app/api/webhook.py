@@ -6,7 +6,6 @@ from nft_transactions.xumm import store_user_token, get_xrp_account, get_transac
 from nft_transactions.xrp_transact import createAcceptOfferAndSign, get_nft_id, get_offer_id
 from auction_utils import confirm_new_bid
 import json
-from app import send_socket_message
 
 webhook_routes = Blueprint('webhook', __name__)
 
@@ -31,18 +30,15 @@ def receive_webhook():
                   owner_xrp_account=meta["owner"], uri=meta["uri"])
         db.session.add(nft)
         db.session.commit()
-        send_socket_message("mint_nft", {"msg": "success"})
         return nft.to_dict()
     elif instruction == "create_buy_offer":
         buyer_offer_id = get_offer_id(payload_id)
         confirm_new_bid(
             buyer_offer_id, meta["auction_id"], meta["buyer_xrp_account"],
             meta["price"])
-        send_socket_message("sign_buy_offer", {"msg": "success"})
     elif instruction == "create_sell_offer":
         sell_offer_id = get_offer_id(payload_id)
         createAcceptOfferAndSign(meta["auction_id"], sell_offer_id)
-        send_socket_message("sign_sell_offer", {"msg": "success"})
         # create accept offer for both sides, complete transaction
     elif instruction == "create_accept_offer":
         print(data['meta'])

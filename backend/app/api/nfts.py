@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify, session, request, Response
 from flask_login import login_required, current_user
-from app.models import User, Nft, Transaction, Auction, db
-from app.aws import upload_file_to_s3, allowed_file, get_unique_filename
+from models import User, Nft, Transaction, Auction, db
+from aws import upload_file_to_s3, allowed_file, get_unique_filename
 from nft_transactions.ipfs import upload_to_ipfs
 from nft_transactions.xrp_transact import mintNft
 

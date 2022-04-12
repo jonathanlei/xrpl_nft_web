@@ -1,18 +1,24 @@
 from flask import Flask
 from flask_cors import CORS
-from flask_wtf.csrf import CSRFProtect, generate_csrf
+# from flask_wtf.csrf import CSRFProtect, generate_csrf
 # from flask_login import LoginManager
 # # from models import db, User
+
 from api.users import user_routes
 from api.webhook import webhook_routes
 from api.auctions import auction_routes
 from api.auth import auth_routes
 from api.nfts import nft_routes
-from auction_utils import confirm_new_bid
-# from config import Config
-from flask_socketio import SocketIO
-app = Flask(__name__)
 
+
+# from auction_utils import confirm_new_bid
+# from config import Config
+app = Flask(__name__)
+cors = CORS(app)
+
+
+
+# from flask_cors import CORS
 # # Setup login manager
 # login = LoginManager(app)
 # login.login_view = 'auth.unauthorized'
@@ -33,7 +39,7 @@ app = Flask(__name__)
 # @login.user_loader
 # def load_user(id):
 #     return User.query.get(int(id))
-socketio = SocketIO(app)
+# socketio = SocketIO(app)
 
 app.register_blueprint(user_routes, url_prefix='/users')
 app.register_blueprint(webhook_routes, url_prefix='/webhook')
@@ -69,12 +75,14 @@ app.register_blueprint(auction_routes, url_prefix='/auction')
 #                             'FLASK_ENV') == 'production' else False,
 #                         samesite='Strict' if os.environ.get(
 #                             'FLASK_ENV') == 'production' else None,
-#                         httponly=True)
-def send_socket_message(event_name, data):
-    socketio.emit(event_name, data)
+# #                         httponly=True)
+
+
+# def send_socket_message(event_name, data):
+#     socketio.emit(event_name, data)
 
 
 #     return response
 if __name__ == '__main__':
     app.run()
-    socketio.run(app)
+    # socketio.run(app)

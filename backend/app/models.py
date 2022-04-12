@@ -93,7 +93,11 @@ class Auction(db.Model):
     end_at = db.Column(db.DateTime(timezone=True),
                        server_default=func.now() + datetime.timedelta(days=1),
                        nullable=False)
-    # TODO: duration = db.column(db.Interval())
+    # TODO: Job Scheduling - Queue to call function when deadline hit
+    # when bootup schedule all the jobs
+    # time extension 
+    # when the job wakes up, deque and abort immediately
+        # create a new job for the correct time
     # timer solution
     nft_id = db.relationship(
         db.Integer, db.ForeignKey("nfts.id"))
