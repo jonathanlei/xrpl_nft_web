@@ -39,7 +39,7 @@ class User(db.Model, UserMixin):
     transactions = db.relationship(
         'Transaction', secondary="transactions_users", backref="users")
     auctions = db.relationship(
-        "Auction", secondary="auctions_users", backref="bidders")
+        "Auction", secondary="auctions_users")
 
     def get_nfts(self):
         return self.nfts
@@ -148,8 +148,8 @@ class AuctionUser(db.Model):
     auction_id = db.Column(db.Integer,
                            db.ForeignKey("auctions.id"),
                            primary_key=True)
-    user_xrp_acount = db.Column(db.Integer,
-                                db.ForeignKey("users.xrp_acount"),
+    user_xrp_account = db.Column(db.Integer,
+                                db.ForeignKey("users.xrp_account"),
                                 primary_key=True)
     last_bid_price = db.Column(db.Float)
 

@@ -19,8 +19,10 @@ def receive_webhook():
     payload_id = data['meta']['payload_uuidv4']
     if instruction == "user_sign_in_token":
         # store user token
-        user_token = data['meta']['userToken']["user_token"]
+        print(data)
+        user_token = data['userToken']["user_token"]
         xrp_account_address = get_xrp_account(payload_id)
+        print("We are storing the user now")
         # TODO: auto update token after certain amount of time
         store_user_token(user_token, xrp_account_address)
         return {'msg': "user token and account address successfully stored"}

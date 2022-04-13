@@ -75,7 +75,7 @@ class frontendAPI {
 
   static async connectWallet() {
     const res = await this.request(`users/connect-wallet`, {}, "get");
-    return res.png_url.png_url;
+    return res;
   }
 
 
@@ -127,6 +127,12 @@ class frontendAPI {
     return res.auctions;
   }
 
+  /* TODO: end-auction API call
+    seller still has to sign
+  
+
+  
+  */
   static async extendAuction(id, end_at) {
     const res = await this.request(
       `api/auctions/${id}/extend}`,

@@ -16,7 +16,6 @@ def get_all_users():
     return {"users": [user.to_dict() for user in users]}
 
 @user_routes.route("/connect-wallet")
-@cross_origin()
 def connect_wallet():
     png_url = user_sign_in()
     return png_url

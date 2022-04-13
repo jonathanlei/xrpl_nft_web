@@ -59,7 +59,8 @@ def user_sign_in():
     data = json.loads(response.content.decode('utf-8'))
     print(data)
     png_url = data["refs"]["qr_png"]
-    return {"png_url": png_url}
+    websocket = data["refs"]["websocket_status"]
+    return {"png_url": png_url, "websocket": websocket}
 
 
 def get_xrp_account(payload_id):
@@ -92,7 +93,6 @@ rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8 """
 def store_user_token(user_token, account_address):
     """ utitlity function to store user token in database, get called by webhook route when signin payload received"""
     # TODO: maybe have a seperate function for new sign up and sign in.
-    
     user = User.query.get(account_address)
     if not user:
         user = User(xrp_account=account_address, xumm_user_token=user_token)

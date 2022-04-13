@@ -38,7 +38,7 @@ def create_new_action():
     dt_obj = datetime.strptime(data["end_at"], "%d/%m/%Y %H:%M:%S")
     db.session.add(auction)
     db.session.commit()
-    job = q.enqueue_in(datetime.now()-dt_obj,
+    job = q.enqueue_in(dt_obj-datetime.now(),
                        end_auction_and_create_sell_offer(auction.id, data["end_at"]))
     return {"auction": auction.to_dict()}
 

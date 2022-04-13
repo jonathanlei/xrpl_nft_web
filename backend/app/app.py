@@ -2,7 +2,7 @@ from flask import Flask
 from flask_cors import CORS
 # from flask_wtf.csrf import CSRFProtect, generate_csrf
 # from flask_login import LoginManager
-# # from models import db, User
+from models import db, User
 
 from api.users import user_routes
 from api.webhook import webhook_routes
@@ -46,7 +46,7 @@ app.register_blueprint(webhook_routes, url_prefix='/webhook')
 app.register_blueprint(nft_routes, url_prefix='/nft')
 app.register_blueprint(auth_routes, url_prefix='/auth')
 app.register_blueprint(auction_routes, url_prefix='/auction')
-# db.init_app(app)
+db.init_app(app)
 
 # Application Security
 # CORS(app)

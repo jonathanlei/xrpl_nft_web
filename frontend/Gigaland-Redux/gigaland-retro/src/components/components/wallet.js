@@ -1,7 +1,7 @@
 import React from "react";
 import { useState,useEffect } from "react";
 import frontendAPI from "../../core/axios";
-
+import { signatureResult } from "../../xumm";
 function Wallet() {
   let [qrCode, setQrCode] = useState("");
   let [isConnecting, setIsConnecting] = useState(false);
@@ -13,8 +13,12 @@ function Wallet() {
 
   useEffect(function getUrl() {
     async function getQrcodeUrl(){
-        let url = await frontendAPI.connectWallet();
-        setQrCode(url);
+        let res = await frontendAPI.connectWallet();
+        setQrCode(res.png_url);
+        const signedPayload = await signatureResult(
+          res.websocket,
+        )
+        console.log(signedPayload);
     }
     if (isConnecting){
         getQrcodeUrl();
@@ -23,7 +27,6 @@ function Wallet() {
   return (
     <div className="row">
       {qrCode ? (
-          
         <div className="mx-auto center mb30 col-lg-10 w-30"> 
         <span className="box-url center p-30 w-30">
             <img src={qrCode} alt=""></img>
