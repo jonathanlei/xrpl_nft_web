@@ -10,18 +10,21 @@ user_routes = Blueprint('users', __name__)
 
 CORS(user_routes)
 
+
 @user_routes.route('/')
 def get_all_users():
     users = User.query.all()
     return {"users": [user.to_dict() for user in users]}
+
 
 @user_routes.route("/connect-wallet")
 def connect_wallet():
     png_url = user_sign_in()
     return png_url
 
+
 @user_routes.route('/<string:xrp_account>')
-def user(xrp_account):
+def get_user(xrp_account):
     user = User.query.get(xrp_account)
     return user.to_dict()
 
@@ -73,9 +76,6 @@ def get_all_transactions(xrp_account):
     all_transactions = Transaction.query.filter(
         Transaction.buyer == xrp_account, Transaction.seller == xrp_account).all()
     return {"transactions": [n.to_dict() for n in all_transactions]}
-
-
-
 
 
 @user_routes.route("/<string:xrp_account>/nfts")

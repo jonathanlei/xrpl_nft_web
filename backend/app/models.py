@@ -23,7 +23,7 @@ def connect_db(app):
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
     # TODO: have xrp_account to be primary key - easier workflow
-    # connect wallet -> xumm -> have them sign something. 
+    # connect wallet -> xumm -> have them sign something.
     xrp_account = db.Column(db.String(255), primary_key=True)
     email = db.Column(db.String(255), nullable=True, unique=True)
     # TODO: have them sign nounce/current time
@@ -64,7 +64,7 @@ class Nft(db.Model):
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now(),
                            nullable=False)
-    owner_xrp_account = db.Column(db.Integer, db.ForeignKey(
+    owner_xrp_account = db.Column(db.String(255), db.ForeignKey(
         "users.xrp_account"), nullable=False)
 
     @property
@@ -85,7 +85,7 @@ class Auction(db.Model):
     """ table for storing NFT auctions """
     __tablename__ = "auctions"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    owner_xrp_account = db.Column(db.Integer, db.ForeignKey(
+    owner_xrp_account = db.Column(db.String(255), db.ForeignKey(
         "users.xrp_account"), nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),
                            server_default=func.now(),
@@ -95,21 +95,21 @@ class Auction(db.Model):
                        nullable=False)
     # TODO: Job Scheduling - Queue to call function when deadline hit
     # when bootup schedule all the jobs
-    # time extension 
+    # time extension
     # when the job wakes up, deque and abort immediately
-        # create a new job for the correct time
+    # create a new job for the correct time
     # timer solution
     nft_id = db.relationship(
-        db.Integer, db.ForeignKey("nfts.id"))
+        db.Text, db.ForeignKey("nfts.token_id"))
     starting_price = db.Column(db.Float, nullable=False)
     # hours?
     duration = db.Column(db.Integer, nullable=False)
     current_highest_price = db.Column(db.Float)
     current_highest_bidder = db.Column(
-        db.Integer, db.ForeignKey("users.xrp_account"))
+        db.String(255), db.ForeignKey("users.xrp_account"))
     highest_offer_id = db.Column(db.String, nullable=True)
     isActive = db.Column(db.Boolean, nullable=False, default=True)
-    winner = db.Column(db.Integer, db.ForeignKey("users.xrp_account"))
+    winner = db.Column(db.String(255), db.ForeignKey("users.xrp_account"))
     # don't need a joint table because it's a one-to-many relationship
     bids = db.relationship("Bid", backref="auctions")
     bidders = db.relationship(
@@ -148,9 +148,9 @@ class AuctionUser(db.Model):
     auction_id = db.Column(db.Integer,
                            db.ForeignKey("auctions.id"),
                            primary_key=True)
-    user_xrp_account = db.Column(db.Integer,
-                                db.ForeignKey("users.xrp_account"),
-                                primary_key=True)
+    user_xrp_account = db.Column(db.String(255),
+                                 db.ForeignKey("users.xrp_account"),
+                                 primary_key=True)
     last_bid_price = db.Column(db.Float)
 
 
@@ -160,7 +160,7 @@ class Bid(db.Model):
     ledger_idx = db.Column(db.String, primary_key=True)
     auction_id = db.Column(db.Integer,
                            db.ForeignKey("auctions.id"))
-    xrp_account = db.Column(db.Integer,
+    xrp_account = db.Column(db.String(255),
                             db.ForeignKey("users.xrp_account"),
                             primary_key=True)
     bid_time = db.Column(db.DateTime(timezone=True),
@@ -183,9 +183,9 @@ class Transaction(db.Model):
     __tablename__ = "transactions"
     # id represented by ledger entry
     id = db.Column(db.Integer, primary_key=True)
-    nft_id = db.Column(db.Integer, db.ForeignKey("nfts.id"))
-    buyer = db.Column(db.Integer, db.ForeignKey("users.xrp_account"))
-    seller = db.Column(db.Integer, db.ForeignKey("users.xrp_account"))
+    nft_id = db.Column(db.Text, db.ForeignKey("nfts.token_id"))
+    buyer = db.Column(db.String(255), db.ForeignKey("users.xrp_account"))
+    seller = db.Column(db.String(255), db.ForeignKey("users.xrp_account"))
     price = db.Column(db.Float, nullable=False, default=0)
     transaction_time = db.Column(
         db.DateTime, default=lambda: datetime.now(), nullable=False)
@@ -210,6 +210,6 @@ class TransactionUser(db.Model):
     transaction_id = db.Column(db.Integer,
                                db.ForeignKey("transactions.id"),
                                primary_key=True)
-    user_id = db.Column(db.Integer,
+    user_id = db.Column(db.String(255),
                         db.ForeignKey("users.xrp_account"),
                         primary_key=True)

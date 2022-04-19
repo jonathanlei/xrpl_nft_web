@@ -17,7 +17,6 @@ app = Flask(__name__)
 cors = CORS(app)
 
 
-
 # from flask_cors import CORS
 # # Setup login manager
 # login = LoginManager(app)
@@ -46,7 +45,6 @@ app.register_blueprint(webhook_routes, url_prefix='/webhook')
 app.register_blueprint(nft_routes, url_prefix='/nft')
 app.register_blueprint(auth_routes, url_prefix='/auth')
 app.register_blueprint(auction_routes, url_prefix='/auction')
-db.init_app(app)
 
 # Application Security
 # CORS(app)
@@ -84,5 +82,8 @@ db.init_app(app)
 
 #     return response
 if __name__ == '__main__':
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
     app.run()
     # socketio.run(app)

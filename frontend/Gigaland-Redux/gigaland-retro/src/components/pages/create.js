@@ -4,26 +4,26 @@ import Footer from "../components/footer";
 import frontendAPI from "../../core/axios";
 
 const initialForm = {
-  files: null,
+  files: "",
   title: "",
   description: "",
   price: "",
-  preiewUrl: "",
+  previewUrl: "",
 };
+/* TODO: create current user object and check if authorized to do this */
 function CreatePage() {
   let [formData, setFormData] = useState(initialForm);
   function handleChange(evt) {
     const { name, value } = evt.target;
     if (name === "files") {
-      document.getElementById("file_name").style.display = "none";
-      let url = window.webkitURL.createObjectURL(evt.target.files[0]);
-      setFormData((fData) => ({ ...fData, preiewUrl: url }));
-    } else {
+      let url = URL.createObjectURL(evt.target.files[0]);
+      setFormData((fData) => ({ ...fData, "files": evt.target.files[0], previewUrl: url }));
+    } 
+
       setFormData((fData) => ({ ...fData, [name]: value }));
-    }
   }
 
-  function onSubmit(evt) {
+  function handleSubmit(evt) {
     evt.preventDefault();
   }
   return (
@@ -65,6 +65,8 @@ function CreatePage() {
                       id="get_file"
                       className="btn-main"
                       value="Browse"
+                      name="get_file"
+                      onChange={handleChange}
                     />
                     <input
                       name="files"
@@ -80,8 +82,8 @@ function CreatePage() {
                 <h5>Title</h5>
                 <input
                   type="text"
-                  name="item_title"
-                  id="item_title"
+                  name="title"
+                  id="title"
                   className="form-control"
                   placeholder="e.g. 'Crypto Funk"
                   value={formData.title}
@@ -93,8 +95,8 @@ function CreatePage() {
                 <h5>Description</h5>
                 <textarea
                   data-autoresize
-                  name="item_desc"
-                  id="item_desc"
+                  name="description"
+                  id="description"
                   className="form-control"
                   placeholder="e.g. 'This is very limited item'"
                   value={formData.description}
@@ -105,9 +107,11 @@ function CreatePage() {
 
                 <h5>Price</h5>
                 <input
-                  type="text"
-                  name="item_price"
-                  id="item_price"
+                  name="price"
+                  type="number"
+                  min="1"
+                  step="1"
+                  id="price"
                   className="form-control"
                   placeholder="enter price for one item (XRP)"
                   value={formData.price}
@@ -116,23 +120,24 @@ function CreatePage() {
 
                 <div className="spacer-10"></div>
                 <div className="spacer-10"></div>
-
+                <h6>Your NFT will be uploaded to IPFS and minted on the XRP ledger once you approve the transaction</h6>
+                <div className="spacer-10"></div>
+                <div className="spacer-10"></div>
                 <input
                   type="button"
                   id="submit"
                   className="btn-main"
                   value="Create Item"
+                  onClick={handleSubmit}
                 />
               </div>
             </form>
+        
           </div>
 
           <div className="col-lg-3 col-sm-6 col-xs-12">
             <h5>Preview item</h5>
             <div className="nft__item m-0">
-              <div className="de_countdown">
-                <Clock deadline="December, 30, 2021" />
-              </div>
               <div className="author_list_pp">
                 <span>
                   <img
@@ -158,7 +163,7 @@ function CreatePage() {
                   <h4>{formData.title}</h4>
                 </span>
                 <div className="nft__item_price">
-                  {formData.price}XRP<span>{formData.price}</span>
+                  {formData.price} XRP
                 </div>
                 <div className="nft__item_action">
                   <span>Place a bid</span>

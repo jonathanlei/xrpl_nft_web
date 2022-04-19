@@ -19,7 +19,7 @@ def receive_webhook():
     payload_id = data['meta']['payload_uuidv4']
     if instruction == "user_sign_in_token":
         # store user token
-        print(data)
+        print(data, "WEBHOOK DATA")
         user_token = data['userToken']["user_token"]
         xrp_account_address = get_xrp_account(payload_id)
         print("We are storing the user now")
