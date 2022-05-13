@@ -90,14 +90,17 @@ def get_xrp_account(payload_id):
 rPcwJW3BQ7JZ4VNARFWFQudwG45he2vaS8 """
 
 
-def store_user_token(user_token, account_address):
+def store_user_token(user_token, account_address, payload_id):
     """ utitlity function to store user token in database, get called by webhook route when signin payload received"""
     # TODO: maybe have a seperate function for new sign up and sign in.
     user = User.query.get(account_address)
     if not user:
-        user = User(xrp_account=account_address, xumm_user_token=user_token)
-        db.session.add(User)
+        user = User(xrp_account=account_address,
+                    xumm_user_token=user_token, latest_payload_id=payload_id)
+        db.session.add(user)
     # TODO: store the expiration. 12 months expiration date.
     else:
         user.xumm_user_token = user_token
+        print(payload_id, "THIS IS THE PAYLOAD")
+        user.latest_payload_id = payload_id
     db.session.commit()

@@ -4,7 +4,7 @@ export const Axios = axios.create();
 export const Canceler = axios.CancelToken.source();
 
 // FLASK url
-const BASE_URL = "http://127.0.0.1:5000/";
+const BASE_URL = "http://localhost:3000/api";
 
 /** API Class.
  *
@@ -22,7 +22,11 @@ class frontendAPI {
     console.debug("API Call:", endpoint, data, method);
 
     const url = `${BASE_URL}/${endpoint}`;
-    const headers = { Authorization: `Bearer ${frontendAPI.token}` };
+    const headers = {
+      Authorization: `Bearer ${frontendAPI.token}`,
+      "Access-Control-Request-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Origin": "*",
+    };
     if (hasImage) {
       headers["Content-Type"] = "multipart/form-data";
     }
@@ -31,7 +35,7 @@ class frontendAPI {
     try {
       return (await axios({ url, method, data, params, headers })).data;
     } catch (err) {
-      console.error("API Error:", err.response);
+      console.error("API Error:", err);
       let message = err.response.data.error.message;
       throw Array.isArray(message) ? message : [message];
     }
@@ -72,55 +76,57 @@ class frontendAPI {
 
   /** Get details on an NFT by tokenID. */
 
-
   static async connectWallet() {
     const res = await this.request(`users/connect-wallet`, {}, "get");
     return res;
   }
-
-
+  static async getUserXRPAccount(payload_id) {
+    const res = await this.request(`users/sign-in/${payload_id}`, {}, "get");
+    return res;
+  }
 
   static async getNFT(id) {
-    const res = await this.request(`api/nfts/${id}`);
+    const res = await this.request(`nfts/${id}`);
     return res.nft;
   }
 
   /** Get all nfts. */
 
   static async getNFTs() {
-    const res = await this.request(`api/nfts`);
+    const res = await this.request(`nfts`);
     return res.nft;
   }
 
   /* submit nft mint request and show QR code */
   static async mintNFT(data) {
-    const res = await this.request(`api/nfts/mint`, data, "post", true);
+    const res = await this.request(`nfts/mint`, data, "post", true);
+    console.log(res, "RESULT FROM THE API ");
     return res.pushed;
   }
 
   /* submit nft mint request and show QR code */
   static async editNFT(id, data) {
-    const res = await this.request(`api/nfts/${id}/edit`, data, "put");
+    const res = await this.request(`nfts/${id}/edit`, data, "put");
     return res.pushed;
   }
 
   /** Get details on an auction by ID. */
 
   static async getAuction(id) {
-    const res = await this.request(`api/auctions/${id}`);
+    const res = await this.request(`auctions/${id}`);
     return res.auction;
   }
 
   /** Get all auctions */
   static async getAuctions() {
-    const res = await this.request(`api/auctions`);
+    const res = await this.request(`auctions`);
     return res.auctions;
   }
 
   /** Submit a new bid on a certain auction given id */
   static async submitNewBid(id, xrp_address, price) {
     const res = await this.request(
-      `api/auctions/${id}/new_bid}`,
+      `auctions/${id}/new_bid}`,
       { buyer: xrp_address, price: price },
       "post"
     );
@@ -135,7 +141,7 @@ class frontendAPI {
   */
   static async extendAuction(id, end_at) {
     const res = await this.request(
-      `api/auctions/${id}/extend}`,
+      `auctions/${id}/extend}`,
       { end_at },
       "patch"
     );
@@ -143,7 +149,7 @@ class frontendAPI {
   }
 
   static async deleteAuction(id) {
-    const res = await this.request(`api/auctions/${id}/cancel}`, "delete");
+    const res = await this.request(`auctions/${id}/cancel}`, "delete");
     return res.msg;
   }
 }

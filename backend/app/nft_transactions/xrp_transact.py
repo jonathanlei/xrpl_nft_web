@@ -30,6 +30,7 @@ central_wallet = Wallet(sequence=int(os.getenv(
 
 
 def mintNft(xrp_account, img_url, nft_meta):
+    
     user = User.query.get(xrp_account)
     # create token mint object
     my_nft_mint = NFTokenMint(
@@ -44,6 +45,7 @@ def mintNft(xrp_account, img_url, nft_meta):
     # {"pushed": True} or {"png_url": "..."} depending on the push status
     result = sign_transactions(
         tx_payment_filled, user.xumm_user_token, custom_meta)
+    print(result, "RESULT FOR MINTING NFT REQUEST")
     if "pushed" in result:
         return result
     else:

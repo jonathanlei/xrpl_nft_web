@@ -4,7 +4,7 @@ from models import User, Nft, Transaction, Auction, db
 from aws import upload_file_to_s3, allowed_file, get_unique_filename
 from nft_transactions.ipfs import upload_to_ipfs
 from nft_transactions.xrp_transact import mintNft
-
+from flask_cors import CORS, cross_origin
 nft_routes = Blueprint("nfts", __name__)
 
 """ TODO: add wallet intergration and add wallet route """
@@ -23,7 +23,6 @@ def nft(id):
 
 
 @nft_routes.route("/mint/", methods=["POST"])
-@login_required
 def mint():
     data = request.json
     # upload to aws
@@ -40,6 +39,8 @@ def mint():
     # upload to ipfs
     uri = upload_to_ipfs(image)
     # add uri and contract id.
+    print("GETTING TO MINT NFT FUNCTION CALL")
+    # return {"msg": "received"}
     return mintNft(data["owner"], uri, data)
 
 
@@ -66,3 +67,6 @@ def delete_nft():
     db.session.delete(nft)
     db.session.commit()
     return {"msg": "nft deleted successfully"}, 200
+
+
+CORS(nft_routes)

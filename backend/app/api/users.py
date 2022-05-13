@@ -23,6 +23,19 @@ def connect_wallet():
     return png_url
 
 
+@user_routes.route("/sign-in/<string:payload_id>")
+def get_user_account(payload_id):
+    user = User.query.filter_by(latest_payload_id=payload_id).first()
+    first_user = User.query.first()
+    print("WE GOT TO THE BACKEND ROUTE")
+    # RETURN EMPTY until you get payload ID
+    print("first User", first_user.latest_payload_id)
+    if not user:
+        print("HEREERERER")
+        return {"user": "not found"}
+    return {"account": user.xrp_account}
+
+
 @user_routes.route('/<string:xrp_account>')
 def get_user(xrp_account):
     user = User.query.get(xrp_account)

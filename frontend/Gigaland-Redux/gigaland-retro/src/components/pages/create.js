@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Clock from "../components/Clock";
 import Footer from "../components/footer";
 import frontendAPI from "../../core/axios";
+import UserContext from "../../usercontext";
 
 const initialForm = {
-  files: "",
+  image: "",
   title: "",
   description: "",
   price: "",
@@ -12,19 +13,28 @@ const initialForm = {
 };
 /* TODO: create current user object and check if authorized to do this */
 function CreatePage() {
+  let currentUser = useContext(UserContext);
   let [formData, setFormData] = useState(initialForm);
   function handleChange(evt) {
     const { name, value } = evt.target;
-    if (name === "files") {
+    if (name === "image") {
       let url = URL.createObjectURL(evt.target.files[0]);
-      setFormData((fData) => ({ ...fData, "files": evt.target.files[0], previewUrl: url }));
-    } 
-
-      setFormData((fData) => ({ ...fData, [name]: value }));
+      setFormData((fData) => ({
+        ...fData,
+        image: evt.target.files[0],
+        previewUrl: url,
+      }));
+    }
+    setFormData((fData) => ({ ...fData, [name]: value }));
   }
 
-  function handleSubmit(evt) {
+  async function handleSubmit(evt) {
     evt.preventDefault();
+    let res = await frontendAPI.mintNFT({
+      ...formData,
+      owner: currentUser,
+    });
+    console.log(res, "HERE");
   }
   return (
     <div>
@@ -48,13 +58,13 @@ function CreatePage() {
                 <h5>Upload file</h5>
 
                 <div className="d-create-file">
-                  {formData.files ? (
+                  {formData.image ? (
                     <></>
                   ) : (
                     <p id="file_name">PNG, JPG, GIF, WEBP or MP4. Max 200mb.</p>
                   )}
-                  {formData.files ? (
-                    <p key="{index}">{formData.files}</p>
+                  {formData.image ? (
+                    <p key="{index}">{formData.image}</p>
                   ) : (
                     <></>
                   )}
@@ -69,7 +79,7 @@ function CreatePage() {
                       onChange={handleChange}
                     />
                     <input
-                      name="files"
+                      name="image"
                       id="upload_file"
                       type="file"
                       onChange={handleChange}
@@ -120,7 +130,10 @@ function CreatePage() {
 
                 <div className="spacer-10"></div>
                 <div className="spacer-10"></div>
-                <h6>Your NFT will be uploaded to IPFS and minted on the XRP ledger once you approve the transaction</h6>
+                <h6>
+                  Your NFT will be uploaded to IPFS and minted on the XRP ledger
+                  once you approve the transaction
+                </h6>
                 <div className="spacer-10"></div>
                 <div className="spacer-10"></div>
                 <input
@@ -132,7 +145,6 @@ function CreatePage() {
                 />
               </div>
             </form>
-        
           </div>
 
           <div className="col-lg-3 col-sm-6 col-xs-12">
@@ -162,9 +174,7 @@ function CreatePage() {
                 <span>
                   <h4>{formData.title}</h4>
                 </span>
-                <div className="nft__item_price">
-                  {formData.price} XRP
-                </div>
+                <div className="nft__item_price">{formData.price} XRP</div>
                 <div className="nft__item_action">
                   <span>Place a bid</span>
                 </div>

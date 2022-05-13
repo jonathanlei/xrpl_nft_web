@@ -1,37 +1,51 @@
 import React from "react";
-import { useState,useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import frontendAPI from "../../core/axios";
+import {navigate} from "@reach/router";
 import { signatureResult } from "../../xumm";
-function Wallet() {
+
+function Wallet({ setUserAccount }) {
   let [qrCode, setQrCode] = useState("");
   let [isConnecting, setIsConnecting] = useState(false);
-  
-  function handleClick(e){
-      e.preventDefault();
-      setIsConnecting(true);
+  function handleClick(e) {
+    e.preventDefault();
+    setIsConnecting(true);
   }
 
-  useEffect(function getUrl() {
-    async function getQrcodeUrl(){
+  useEffect(
+    function getUrl() {
+      async function getQrcodeUrl() {
         let res = await frontendAPI.connectWallet();
         setQrCode(res.png_url);
-        const signedPayload = await signatureResult(
-          res.websocket,
-        )
-        console.log(signedPayload);
-    }
-    if (isConnecting){
+        const signedPayload = await signatureResult(res.websocket);
+        let backendRes = await frontendAPI.getUserXRPAccount(
+          signedPayload.payload_uuidv4
+        );
+        console.log("Backend res", backendRes);
+        while (backendRes.user === "not found") {
+          backendRes = await frontendAPI.getUserXRPAccount(
+            signedPayload.payload_uuidv4
+          );
+        }
+        setUserAccount(backendRes.account);
+        navigate("/");
+      }
+      if (isConnecting) {
         getQrcodeUrl();
-    }
-  }, [isConnecting])
+      }
+    },
+    [isConnecting, setUserAccount]
+  );
   return (
     <div className="row">
       {qrCode ? (
-        <div className="mx-auto center mb30 col-lg-10 w-30"> 
-        <span className="box-url center p-30 w-30">
+        <div className="mx-auto center mb30 col-lg-10 w-30">
+          <span className="box-url center p-30 w-30">
             <img src={qrCode} alt=""></img>
-            <p className="text-center text-nowrap text-font-weight-bold text-dark">please scan the QR code to connect wallet</p>
-        </span>
+            <p className="text-center text-nowrap text-font-weight-bold text-dark">
+              please scan the QR code to connect wallet
+            </p>
+          </span>
         </div>
       ) : (
         <div className="col-lg-5 mb30 mx-auto center">

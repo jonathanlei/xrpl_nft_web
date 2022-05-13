@@ -22,9 +22,8 @@ def receive_webhook():
         print(data, "WEBHOOK DATA")
         user_token = data['userToken']["user_token"]
         xrp_account_address = get_xrp_account(payload_id)
-        print("We are storing the user now")
         # TODO: auto update token after certain amount of time
-        store_user_token(user_token, xrp_account_address)
+        store_user_token(user_token, xrp_account_address, payload_id)
         return {'msg': "user token and account address successfully stored"}
     elif instruction == "mint_nft":
         token_id = get_nft_id(payload_id=data['meta']['payload_uuidv4'])
